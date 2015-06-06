@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.zhang_000.archerguygame.gameworld.GameRenderer;
 import com.zhang_000.archerguygame.gameworld.GameWorld;
-import com.zhang_000.archerguygame.helper_classes.InputHandler;
+import com.zhang_000.archerguygame.helper_classes.InputHandlerGame;
 
 public class GameScreen implements Screen {
 
@@ -21,7 +21,7 @@ public class GameScreen implements Screen {
         float scaleFactorY = SCREEN_HEIGHT / GAME_HEIGHT;
 
         world = new GameWorld(GAME_WIDTH, GAME_HEIGHT);
-        Gdx.input.setInputProcessor(new InputHandler(world, scaleFactorX, scaleFactorY));
+        Gdx.input.setInputProcessor(new InputHandlerGame(world, scaleFactorX, scaleFactorY));
         renderer = new GameRenderer(world, GAME_WIDTH, GAME_HEIGHT);
     }
 

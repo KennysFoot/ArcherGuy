@@ -3,14 +3,14 @@ package com.zhang_000.archerguygame.helper_classes;
 import com.badlogic.gdx.InputProcessor;
 import com.zhang_000.archerguygame.gameworld.GameWorld;
 
-public class InputHandler implements InputProcessor {
+public class InputHandlerGame implements InputProcessor {
 
     private float scaleFactorX;
     private float scaleFactorY;
 
     private GameWorld world;
 
-    public InputHandler(GameWorld world, float scaleFactorX, float scaleFactorY) {
+    public InputHandlerGame(GameWorld world, float scaleFactorX, float scaleFactorY) {
         this.world = world;
         this.scaleFactorX = scaleFactorX;
         this.scaleFactorY = scaleFactorY;
