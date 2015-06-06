@@ -21,6 +21,10 @@ public class GameRenderer {
 
     //ASSETS
     private TextureRegion archerGuy;
+    private TextureRegion tileDirt;
+    private TextureRegion tileDirtRight;
+    private TextureRegion tileDirtLeft;
+    private TextureRegion tileGrass;
 
     public GameRenderer(GameWorld world, float gameWidth, float gameHeight) {
         this.world = world;
@@ -40,6 +44,10 @@ public class GameRenderer {
 
     private void storeAssetReferences() {
         this.archerGuy = AssetLoader.archerGuy;
+        this.tileDirt = AssetLoader.tileDirt;
+        this.tileDirtRight = AssetLoader.tileDirtRight;
+        this.tileDirtLeft = AssetLoader.tileDirtLeft;
+        this.tileGrass = AssetLoader.tileGrass;
     }
 
     public void render(float delta, float runTime) {
@@ -53,9 +61,14 @@ public class GameRenderer {
         shapeRenderer.end();
 
         batch.begin();
-        batch.draw(archerGuy, (GAME_WIDTH - archerGuy.getRegionWidth()) / 2,
-                (GAME_HEIGHT - archerGuy.getRegionHeight()) / 2,
+        batch.draw(archerGuy, (66 - archerGuy.getRegionWidth()) / 2,
+                36 - archerGuy.getRegionHeight() + 2,
                 archerGuy.getRegionWidth(), archerGuy.getRegionHeight());
+
+        batch.draw(tileDirtLeft, 0, 50, 22, 14);
+        batch.draw(tileDirt, 22, 50, tileDirt.getRegionWidth(), tileDirt.getRegionHeight());
+        batch.draw(tileDirtRight, 44, 50, 22, 14);
+        batch.draw(tileGrass, 22, 36, 22, 14);
         batch.end();
     }
 }
