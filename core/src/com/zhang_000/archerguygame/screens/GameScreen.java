@@ -12,12 +12,15 @@ public class GameScreen implements Screen {
     private GameRenderer renderer;
     private float runTime;
 
+    public static float GAME_WIDTH;
+    public static float GAME_HEIGHT;
+
     public GameScreen() {
         float SCREEN_WIDTH = Gdx.graphics.getWidth();
         float SCREEN_HEIGHT = Gdx.graphics.getHeight();
-        float GAME_WIDTH = 210; //GAME_WIDTH constant at 210 pixels; scale height accordingly
+        GAME_WIDTH = 210; //GAME_WIDTH constant at 210 pixels; scale height accordingly
         float scaleFactorX = SCREEN_WIDTH / GAME_WIDTH;
-        float GAME_HEIGHT = SCREEN_HEIGHT / scaleFactorX;
+        GAME_HEIGHT = SCREEN_HEIGHT / scaleFactorX;
         float scaleFactorY = SCREEN_HEIGHT / GAME_HEIGHT;
 
         world = new GameWorld(GAME_WIDTH, GAME_HEIGHT);

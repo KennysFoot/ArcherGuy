@@ -2,6 +2,7 @@ package com.zhang_000.archerguygame.helper_classes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -13,9 +14,13 @@ public class AssetLoader {
     public static Texture backgroundMainMenuTex;
     public static TextureRegion backgroundMainMenu;
 
-    //GameObject
-    public static Texture archerGuyTex;
-    public static TextureRegion archerGuy;
+    //ARCHER GUY
+    public static Texture archerGuyFrontTex;
+    public static TextureRegion archerGuyFront1, archerGuyFront2, archerGuyFront3;
+    public static Animation AGFrontAnimation;
+
+    public static TextureRegion AGMoving;
+    public static Animation AGMovingAni;
 
     //Tiles
     public static Texture tilesGround;
@@ -34,11 +39,8 @@ public class AssetLoader {
         backgroundMainMenu = new TextureRegion(backgroundMainMenuTex);
         backgroundMainMenu.flip(false, true);
 
-        //GameObjects
-        archerGuyTex =  new Texture(Gdx.files.internal("archer_guy_front.png"));
-        archerGuyTex.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        archerGuy = new TextureRegion(archerGuyTex);
-        archerGuy.flip(false, true);
+        //GAME OBJECTS
+        loadArcherGuy();
 
         //TILES
         tilesGround = new Texture(Gdx.files.internal("tiles_dirt.png"));
@@ -58,9 +60,29 @@ public class AssetLoader {
         shadow.getData().setScale(0.25f, -0.25f);
     }
 
+    private static void loadArcherGuy() {
+        archerGuyFrontTex =  new Texture(Gdx.files.internal("archer_guy_front_belt.png"));
+        archerGuyFrontTex.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        archerGuyFront1 = new TextureRegion(archerGuyFrontTex, 2, 1, 29, 30);
+        archerGuyFront1.flip(false, true);
+        archerGuyFront2 = new TextureRegion(archerGuyFrontTex, 34, 1, 29, 30);
+        archerGuyFront2.flip(false, true);
+        archerGuyFront3 = new TextureRegion(archerGuyFrontTex, 66, 1, 29, 30);
+        archerGuyFront3.flip(false, true);
+
+        TextureRegion[] guys = {archerGuyFront1, archerGuyFront2, archerGuyFront3};
+        AGFrontAnimation = new Animation(0.25f, guys);
+        AGFrontAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+
+        AGMoving = new TextureRegion(archerGuyFrontTex, 98, 1, 29, 30);
+        TextureRegion[] moving = {archerGuyFront2, AGMoving};
+        AGMovingAni = new Animation(0.3f, moving);
+        AGMovingAni.setPlayMode(Animation.PlayMode.LOOP);
+    }
+
     public static void dispose() {
         //Dispose textures
-        archerGuyTex.dispose();
+        archerGuyFrontTex.dispose();
         tilesGround.dispose();
         backgroundMainMenuTex.dispose();
 

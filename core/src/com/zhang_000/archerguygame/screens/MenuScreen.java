@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -29,6 +30,10 @@ public class MenuScreen implements Screen {
     private Rectangle settingsRect;
     private final float SETTINGS_X;
     private final float SETTINGS_Y;
+
+    //ARCHER GUY ANIMATION
+    private Animation AGAnimation;
+    private float runTime = 0;
 
     public MenuScreen(Game game) {
         this.myGame = game;
@@ -60,19 +65,26 @@ public class MenuScreen implements Screen {
         SETTINGS_Y = PLAY_GAME_Y + 25;
         settingsRect = new Rectangle(SETTINGS_X, SETTINGS_Y - layout.height, layout.width, layout.height);
 
+        //SET INPUT PROCESSOR
         Gdx.input.setInputProcessor(new InputHandlerMenu(myGame, scaleFactorX, scaleFactorY, playGameRect, settingsRect));
+
+        AGAnimation = AssetLoader.AGFrontAnimation;
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+
         drawMenu();
+        runTime += delta;
+        batch.draw(AGAnimation.getKeyFrame(runTime), 162, 8, 29, 30);
+
+        batch.end();
     }
 
     private void drawMenu() {
-        batch.begin();
-
         //BACKGROUND
         batch.draw(AssetLoader.backgroundMainMenu, 0, 0, GAME_WIDTH, GAME_HEIGHT);
 
@@ -83,8 +95,6 @@ public class MenuScreen implements Screen {
         //SETTINGS
         AssetLoader.shadow.draw(batch, "Settings", SETTINGS_X, SETTINGS_Y);
         AssetLoader.font.draw(batch, "Settings", SETTINGS_X, SETTINGS_Y + 1);
-
-        batch.end();
     }
 
     @Override
