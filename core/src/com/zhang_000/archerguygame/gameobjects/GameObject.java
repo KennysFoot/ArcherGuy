@@ -33,6 +33,14 @@ public abstract class GameObject {
         return position.y;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public Vector2 getVelocity() {
         return velocity;
     }

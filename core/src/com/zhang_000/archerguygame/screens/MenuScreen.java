@@ -5,9 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 import com.zhang_000.archerguygame.helper_classes.InputHandlerMenu;
@@ -17,6 +18,9 @@ public class MenuScreen implements Screen {
     private Game myGame;
     private SpriteBatch batch;
     private OrthographicCamera camera;
+
+    private final Texture backgroundMainMenuTex;
+    private final TextureRegion backgroundMainMenu;
 
     private final float GAME_WIDTH;
     private final float GAME_HEIGHT;
@@ -32,7 +36,6 @@ public class MenuScreen implements Screen {
     private final float SETTINGS_Y;
 
     //ARCHER GUY ANIMATION
-    private Animation AGAnimation;
     private float runTime = 0;
 
     public MenuScreen(Game game) {
@@ -55,11 +58,13 @@ public class MenuScreen implements Screen {
         //BUTTONS
         GlyphLayout layout = new GlyphLayout();
 
+        //Play Game Button
         layout.setText(AssetLoader.font, PLAY_GAME);
         PLAY_GAME_X = (GAME_WIDTH - layout.width) / 2;
         PLAY_GAME_Y = GAME_HEIGHT / 8;
         playGameRect = new Rectangle(PLAY_GAME_X, PLAY_GAME_Y - layout.height, layout.width, layout.height);
 
+        //Settings button
         layout.setText(AssetLoader.font, "Settings");
         SETTINGS_X = (GAME_WIDTH - layout.width) / 2;
         SETTINGS_Y = PLAY_GAME_Y + 25;
@@ -68,7 +73,11 @@ public class MenuScreen implements Screen {
         //SET INPUT PROCESSOR
         Gdx.input.setInputProcessor(new InputHandlerMenu(myGame, scaleFactorX, scaleFactorY, playGameRect, settingsRect));
 
-        AGAnimation = AssetLoader.AGFrontAnimation;
+        //MAIN MENU BACKGROUND
+        backgroundMainMenuTex = new Texture(Gdx.files.internal("archer_guy_background_mainmenu.png"));
+        backgroundMainMenuTex.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        backgroundMainMenu = new TextureRegion(backgroundMainMenuTex);
+        backgroundMainMenu.flip(false, true);
     }
 
     @Override
@@ -79,14 +88,14 @@ public class MenuScreen implements Screen {
 
         drawMenu();
         runTime += delta;
-        batch.draw(AGAnimation.getKeyFrame(runTime), 162, 8, 29, 30);
+        batch.draw(AssetLoader.AGFrontAnimation.getKeyFrame(runTime), 162, 7, 29, 30);
 
         batch.end();
     }
 
     private void drawMenu() {
         //BACKGROUND
-        batch.draw(AssetLoader.backgroundMainMenu, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+        batch.draw(backgroundMainMenu, 0, 0, GAME_WIDTH, GAME_HEIGHT);
 
         //PLAY GAME
         AssetLoader.shadow.draw(batch, PLAY_GAME, PLAY_GAME_X, PLAY_GAME_Y);
@@ -119,7 +128,7 @@ public class MenuScreen implements Screen {
     }
     @Override
     public void dispose() {
-
+        backgroundMainMenuTex.dispose();
     }
 
 }

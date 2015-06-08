@@ -11,8 +11,7 @@ public class AssetLoader {
     public static int TILE_WIDTH = 22;
     public static int TILE_HEIGHT = 14;
 
-    public static Texture backgroundMainMenuTex;
-    public static TextureRegion backgroundMainMenu;
+
 
     //ARCHER GUY
     public static Texture archerGuyFrontTex;
@@ -21,6 +20,10 @@ public class AssetLoader {
 
     public static TextureRegion AGMoving;
     public static Animation AGMovingAni;
+
+    //WEAPONS
+    public static Texture weapons;
+    public static TextureRegion arrow;
 
     //Tiles
     public static Texture tilesGround;
@@ -33,14 +36,11 @@ public class AssetLoader {
     public static BitmapFont shadow, font;
 
     public static void load() {
-        //MAIN MENU BACKGROUND
-        backgroundMainMenuTex = new Texture(Gdx.files.internal("archer_guy_background_mainmenu.png"));
-        backgroundMainMenuTex.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        backgroundMainMenu = new TextureRegion(backgroundMainMenuTex);
-        backgroundMainMenu.flip(false, true);
-
         //GAME OBJECTS
         loadArcherGuy();
+        weapons = new Texture(Gdx.files.internal("arrow.png"));
+        arrow = new TextureRegion(weapons, 6, 12, 21, 9);
+        arrow.flip(false, true);
 
         //TILES
         tilesGround = new Texture(Gdx.files.internal("tiles_dirt.png"));
@@ -75,8 +75,9 @@ public class AssetLoader {
         AGFrontAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
 
         AGMoving = new TextureRegion(archerGuyFrontTex, 98, 1, 29, 30);
+        AGMoving.flip(false, true);
         TextureRegion[] moving = {archerGuyFront2, AGMoving};
-        AGMovingAni = new Animation(0.3f, moving);
+        AGMovingAni = new Animation(0.15f, moving);
         AGMovingAni.setPlayMode(Animation.PlayMode.LOOP);
     }
 
@@ -84,7 +85,7 @@ public class AssetLoader {
         //Dispose textures
         archerGuyFrontTex.dispose();
         tilesGround.dispose();
-        backgroundMainMenuTex.dispose();
+        weapons.dispose();
 
         //Dispose fonts
         font.dispose();

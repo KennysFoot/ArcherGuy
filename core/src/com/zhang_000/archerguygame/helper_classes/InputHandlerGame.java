@@ -1,6 +1,9 @@
 package com.zhang_000.archerguygame.helper_classes;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.zhang_000.archerguygame.gameobjects.weapons.Arrow;
 import com.zhang_000.archerguygame.gameworld.GameWorld;
 
 public class InputHandlerGame implements InputProcessor {
@@ -20,6 +23,15 @@ public class InputHandlerGame implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         screenX = scaleX(screenX);
         screenY = scaleY(screenY);
+
+        int dx = screenX - (int) world.LEFT_EYE_POSITION.x;
+        int dy = screenY - (int) world.LEFT_EYE_POSITION.y;
+        float degrees = MathUtils.atan2(dy, dx) * MathUtils.radiansToDegrees;
+
+        world.arrows.add(new Arrow(world.LEFT_EYE_POSITION.cpy(), new Vector2(dx * 1.5f, dy * 1.5f), world.ACCELERATION,
+                degrees));
+        System.out.println(dx + ", " + dy + ", " + degrees + ", " + world.arrows.size);
+
         return false;
     }
 
