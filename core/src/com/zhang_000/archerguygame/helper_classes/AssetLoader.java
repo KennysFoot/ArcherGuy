@@ -8,10 +8,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class AssetLoader {
 
-    public static int TILE_WIDTH = 22;
-    public static int TILE_HEIGHT = 14;
-
-
+    public final static int TILE_WIDTH = 22;
+    public final static int TILE_HEIGHT = 14;
 
     //ARCHER GUY
     public static Texture archerGuyFrontTex;

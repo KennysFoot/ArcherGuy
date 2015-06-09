@@ -4,13 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.zhang_000.archerguygame.gameobjects.Ground;
 import com.zhang_000.archerguygame.gameobjects.Player;
-import com.zhang_000.archerguygame.gameobjects.weapons.Arrow;
+import com.zhang_000.archerguygame.gameobjects.weapons.Weapon;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 import com.zhang_000.archerguygame.screens.GameScreen;
 
@@ -29,13 +28,7 @@ public class GameWorld {
     //GAME OBJECTS
     private Player player;
     private Ground ground;
-    public Array<Arrow> arrows;
-
-    //ASSETS
-    private TextureRegion tileDirt;
-    private TextureRegion tileDirtRight;
-    private TextureRegion tileDirtLeft;
-    private TextureRegion tileGrass;
+    public Array<Weapon> arrows;
 
     public GameWorld() {
         camera = new OrthographicCamera();
@@ -46,26 +39,18 @@ public class GameWorld {
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(camera.combined);
 
-        storeAssetReferences();
-
-        GROUND_LEVEL = (int) GameScreen.GAME_HEIGHT - tileGrass.getRegionHeight() + 1;
+        GROUND_LEVEL = (int) GameScreen.GAME_HEIGHT - AssetLoader.tileGrass.getRegionHeight() + 1;
 
         //GAME OBJECTS
         player = new Player(new Vector2(10, GROUND_LEVEL - AssetLoader.archerGuyFront1.getRegionHeight()),
                 new Vector2(0, 0), ACCELERATION);
         player.setGroundLevel(GROUND_LEVEL);
         ground = new Ground(new Vector2(0, GROUND_LEVEL), new Vector2(moveSpeed, 0), new Vector2(0, 0));
-        arrows = new Array<Arrow>();
+        arrows = new Array<Weapon>();
 
         LEFT_EYE_POSITION = new Vector2(18, GROUND_LEVEL - player.getHeight() + 7);
     }
 
-    private void storeAssetReferences() {
-        this.tileDirt = AssetLoader.tileDirt;
-        this.tileDirtRight = AssetLoader.tileDirtRight;
-        this.tileDirtLeft = AssetLoader.tileDirtLeft;
-        this.tileGrass = AssetLoader.tileGrass;
-    }
 
     public void update(float delta) {
         ground.update(delta);
@@ -74,9 +59,8 @@ public class GameWorld {
     }
 
     private void updateWeapons(float delta) {
-        for (Arrow a : arrows) {
+        for (Weapon a : arrows) {
             a.update(delta);
-
             //Remove is off screen
             if (a.getY() > GROUND_LEVEL || a.getX() > GameScreen.GAME_WIDTH || a.getX() < -20) {
                 arrows.removeValue(a, false);

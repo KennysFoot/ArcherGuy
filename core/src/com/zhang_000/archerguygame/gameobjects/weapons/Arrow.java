@@ -9,6 +9,8 @@ public class Arrow extends Weapon {
     public Arrow(Vector2 position, Vector2 velocity, Vector2 acceleration, float rotation) {
         super(position, velocity, acceleration);
         super.rotation = rotation;
+        super.width = AssetLoader.arrow.getRegionWidth();
+        super.height = AssetLoader.arrow.getRegionHeight();
     }
 
     @Override
@@ -17,6 +19,7 @@ public class Arrow extends Weapon {
         deltaVel = acceleration.cpy().scl(delta);
         velocity.add(deltaVel);
 
+        //Cap velocity
         if (velocity.y > 175) {
             velocity.y = 175;
         }
@@ -25,7 +28,7 @@ public class Arrow extends Weapon {
         position.add(deltaPos);
 
         //Update roation
-        rotation += 50 * delta;
+        rotation += 6000 * delta / velocity.x;
         //Don't let arrow rotate so much so that the tip faces backwards
         if (rotation > 90) {
             rotation = 90;
@@ -34,8 +37,7 @@ public class Arrow extends Weapon {
 
     @Override
     public void render(float runTime, SpriteBatch batch) {
-        batch.draw(AssetLoader.arrow, position.x, position.y, 0, 0, AssetLoader.arrow.getRegionWidth(),
-                AssetLoader.arrow.getRegionHeight(), 1, 1, rotation);
+        batch.draw(AssetLoader.arrow, position.x, position.y, 0, 4, width, height, 1, 1, rotation);
     }
 
 }
