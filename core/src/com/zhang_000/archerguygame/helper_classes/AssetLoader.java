@@ -13,11 +13,14 @@ public class AssetLoader {
 
     //ARCHER GUY
     public static Texture archerGuyFrontTex;
-    public static TextureRegion archerGuyFront1, archerGuyFront2, archerGuyFront3;
-    public static Animation AGFrontAnimation;
+    public static TextureRegion archerGuyFront1, archerGuyFront2, archerGuyFront3, AGMoving, AGUp;
+    public static Animation AGFrontAnimation, AGMovingAni, AGUpAni;
 
-    public static TextureRegion AGMoving;
-    public static Animation AGMovingAni;
+    //ENEMIES
+    public static Texture wiggler;
+    public static TextureRegion wiggler1;
+    public static TextureRegion wiggler2;
+    public static Animation wigglerAni;
 
     //WEAPONS
     public static Texture weapons;
@@ -36,9 +39,8 @@ public class AssetLoader {
     public static void load() {
         //GAME OBJECTS
         loadArcherGuy();
-        weapons = new Texture(Gdx.files.internal("arrow.png"));
-        arrow = new TextureRegion(weapons, 6, 12, 21, 9);
-        arrow.flip(false, true);
+        loadWeapons();
+        loadEnemies();
 
         //TILES
         tilesGround = new Texture(Gdx.files.internal("tiles_dirt.png"));
@@ -77,6 +79,29 @@ public class AssetLoader {
         TextureRegion[] moving = {archerGuyFront2, AGMoving};
         AGMovingAni = new Animation(0.15f, moving);
         AGMovingAni.setPlayMode(Animation.PlayMode.LOOP);
+
+        AGUp = new TextureRegion(archerGuyFrontTex, 130, 1, 29, 30);
+        AGUp.flip(false, true);
+        TextureRegion[] goingUp = {archerGuyFront2, archerGuyFront3, AGUp};
+        AGUpAni = new Animation(0.10f, goingUp);
+        AGUpAni.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+    }
+
+    private static void loadWeapons() {
+        weapons = new Texture(Gdx.files.internal("arrow.png"));
+        arrow = new TextureRegion(weapons, 6, 12, 21, 9);
+        arrow.flip(false, true);
+    }
+
+    private static void loadEnemies() {
+        wiggler = new Texture(Gdx.files.internal("wiggler.png"));
+        wiggler1 = new TextureRegion(wiggler, 0, 0, 19, 17);
+        wiggler1.flip(false, true);
+        wiggler2 = new TextureRegion(wiggler, 20, 0, 19, 17);
+        wiggler2.flip(false, true);
+        TextureRegion[] wigglerFrames = {wiggler1, wiggler2};
+        wigglerAni = new Animation(0.25f, wigglerFrames);
+        wigglerAni.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
     }
 
     public static void dispose() {

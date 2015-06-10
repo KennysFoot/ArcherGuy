@@ -9,7 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.zhang_000.archerguygame.gameobjects.Ground;
 import com.zhang_000.archerguygame.gameobjects.Player;
-import com.zhang_000.archerguygame.gameobjects.weapons.Weapon;
+import com.zhang_000.archerguygame.gameobjects.Wiggler;
+import com.zhang_000.archerguygame.gameobjects.weapons.Arrow;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 import com.zhang_000.archerguygame.screens.GameScreen;
 
@@ -20,15 +21,15 @@ public class GameWorld {
     private ShapeRenderer shapeRenderer;
 
     private final int GROUND_LEVEL;
-    private int moveSpeed = -7;
-
+    public final Vector2 LATERAL_MOVE_SPEED = new Vector2(-7, 0);
     public final Vector2 ACCELERATION = new Vector2(0, 100);
-    public final Vector2 LEFT_EYE_POSITION;
+
 
     //GAME OBJECTS
-    private Player player;
+    public Player player;
+    private Wiggler wiggler;
     private Ground ground;
-    public Array<Weapon> arrows;
+    public Array<Arrow> arrows;
 
     public GameWorld() {
         camera = new OrthographicCamera();
@@ -45,21 +46,21 @@ public class GameWorld {
         player = new Player(new Vector2(10, GROUND_LEVEL - AssetLoader.archerGuyFront1.getRegionHeight()),
                 new Vector2(0, 0), ACCELERATION);
         player.setGroundLevel(GROUND_LEVEL);
-        ground = new Ground(new Vector2(0, GROUND_LEVEL), new Vector2(moveSpeed, 0), new Vector2(0, 0));
-        arrows = new Array<Weapon>();
-
-        LEFT_EYE_POSITION = new Vector2(18, GROUND_LEVEL - player.getHeight() + 7);
+        ground = new Ground(new Vector2(0, GROUND_LEVEL), LATERAL_MOVE_SPEED, new Vector2(0, 0));
+        wiggler = new Wiggler(new Vector2(GameScreen.GAME_WIDTH, 10), LATERAL_MOVE_SPEED, new Vector2(0, 0));
+        arrows = new Array<Arrow>();
     }
 
 
     public void update(float delta) {
         ground.update(delta);
         player.update(delta);
+        wiggler.update(delta);
         updateWeapons(delta);
     }
 
     private void updateWeapons(float delta) {
-        for (Weapon a : arrows) {
+        for (Arrow a : arrows) {
             a.update(delta);
             //Remove is off screen
             if (a.getY() > GROUND_LEVEL || a.getX() > GameScreen.GAME_WIDTH || a.getX() < -20) {
@@ -77,10 +78,13 @@ public class GameWorld {
 
         ground.render(runTime, batch);
         player.render(runTime, batch);
+        wiggler.render(runTime, batch);
 
         for (int i = 0; i < arrows.size; i++) {
             arrows.get(i).render(runTime, batch);
         }
+
+        shapeRenderer.end();
 
         batch.end(); //END SPRITE BATCH
     }

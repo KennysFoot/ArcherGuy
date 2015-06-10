@@ -24,21 +24,45 @@ public class InputHandlerGame implements InputProcessor {
         screenX = scaleX(screenX);
         screenY = scaleY(screenY);
 
-        int dx = screenX - (int) world.LEFT_EYE_POSITION.x;
-        int dy = screenY - (int) world.LEFT_EYE_POSITION.y;
+        int dx = screenX - (int) world.player.getLeftEyePosition().x;
+        int dy = screenY - (int) world.player.getLeftEyePosition().y;
         float degrees = MathUtils.atan2(dy, dx) * MathUtils.radiansToDegrees;
 
-        world.arrows.add(new Arrow(world.LEFT_EYE_POSITION.cpy(), new Vector2(dx * 1.5f, dy * 1.5f), world.ACCELERATION,
-                degrees));
-        System.out.println(dx + ", " + dy + ", " + degrees + ", " + world.arrows.size);
+        if (touchingShootArrowRegion(screenX)) {
+            world.arrows.add(new Arrow(world.player.getLeftEyePosition().cpy(),
+                    new Vector2(250 * MathUtils.cosDeg(degrees), 250 * MathUtils.sinDeg(degrees)),
+                    world.ACCELERATION,
+                    degrees));
+            System.out.println(dx + ", " + dy + ", " + degrees + ", " + world.arrows.size);
+        } else {
+            //Make Arrow guy go up
+            world.player.goUp();
+        }
 
         return false;
+    }
+
+    private boolean touchingShootArrowRegion(int screenX) {
+        return screenX > 50;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         screenX = scaleX(screenX);
         screenY = scaleY(screenY);
+
+        if (touchingShootArrowRegion(screenX)) {
+
+        } else {
+            world.player.goDown();
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        //HANDLE DRAGGING FINGER FROM PLAYER ZONE TO ARROW ZONE HERE
         return false;
     }
 
@@ -61,10 +85,6 @@ public class InputHandlerGame implements InputProcessor {
     }
     @Override
     public boolean keyTyped(char character) {
-        return false;
-    }
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
         return false;
     }
     @Override
