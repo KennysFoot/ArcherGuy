@@ -31,9 +31,7 @@ public class InputHandlerGame implements InputProcessor {
         if (touchingShootArrowRegion(screenX)) {
             world.arrows.add(new Arrow(world.player.getLeftEyePosition().cpy(),
                     new Vector2(250 * MathUtils.cosDeg(degrees), 250 * MathUtils.sinDeg(degrees)),
-                    world.ACCELERATION,
-                    degrees));
-            System.out.println(dx + ", " + dy + ", " + degrees + ", " + world.arrows.size);
+                    world.ACCELERATION.cpy(), degrees));
         } else {
             //Make Arrow guy go up
             world.player.goUp();

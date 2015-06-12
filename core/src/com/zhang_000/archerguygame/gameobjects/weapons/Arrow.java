@@ -45,8 +45,6 @@ public class Arrow extends Weapon {
         }
         rotation += deltaRotation;
 
-        System.out.println(rotation); //TEST
-
         //Don't let arrow rotate so much so that the tip faces backwards
         if (rotation > 90 || rotation < -270) {
             rotation = 90;

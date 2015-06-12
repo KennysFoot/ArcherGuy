@@ -13,7 +13,7 @@ public class Player extends GameObject {
 
     private Vector2 leftEyePosition;
     private int groundLevel;
-    private State state = State.ON_GROUND;
+    private State state;
 
     private enum State {
         GOING_UP, GOING_DOWN, ON_GROUND
@@ -22,15 +22,15 @@ public class Player extends GameObject {
     public Player(Vector2 position, Vector2 velocity, Vector2 acceleration) {
         //Assign position, velocity, and acceleration
         super(position, velocity, acceleration);
+        super.width = 30;
+        super.height = 29;
 
         //Store animation references
         standingAnimation = AssetLoader.AGFrontAnimation;
         movingAnimation = AssetLoader.AGMovingAni;
         upAnimation = AssetLoader.AGUpAni;
 
-        super.width = 30;
-        super.height = 29;
-
+        state = State.ON_GROUND;
         leftEyePosition = new Vector2(17, position.y + 7);
     }
 
@@ -60,7 +60,7 @@ public class Player extends GameObject {
             position.y = 0;
             velocity.y = 0;
         } else {
-            //Update left eye position only if player is moving up or down
+            //Update left eye position only if player is not on the ground or at the top of the screen
             leftEyePosition.add(deltaPos);
         }
     }
@@ -72,7 +72,7 @@ public class Player extends GameObject {
         } else if (state == State.GOING_UP) {
             batch.draw(upAnimation.getKeyFrame(runTime), position.x, position.y, width, height);
         } else {
-            batch.draw(upAnimation.getKeyFrame(runTime), position.x, position.y, width, height);
+            batch.draw(AssetLoader.archerGuyFront1, position.x, position.y, width, height);
         }
     }
 
@@ -81,12 +81,12 @@ public class Player extends GameObject {
     }
 
     public void goUp() {
-        acceleration.y = -100;
+        acceleration.y = -150;
         state = State.GOING_UP;
     }
 
     public void goDown() {
-        acceleration.y = 100;
+        acceleration.y = 150;
         state = State.GOING_DOWN;
     }
 
