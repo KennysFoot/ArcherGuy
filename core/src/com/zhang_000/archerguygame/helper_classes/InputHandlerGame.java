@@ -28,10 +28,12 @@ public class InputHandlerGame implements InputProcessor {
         int dy = screenY - (int) world.player.getLeftEyePosition().y;
         float degrees = MathUtils.atan2(dy, dx) * MathUtils.radiansToDegrees;
 
+        //Add a new arrow
         if (touchingShootArrowRegion(screenX)) {
             world.arrows.add(new Arrow(world.player.getLeftEyePosition().cpy(),
-                    new Vector2(250 * MathUtils.cosDeg(degrees), 250 * MathUtils.sinDeg(degrees)),
+                    new Vector2(300 * MathUtils.cosDeg(degrees), 300 * MathUtils.sinDeg(degrees)),
                     world.ACCELERATION.cpy(), degrees));
+            AssetLoader.fireArrow.play();
         } else {
             //Make Arrow guy go up
             world.player.goUp();
