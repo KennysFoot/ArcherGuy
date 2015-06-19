@@ -26,8 +26,8 @@ public class Player extends GameObject {
     public Player(Vector2 position, Vector2 velocity, Vector2 acceleration) {
         //Assign position, velocity, and acceleration
         super(position, velocity, acceleration);
-        super.width = 30;
-        super.height = 29;
+        super.width = 28;
+        super.height = 30;
         score = 0;
 
         //Store animation references
@@ -42,7 +42,8 @@ public class Player extends GameObject {
         //Set up the hit box
         hitBox.setPosition(position.x, position.y);
         hitBox.setOrigin(0, 0);
-        float[] vertices = {0, 0, width, 0, width, height, 0, height};
+        float[] vertices = {0, 7, 12, 0, 18, 0, width, 7, //hat
+                            23, 7, 23, 22, 20, height, 9, height, 5, 22, 5, 7}; //body
         hitBox.setVertices(vertices);
     }
 
@@ -67,16 +68,17 @@ public class Player extends GameObject {
         if (position.y + height > groundLevel) {
             position.y = groundLevel - height;
             velocity.y = 0;
-            state = State.ON_GROUND;
+
+            if (state != State.DEAD) {
+                state = State.ON_GROUND;
+            }
         } else if (position.y < 0) {
             position.y = 0;
             velocity.y = 0;
-        } else {
-            //Update left eye position and hit box only if player is not on the ground
-            //or at the top of the screen
-            leftEyePosition.add(deltaPos);
-            hitBox.setPosition(position.x, position.y);
         }
+
+        leftEyePosition.set(17, position.y + 7);
+        hitBox.setPosition(position.x, position.y);
     }
 
     @Override
@@ -125,7 +127,7 @@ public class Player extends GameObject {
 
     public void stop() {
         velocity.set(0, 0);
-        acceleration.set(0, 0);
+        acceleration.y = 150;
         state = State.DEAD;
     }
 

@@ -1,5 +1,6 @@
 package com.zhang_000.archerguygame.helper_classes;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -12,6 +13,8 @@ public class InputHandlerGame implements InputProcessor {
     private float scaleFactorY;
 
     private GameWorld world;
+
+    public static float lastFire = 0.33f;
 
     public InputHandlerGame(GameWorld world, float scaleFactorX, float scaleFactorY) {
         this.world = world;
@@ -28,13 +31,17 @@ public class InputHandlerGame implements InputProcessor {
         int dy = screenY - (int) world.player.getLeftEyePosition().y;
         float degrees = MathUtils.atan2(dy, dx) * MathUtils.radiansToDegrees;
 
+        System.out.println(Gdx.graphics.getDeltaTime());
         //Add a new arrow
-        if (touchingShootArrowRegion(screenX)) {
+        if (touchingShootArrowRegion(screenX) && lastFire > 0.33f) {
             world.arrows.add(new Arrow(world.player.getLeftEyePosition().cpy(),
                     new Vector2(300 * MathUtils.cosDeg(degrees), 300 * MathUtils.sinDeg(degrees)),
                     world.ACCELERATION.cpy(), degrees));
             AssetLoader.fireArrow.play();
-        } else {
+
+            //Reset the last fire timer
+            lastFire = 0;
+        } else if (touchingMovementRegion(screenX)){
             //Make Arrow guy go up
             world.player.goUp();
         }
@@ -46,6 +53,9 @@ public class InputHandlerGame implements InputProcessor {
         return screenX > 50;
     }
 
+    private boolean touchingMovementRegion(int screenX) {
+        return screenX < 50;
+    }
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         screenX = scaleX(screenX);

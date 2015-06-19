@@ -1,13 +1,11 @@
 package com.zhang_000.archerguygame.gameobjects.weapons;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 
 public class Arrow extends Weapon {
 
-    private Polygon hitPolygon = new Polygon();
     private boolean isOnGround = false;
     private float timeOnGround = 0;
 
@@ -73,10 +71,6 @@ public class Arrow extends Weapon {
             //Only rotate polygon further if arrow has not reached the max rotation
             hitPolygon.rotate(deltaRotation);
         }
-    }
-
-    public Polygon getHitPolygon() {
-        return hitPolygon;
     }
 
     public void setOnGround(boolean onGround, Vector2 newVelocity) {

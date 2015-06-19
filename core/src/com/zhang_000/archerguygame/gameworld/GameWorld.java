@@ -16,6 +16,8 @@ import com.zhang_000.archerguygame.gameobjects.Player;
 import com.zhang_000.archerguygame.gameobjects.Wiggler;
 import com.zhang_000.archerguygame.gameobjects.weapons.Arrow;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
+import com.zhang_000.archerguygame.helper_classes.InputHandlerGame;
+import com.zhang_000.archerguygame.helper_classes.InputHandlerGameOver;
 import com.zhang_000.archerguygame.screens.GameScreen;
 
 public class GameWorld {
@@ -28,7 +30,7 @@ public class GameWorld {
     private GameState gameState;
     private String score;
     private int SCORE_POSITION_X;
-    private final int SCORE_POSITION_Y = 5;
+    private int SCORE_POSITION_Y = 5;
 
     private final int GROUND_LEVEL;
     public final Vector2 LATERAL_MOVE_SPEED = new Vector2(-10, 0);
@@ -69,12 +71,12 @@ public class GameWorld {
     }
 
     public void update(float delta) {
-        switch(gameState) {
+        switch (gameState) {
             case RUNNING:
                 updateRunning(delta);
                 break;
             case GAME_OVER:
-
+                updateGameOver(delta);
                 break;
         }
     }
@@ -91,6 +93,13 @@ public class GameWorld {
         score = Integer.toString(player.getScore());
         layout.setText(AssetLoader.font, score);
         SCORE_POSITION_X = (int) ((GameScreen.GAME_WIDTH - layout.width) / 2);
+
+        //Increment lastFire variable in the input handler
+        InputHandlerGame.lastFire += delta;
+    }
+
+    private void updateGameOver(float delta) {
+        player.update(delta);
     }
 
     private void updateEnemies(float delta) {
@@ -163,9 +172,15 @@ public class GameWorld {
     }
 
     private void gameOver() {
+        Gdx.input.setInputProcessor(new InputHandlerGameOver());
         player.stop();
         ground.stop();
         gameState = GameState.GAME_OVER;
+        SCORE_POSITION_Y = 15;
+
+        if (player.getScore() > AssetLoader.getHighScore()) {
+            AssetLoader.setHighScore(player.getScore());
+        }
     }
 
     public void render(float delta, float runTime) {
@@ -189,9 +204,12 @@ public class GameWorld {
             w.render(runTime, batch);
         }
 
-        //Render the score
-        AssetLoader.shadow.draw(batch, score, SCORE_POSITION_X, SCORE_POSITION_Y);
-        AssetLoader.font.draw(batch, score, SCORE_POSITION_X, SCORE_POSITION_Y + 1);
+        //Render either the current score or the game over score board depending on the game state
+        if (gameState == GameState.RUNNING) {
+            renderScore();
+        } else if (gameState == GameState.GAME_OVER) {
+            renderScoreBoard();
+        }
 
         batch.end(); //END SPRITE BATCH
 
@@ -200,9 +218,34 @@ public class GameWorld {
 
         //Render the arrow boundary line
         shapeRenderer.line(50, 0, 50, GameScreen.GAME_HEIGHT);
-        shapeRenderer.polygon(player.getHitBox().getTransformedVertices());
 
         shapeRenderer.end(); //END SHAPE RENDERER
+    }
+
+    private void renderScore() {
+        AssetLoader.shadow.draw(batch, score, SCORE_POSITION_X, SCORE_POSITION_Y);
+        AssetLoader.font.draw(batch, score, SCORE_POSITION_X, SCORE_POSITION_Y + 1);
+    }
+
+    private void renderScoreBoard() {
+        layout.setText(AssetLoader.greenFont, "Score");
+        AssetLoader.shadow.draw(batch, "Score", (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y - 1);
+        AssetLoader.greenFont.draw(batch, "Score", (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y);
+
+        layout.setText(AssetLoader.greenFont, score);
+        AssetLoader.shadow.draw(batch, score, (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y + 19);
+        AssetLoader.greenFont.draw(batch, score, (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y + 20);
+
+        layout.setText(AssetLoader.greenFont, "HighScore");
+        AssetLoader.shadow.draw(batch, "High Score", (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y + 49);
+        AssetLoader.greenFont.draw(batch, "High Score", (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y + 50);
+
+        layout.setText(AssetLoader.greenFont, Integer.toString(AssetLoader.getHighScore()));
+        AssetLoader.shadow.draw(batch, Integer.toString(AssetLoader.getHighScore()),
+                (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y + 69);
+        AssetLoader.greenFont.draw(batch, Integer.toString(AssetLoader.getHighScore()),
+                (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y + 70);
+
     }
 
 }
