@@ -31,6 +31,10 @@ public class AssetLoader {
     public static Texture tilesGround;
     public static TextureRegion tileDirt, tileGrass, tileDirtLeft, tileDirtRight;
 
+    //POWERUPS
+    public static Texture powerUps;
+    public static TextureRegion powUpInfiniteArrows;
+
     //FONT
     public static BitmapFont shadow, font, greenFont;
 
@@ -47,17 +51,9 @@ public class AssetLoader {
         loadArcherGuy();
         loadWeapons();
         loadEnemies();
+        loadTiles();
+        loadPowerUps();
 
-        //TILES
-        tilesGround = new Texture(Gdx.files.internal("tiles_dirt.png"));
-        tileDirt = new TextureRegion(tilesGround, 52, 32, TILE_WIDTH, TILE_HEIGHT);
-        tileDirt.flip(false, true);
-        tileDirtRight = new TextureRegion(tilesGround, 52, 6, TILE_WIDTH, TILE_HEIGHT);
-        tileDirtRight.flip(false, true);
-        tileDirtLeft = new TextureRegion(tilesGround, 10, 6, TILE_WIDTH, TILE_HEIGHT);
-        tileDirtLeft.flip(false, true);
-        tileGrass = new TextureRegion(tilesGround, 10, 32, TILE_WIDTH, TILE_HEIGHT);
-        tileGrass.flip(false, true);
 
         //FONTS
         font = new BitmapFont(Gdx.files.internal("whitetext.fnt"));
@@ -128,6 +124,24 @@ public class AssetLoader {
         TextureRegion[] wigglerFrames = {wiggler1, wiggler2};
         wigglerAni = new Animation(0.25f, wigglerFrames);
         wigglerAni.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+    }
+
+    private static void loadTiles() {
+        tilesGround = new Texture(Gdx.files.internal("tiles_dirt.png"));
+        tileDirt = new TextureRegion(tilesGround, 52, 32, TILE_WIDTH, TILE_HEIGHT);
+        tileDirt.flip(false, true);
+        tileDirtRight = new TextureRegion(tilesGround, 52, 6, TILE_WIDTH, TILE_HEIGHT);
+        tileDirtRight.flip(false, true);
+        tileDirtLeft = new TextureRegion(tilesGround, 10, 6, TILE_WIDTH, TILE_HEIGHT);
+        tileDirtLeft.flip(false, true);
+        tileGrass = new TextureRegion(tilesGround, 10, 32, TILE_WIDTH, TILE_HEIGHT);
+        tileGrass.flip(false, true);
+    }
+
+    private static void loadPowerUps() {
+        powerUps = new Texture(Gdx.files.internal("power_ups.png"));
+        powUpInfiniteArrows = new TextureRegion(powerUps, 2, 2, 12, 12);
+        powUpInfiniteArrows.flip(false, true);
     }
 
     private static void loadSounds() {

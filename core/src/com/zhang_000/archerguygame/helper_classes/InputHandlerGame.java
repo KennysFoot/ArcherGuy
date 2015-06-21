@@ -1,6 +1,5 @@
 package com.zhang_000.archerguygame.helper_classes;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -15,6 +14,9 @@ public class InputHandlerGame implements InputProcessor {
     private GameWorld world;
 
     public static float lastFire = 0.33f;
+
+    //POWER UPS
+    private static boolean infiniteArrowsActivated = false;
 
     public InputHandlerGame(GameWorld world, float scaleFactorX, float scaleFactorY) {
         this.world = world;
@@ -31,17 +33,26 @@ public class InputHandlerGame implements InputProcessor {
         int dy = screenY - (int) world.player.getLeftEyePosition().y;
         float degrees = MathUtils.atan2(dy, dx) * MathUtils.radiansToDegrees;
 
-        System.out.println(Gdx.graphics.getDeltaTime());
-        //Add a new arrow
-        if (touchingShootArrowRegion(screenX) && lastFire > 0.33f) {
+        //Add a new arrow if screen is touched to the right of the boundary line and
+        //if the last fire has been more than 1/3 of a second ago or if the infinite arrows
+        //power up is activated
+        if (touchingShootArrowRegion(screenX) && (lastFire > 0.33f || infiniteArrowsActivated)) {
+
+            //New arrow is created from the players left eye
+            //Initial velocity is in the direction of touch on the screen
+            //Magnitude of velocity is always 300
             world.arrows.add(new Arrow(world.player.getLeftEyePosition().cpy(),
-                    new Vector2(300 * MathUtils.cosDeg(degrees), 300 * MathUtils.sinDeg(degrees)),
+                    new Vector2(Arrow.ARROW_VELOCITY_MAGNITUDE * MathUtils.cosDeg(degrees),
+                            Arrow.ARROW_VELOCITY_MAGNITUDE * MathUtils.sinDeg(degrees)),
                     world.ACCELERATION.cpy(), degrees));
+
+            //Play the arrow firing sound effect
             AssetLoader.fireArrow.play();
 
             //Reset the last fire timer
             lastFire = 0;
-        } else if (touchingMovementRegion(screenX)){
+
+        } else if (touchingMovementRegion(screenX)) {
             //Make Arrow guy go up
             world.player.goUp();
         }
@@ -74,6 +85,14 @@ public class InputHandlerGame implements InputProcessor {
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         //HANDLE DRAGGING FINGER FROM PLAYER ZONE TO ARROW ZONE HERE
         return false;
+    }
+
+    public static void setInfiniteArrowsActivated(boolean bool) {
+        infiniteArrowsActivated = bool;
+    }
+
+    public static boolean isInfiniteArrowsActivated() {
+        return infiniteArrowsActivated;
     }
 
     private int scaleX(int screenX) {

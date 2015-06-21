@@ -14,6 +14,8 @@ import com.badlogic.gdx.utils.Array;
 import com.zhang_000.archerguygame.gameobjects.Ground;
 import com.zhang_000.archerguygame.gameobjects.Player;
 import com.zhang_000.archerguygame.gameobjects.Wiggler;
+import com.zhang_000.archerguygame.gameobjects.powerups.PowerUp;
+import com.zhang_000.archerguygame.gameobjects.powerups.PowerUpManager;
 import com.zhang_000.archerguygame.gameobjects.weapons.Arrow;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 import com.zhang_000.archerguygame.helper_classes.InputHandlerGame;
@@ -22,24 +24,28 @@ import com.zhang_000.archerguygame.screens.GameScreen;
 
 public class GameWorld {
 
+    //CAMERA AND RENDERING
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
 
+    //UTIL
     private GlyphLayout layout;
+
+    //VALUES
     private GameState gameState;
     private String score;
     private int SCORE_POSITION_X;
     private int SCORE_POSITION_Y = 5;
-
-    private final int GROUND_LEVEL;
-    public final Vector2 LATERAL_MOVE_SPEED = new Vector2(-10, 0);
-    public final Vector2 NO_ACCELERATION = new Vector2(0, 0);
+    public static int GROUND_LEVEL;
+    public static final Vector2 LATERAL_MOVE_SPEED = new Vector2(-10, 0);
+    public static final Vector2 NO_ACCELERATION = new Vector2(0, 0);
     public final Vector2 ACCELERATION = new Vector2(0, 150);
 
     //GAME OBJECTS
     public Player player;
     private Ground ground;
+    private PowerUpManager powerUpManager;
     public Array<Arrow> arrows = new Array<Arrow>();
     private Array<Wiggler> wigglers = new Array<Wiggler>();
     private float wigglerTimer = 0;
@@ -68,6 +74,7 @@ public class GameWorld {
                 new Vector2(0, 0), ACCELERATION.cpy());
         player.setGroundLevel(GROUND_LEVEL);
         ground = new Ground(new Vector2(0, GROUND_LEVEL), LATERAL_MOVE_SPEED, new Vector2(0, 0));
+        powerUpManager = new PowerUpManager();
     }
 
     public void update(float delta) {
@@ -86,6 +93,7 @@ public class GameWorld {
         player.update(delta);
         updateEnemies(delta);
         updateWeapons(delta);
+        powerUpManager.update(delta);
 
         checkForCollisions();
 
@@ -169,6 +177,17 @@ public class GameWorld {
                 gameOver();
             }
         }
+
+        //PLAYER AND POWERUPS
+        for (PowerUp pow : powerUpManager.getPowerUps()) {
+            //Check if the power up is on the screen
+            if (pow.getState() == PowerUp.PowerUpState.ON_SCREEN) {
+                //Check if power up is touching the player
+                if (Intersector.overlapConvexPolygons(pow.getHitPolygon(), player.getHitBox())) {
+                    pow.setState(PowerUp.PowerUpState.ACTIVE);
+                }
+            }
+        }
     }
 
     private void gameOver() {
@@ -203,6 +222,8 @@ public class GameWorld {
         for (Wiggler w : wigglers) {
             w.render(runTime, batch);
         }
+
+        powerUpManager.render(runTime, batch);
 
         //Render either the current score or the game over score board depending on the game state
         if (gameState == GameState.RUNNING) {

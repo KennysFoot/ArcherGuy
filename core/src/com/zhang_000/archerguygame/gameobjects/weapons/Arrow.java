@@ -6,6 +6,8 @@ import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 
 public class Arrow extends Weapon {
 
+    public static int ARROW_VELOCITY_MAGNITUDE = 325;
+
     private boolean isOnGround = false;
     private float timeOnGround = 0;
 
@@ -46,8 +48,8 @@ public class Arrow extends Weapon {
         velocity.add(deltaVel);
 
         //Cap velocity
-        if (velocity.y > 175) {
-            velocity.y = 175;
+        if (velocity.y > 250) {
+            velocity.y = 250;
         }
     }
 

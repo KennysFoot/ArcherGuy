@@ -15,6 +15,10 @@ public abstract class GameObject {
     protected Vector2 deltaPos;
     protected Vector2 deltaVel;
 
+    public GameObject() {
+
+    }
+
     public GameObject(Vector2 position, Vector2 velocity, Vector2 acceleration) {
         this.position = position;
         this.velocity = velocity;
