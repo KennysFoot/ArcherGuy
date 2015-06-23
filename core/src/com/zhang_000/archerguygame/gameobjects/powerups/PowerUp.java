@@ -33,9 +33,11 @@ public abstract class PowerUp extends GameObject {
 
     public abstract void render(float runTime, SpriteBatch batch);
 
-    protected abstract void execute();
+    protected abstract void activate();
 
     protected abstract void deactivate();
+
+    public abstract void playActivationSound();
 
     public boolean finished() {
         return timeActive > POWER_UP_LENGTH;

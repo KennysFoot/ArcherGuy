@@ -68,15 +68,17 @@ public class InfiniteArrows extends PowerUp {
                 position.y = MEDIAN + 10 * MathUtils.cos(runTime);
 
                 break;
+
             case ACTIVE:
                 //Call execute method to activate the power up
-                //Deactivate is called by the power up manager after timeActive has exceeded
-                //POWER_UP_LENGTH
+                //Deactivate is called by the power up manager after timeActive has exceeded POWER_UP_LENGTH
                 if (timeActive == 0) {
-                    execute();
+                    activate();
+                    playActivationSound();
                 }
 
                 timeActive += delta;
+
                 break;
         }
     }
@@ -87,7 +89,7 @@ public class InfiniteArrows extends PowerUp {
     }
 
     @Override
-    protected void execute() {
+    protected void activate() {
         InputHandlerGame.setInfiniteArrowsActivated(true);
     }
 
@@ -96,5 +98,9 @@ public class InfiniteArrows extends PowerUp {
         InputHandlerGame.setInfiniteArrowsActivated(false);
     }
 
+    @Override
+    public void playActivationSound() {
+        AssetLoader.soundInfArrows.play();
+    }
 
 }

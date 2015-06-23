@@ -39,7 +39,9 @@ public class AssetLoader {
     public static BitmapFont shadow, font, greenFont;
 
     //SOUNDS
-    public static Sound fireArrow, arrowHit;
+    public static Sound soundDeath;
+    public static Sound soundFireArrow, soundArrowHit;
+    public static Sound soundInfArrows;
 
     //PREFERENCES
     private static Preferences preferences;
@@ -145,8 +147,10 @@ public class AssetLoader {
     }
 
     private static void loadSounds() {
-        fireArrow = Gdx.audio.newSound(Gdx.files.internal("sounds/cloth3.ogg"));
-        arrowHit = Gdx.audio.newSound(Gdx.files.internal("sounds/arrow_impact.wav"));
+        soundFireArrow = Gdx.audio.newSound(Gdx.files.internal("sounds/cloth3.ogg"));
+        soundArrowHit = Gdx.audio.newSound(Gdx.files.internal("sounds/arrow_impact.wav"));
+        soundInfArrows = Gdx.audio.newSound(Gdx.files.internal("sounds/jingles_PIZZA02.ogg"));
+        soundDeath = Gdx.audio.newSound(Gdx.files.internal("sounds/jingles_NES00.ogg"));
     }
 
     public static void dispose() {
@@ -161,6 +165,6 @@ public class AssetLoader {
         greenFont.dispose();
 
         //Dispose sounds
-        fireArrow.dispose();
+        soundFireArrow.dispose();
     }
 }

@@ -7,19 +7,17 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.zhang_000.archerguygame.gameobjects.Ground;
 import com.zhang_000.archerguygame.gameobjects.Player;
-import com.zhang_000.archerguygame.gameobjects.Wiggler;
-import com.zhang_000.archerguygame.gameobjects.powerups.PowerUp;
+import com.zhang_000.archerguygame.gameobjects.enemies.EnemyManager;
+import com.zhang_000.archerguygame.gameobjects.enemies.Wiggler;
 import com.zhang_000.archerguygame.gameobjects.powerups.PowerUpManager;
 import com.zhang_000.archerguygame.gameobjects.weapons.Arrow;
+import com.zhang_000.archerguygame.gameobjects.weapons.WeaponManager;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 import com.zhang_000.archerguygame.helper_classes.InputHandlerGame;
-import com.zhang_000.archerguygame.helper_classes.InputHandlerGameOver;
 import com.zhang_000.archerguygame.screens.GameScreen;
 
 public class GameWorld {
@@ -31,42 +29,40 @@ public class GameWorld {
 
     //UTIL
     private GlyphLayout layout;
+    private CollisionDetector collisionDetector;
 
     //VALUES
     private GameState gameState;
     private String score;
-    private int SCORE_POSITION_X;
-    private int SCORE_POSITION_Y = 5;
+    public int SCORE_POSITION_X;
+    public int SCORE_POSITION_Y = 5;
     public static int GROUND_LEVEL;
     public static final Vector2 LATERAL_MOVE_SPEED = new Vector2(-10, 0);
     public static final Vector2 NO_ACCELERATION = new Vector2(0, 0);
     public final Vector2 ACCELERATION = new Vector2(0, 150);
 
     //GAME OBJECTS
-    public Player player;
+    private Player player;
     private Ground ground;
     private PowerUpManager powerUpManager;
-    public Array<Arrow> arrows = new Array<Arrow>();
-    private Array<Wiggler> wigglers = new Array<Wiggler>();
-    private float wigglerTimer = 0;
+    private EnemyManager enemyManager;
+    private WeaponManager weaponManager;
 
-    private enum GameState {
+    public enum GameState {
         RUNNING, GAME_OVER
     }
 
     public GameWorld() {
+        //CAMERA AND RENDERING STUFF
         camera = new OrthographicCamera();
         camera.setToOrtho(true, GameScreen.GAME_WIDTH, GameScreen.GAME_HEIGHT);
-
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(camera.combined);
 
-        layout = new GlyphLayout();
-
+        //VALUES
         GROUND_LEVEL = (int) GameScreen.GAME_HEIGHT - AssetLoader.tileGrass.getRegionHeight() + 1;
-
         gameState = GameState.RUNNING;
 
         //GAME OBJECTS
@@ -75,6 +71,13 @@ public class GameWorld {
         player.setGroundLevel(GROUND_LEVEL);
         ground = new Ground(new Vector2(0, GROUND_LEVEL), LATERAL_MOVE_SPEED, new Vector2(0, 0));
         powerUpManager = new PowerUpManager();
+        weaponManager = new WeaponManager();
+
+        //UTIL
+        layout = new GlyphLayout();
+        enemyManager = new EnemyManager(this);
+        //collision detector must be instantiated last as it needs a reference to everything else
+        collisionDetector = new CollisionDetector(this);
     }
 
     public void update(float delta) {
@@ -91,11 +94,11 @@ public class GameWorld {
     private void updateRunning(float delta) {
         ground.update(delta);
         player.update(delta);
-        updateEnemies(delta);
-        updateWeapons(delta);
+        enemyManager.updateEnemies(delta);
+        weaponManager.updateWeapons(delta);
         powerUpManager.update(delta);
 
-        checkForCollisions();
+        collisionDetector.checkForCollisions();
 
         //Change the position at which the score will be rendered depending on how long the string is
         score = Integer.toString(player.getScore());
@@ -107,99 +110,9 @@ public class GameWorld {
     }
 
     private void updateGameOver(float delta) {
+        //If the game is over, freeze everything except the player
+        //Let the player fall to the ground
         player.update(delta);
-    }
-
-    private void updateEnemies(float delta) {
-        wigglerTimer += delta;
-        //Spawn a new wiggler every 3 seconds
-        if (wigglerTimer > 3) {
-            float speedFactor = 1;
-            if (player.getScore() > 1) {
-                speedFactor += player.getScore() / 6;
-                if (speedFactor > 5) {
-                    speedFactor = 5;
-                }
-            }
-            wigglers.add(new Wiggler(new Vector2(GameScreen.GAME_WIDTH,
-                    MathUtils.random(GROUND_LEVEL - AssetLoader.wiggler1.getRegionHeight())),
-                    new Vector2(LATERAL_MOVE_SPEED.x * speedFactor, 0), NO_ACCELERATION));
-            //Reset the timer to 0
-            wigglerTimer = 0;
-        }
-        for (Wiggler w : wigglers) {
-            w.update(delta);
-        }
-    }
-
-    private void updateWeapons(float delta) {
-        for (Arrow a : arrows) {
-            a.update(delta);
-            //Remove the arrow if it's off screen
-            if (a.getX() > GameScreen.GAME_WIDTH) {
-                arrows.removeValue(a, false);
-            }
-        }
-    }
-
-    private void checkForCollisions() {
-        //ARROWS AND WIGGLERS
-        for (Arrow a : arrows) {
-            for (Wiggler w : wigglers) {
-                //If the tip of the arrow is within the screen, check for a collision
-                if (a.getX() < GameScreen.GAME_WIDTH - a.getWidth()) {
-                    //If the tip of the arrow hits a wiggler, remove both, play sound, and increment score
-                    if (Intersector.overlapConvexPolygons(a.getHitPolygon(), w.getHitPolygon())) {
-                        arrows.removeValue(a, false);
-                        wigglers.removeValue(w, false);
-                        AssetLoader.arrowHit.play(0.5f);
-                        player.incrementScore(1);
-                        break;
-                    }
-                }
-            }
-        }
-
-        //ARROWS AND GROUND
-        for (Arrow a : arrows) {
-            if (Intersector.overlapConvexPolygons(a.getHitPolygon(), ground.getBoundingPolygon())) {
-                a.setOnGround(true, LATERAL_MOVE_SPEED);
-                if (a.getTimeOnGround() > 0.5f) {
-                    arrows.removeValue(a, false);
-                }
-            }
-        }
-
-        //WIGGLERS AND PLAYER
-        for (Wiggler w : wigglers) {
-            if (Intersector.overlapConvexPolygons(w.getHitPolygon(), player.getHitBox())) {
-                //Game over if player touches wiggler; stop everything
-                gameOver();
-            }
-        }
-
-        //PLAYER AND POWERUPS
-        for (PowerUp pow : powerUpManager.getPowerUps()) {
-            //Check if the power up is on the screen
-            if (pow.getState() == PowerUp.PowerUpState.ON_SCREEN) {
-                //Check if power up is touching the player
-                if (Intersector.overlapConvexPolygons(pow.getHitPolygon(), player.getHitBox())) {
-                    pow.setState(PowerUp.PowerUpState.ACTIVE);
-                }
-            }
-        }
-    }
-
-    private void gameOver() {
-        Gdx.input.setInputProcessor(new InputHandlerGameOver());
-        player.stop();
-        ground.stop();
-        gameState = GameState.GAME_OVER;
-        SCORE_POSITION_Y = 15;
-
-        if (player.getScore() > AssetLoader.getHighScore()) {
-            AssetLoader.setHighScore(player.getScore());
-        }
     }
 
     public void render(float delta, float runTime) {
@@ -213,17 +126,18 @@ public class GameWorld {
         ground.render(runTime, batch);
         player.render(runTime, batch);
 
-        //Render the arrows
-        for (int i = 0; i < arrows.size; i++) {
-            arrows.get(i).render(runTime, batch);
-        }
-
         //Render the wigglers
-        for (Wiggler w : wigglers) {
+        for (Wiggler w : enemyManager.getWigglers()) {
             w.render(runTime, batch);
         }
 
+        //Render any power ups currently on screen
         powerUpManager.render(runTime, batch);
+
+        //Render the arrows
+        for (Arrow a : weaponManager.getArrows()) {
+            a.render(runTime, batch);
+        }
 
         //Render either the current score or the game over score board depending on the game state
         if (gameState == GameState.RUNNING) {
@@ -269,4 +183,32 @@ public class GameWorld {
 
     }
 
+    //SETTER AND GETTER METHODS
+    public void setGameState(GameState state) {
+        gameState = state;
+    }
+
+    public Array<Arrow> getArrows() {
+        return weaponManager.getArrows();
+    }
+
+    public Ground getGround() {
+        return ground;
+    }
+
+    public Array<Wiggler> getWigglers() {
+        return enemyManager.getWigglers();
+    }
+
+    public PowerUpManager getPowerUpManager() {
+        return powerUpManager;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public WeaponManager getWeaponManager() {
+        return weaponManager;
+    }
 }

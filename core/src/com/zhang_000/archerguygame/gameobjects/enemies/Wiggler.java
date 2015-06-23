@@ -1,8 +1,9 @@
-package com.zhang_000.archerguygame.gameobjects;
+package com.zhang_000.archerguygame.gameobjects.enemies;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
+import com.zhang_000.archerguygame.gameobjects.GameObject;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 
 public class Wiggler extends GameObject {

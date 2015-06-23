@@ -10,7 +10,7 @@ public class PowerUpManager {
     private float runTime;
     private int tickerNewPowerUp;
 
-    private static final short TOTAL_NUMBER_POWER_UPS = 1;
+    private static final short LAST_POWER_UP_NUMBER = 0;
     private static final int INFINITE_ARROWS = 0;
 
     public PowerUpManager() {
@@ -19,9 +19,6 @@ public class PowerUpManager {
     }
 
     public void update(float delta) {
-        //Increment runTime variable
-        runTime += delta;
-
         //Update the ticker
         if ((int) runTime > tickerNewPowerUp) {
             ++tickerNewPowerUp;
@@ -29,7 +26,7 @@ public class PowerUpManager {
 
         //Create new power up on screen every 50 seconds
         if (tickerNewPowerUp % 51 == 0) {
-            switch(MathUtils.random(TOTAL_NUMBER_POWER_UPS)) {
+            switch(MathUtils.random(LAST_POWER_UP_NUMBER)) {
                 case INFINITE_ARROWS:
                     powerUps.add(new InfiniteArrows());
                     break;
@@ -46,7 +43,7 @@ public class PowerUpManager {
         for (PowerUp pow : powerUps) {
             pow.update(delta, runTime);
 
-            //Remove the power up if its time has finished
+            //Deactivate and remove the power up if it is finished
             if (pow.finished()) {
                 pow.deactivate();
                 powerUps.removeValue(pow, false);
@@ -58,6 +55,8 @@ public class PowerUpManager {
             }
         }
 
+        //Increment runTime variable
+        runTime += delta;
     }
 
     public void render(float runTime, SpriteBatch batch) {
