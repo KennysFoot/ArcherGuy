@@ -2,9 +2,7 @@ package com.zhang_000.archerguygame.helper_classes;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.zhang_000.archerguygame.gameobjects.Player;
-import com.zhang_000.archerguygame.gameobjects.weapons.Arrow;
 import com.zhang_000.archerguygame.gameworld.GameWorld;
 
 public class InputHandlerGame implements InputProcessor {
@@ -15,7 +13,7 @@ public class InputHandlerGame implements InputProcessor {
     private GameWorld world;
     private Player player;
 
-    public static float lastFire = 0.33f;
+    public static float lastFire = 0.25f;
 
     //POWER UPS
     private static boolean infiniteArrowsActivated = false;
@@ -41,22 +39,16 @@ public class InputHandlerGame implements InputProcessor {
         //Add a new arrow if screen is touched to the right of the boundary line and
         //if the last fire has been more than 1/3 of a second ago or if the infinite arrows
         //power up is activated
-        if (touchingShootArrowRegion(screenX) && (lastFire > 0.33f || infiniteArrowsActivated)) {
-
+        if (touchingShootArrowRegion(screenX) && (lastFire > 0.25f || infiniteArrowsActivated)) {
             //New arrow is created from the players left eye
             //Initial velocity is in the direction of touch on the screen
             //Magnitude of velocity is always 300
-            world.getWeaponManager().getArrows().add(new Arrow(player.getLeftEyePosition().cpy(),
-                    new Vector2(Arrow.ARROW_VELOCITY_MAGNITUDE * MathUtils.cosDeg(degrees),
-                            Arrow.ARROW_VELOCITY_MAGNITUDE * MathUtils.sinDeg(degrees)),
-                    world.ACCELERATION.cpy(), degrees));
-
+            world.createArrow(degrees);
             //Play the arrow firing sound effect
             AssetLoader.soundFireArrow.play();
 
             //Reset the last fire timer
             lastFire = 0;
-
         } else if (touchingMovementRegion(screenX)) {
             //Make Arrow guy go up
             player.goUp();

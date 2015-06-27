@@ -1,5 +1,6 @@
 package com.zhang_000.archerguygame.gameworld;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,6 +14,7 @@ import com.zhang_000.archerguygame.gameobjects.Ground;
 import com.zhang_000.archerguygame.gameobjects.Player;
 import com.zhang_000.archerguygame.gameobjects.enemies.EnemyManager;
 import com.zhang_000.archerguygame.gameobjects.enemies.Wiggler;
+import com.zhang_000.archerguygame.gameobjects.enemies.bosses.Boss;
 import com.zhang_000.archerguygame.gameobjects.powerups.PowerUpManager;
 import com.zhang_000.archerguygame.gameobjects.weapons.Arrow;
 import com.zhang_000.archerguygame.gameobjects.weapons.WeaponManager;
@@ -21,6 +23,8 @@ import com.zhang_000.archerguygame.helper_classes.InputHandlerGame;
 import com.zhang_000.archerguygame.screens.GameScreen;
 
 public class GameWorld {
+
+    private Game game;
 
     //CAMERA AND RENDERING
     private OrthographicCamera camera;
@@ -35,7 +39,7 @@ public class GameWorld {
     private GameState gameState;
     private String score;
     public int SCORE_POSITION_X;
-    public int SCORE_POSITION_Y = 5;
+    public final int SCORE_POSITION_Y = 5;
     public static int GROUND_LEVEL;
     public static final Vector2 LATERAL_MOVE_SPEED = new Vector2(-10, 0);
     public static final Vector2 NO_ACCELERATION = new Vector2(0, 0);
@@ -52,7 +56,9 @@ public class GameWorld {
         RUNNING, GAME_OVER
     }
 
-    public GameWorld() {
+    public GameWorld(Game game) {
+        this.game = game;
+
         //CAMERA AND RENDERING STUFF
         camera = new OrthographicCamera();
         camera.setToOrtho(true, GameScreen.GAME_WIDTH, GameScreen.GAME_HEIGHT);
@@ -71,7 +77,7 @@ public class GameWorld {
         player.setGroundLevel(GROUND_LEVEL);
         ground = new Ground(new Vector2(0, GROUND_LEVEL), LATERAL_MOVE_SPEED, new Vector2(0, 0));
         powerUpManager = new PowerUpManager();
-        weaponManager = new WeaponManager();
+        weaponManager = new WeaponManager(this);
 
         //UTIL
         layout = new GlyphLayout();
@@ -92,6 +98,7 @@ public class GameWorld {
     }
 
     private void updateRunning(float delta) {
+        //Update all game objects
         ground.update(delta);
         player.update(delta);
         enemyManager.updateEnemies(delta);
@@ -131,6 +138,11 @@ public class GameWorld {
             w.render(runTime, batch);
         }
 
+        //Render any bosses
+        for (Boss boss : enemyManager.getBosses()) {
+            boss.render(runTime, batch);
+        }
+
         //Render any power ups currently on screen
         powerUpManager.render(runTime, batch);
 
@@ -163,26 +175,35 @@ public class GameWorld {
     }
 
     private void renderScoreBoard() {
+        int POSITION_Y = 15;
+
         layout.setText(AssetLoader.greenFont, "Score");
-        AssetLoader.shadow.draw(batch, "Score", (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y - 1);
-        AssetLoader.greenFont.draw(batch, "Score", (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y);
+        AssetLoader.shadow.draw(batch, "Score", (GameScreen.GAME_WIDTH - layout.width) / 2, POSITION_Y - 1);
+        AssetLoader.greenFont.draw(batch, "Score", (GameScreen.GAME_WIDTH - layout.width) / 2, POSITION_Y);
 
         layout.setText(AssetLoader.greenFont, score);
-        AssetLoader.shadow.draw(batch, score, (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y + 19);
-        AssetLoader.greenFont.draw(batch, score, (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y + 20);
+        AssetLoader.shadow.draw(batch, score, (GameScreen.GAME_WIDTH - layout.width) / 2, POSITION_Y + 19);
+        AssetLoader.greenFont.draw(batch, score, (GameScreen.GAME_WIDTH - layout.width) / 2, POSITION_Y + 20);
 
         layout.setText(AssetLoader.greenFont, "HighScore");
-        AssetLoader.shadow.draw(batch, "High Score", (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y + 49);
-        AssetLoader.greenFont.draw(batch, "High Score", (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y + 50);
+        AssetLoader.shadow.draw(batch, "High Score", (GameScreen.GAME_WIDTH - layout.width) / 2, POSITION_Y + 49);
+        AssetLoader.greenFont.draw(batch, "High Score", (GameScreen.GAME_WIDTH - layout.width) / 2, POSITION_Y + 50);
 
         layout.setText(AssetLoader.greenFont, Integer.toString(AssetLoader.getHighScore()));
         AssetLoader.shadow.draw(batch, Integer.toString(AssetLoader.getHighScore()),
-                (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y + 69);
+                (GameScreen.GAME_WIDTH - layout.width) / 2, POSITION_Y + 69);
         AssetLoader.greenFont.draw(batch, Integer.toString(AssetLoader.getHighScore()),
-                (GameScreen.GAME_WIDTH - layout.width) / 2, SCORE_POSITION_Y + 70);
+                (GameScreen.GAME_WIDTH - layout.width) / 2, POSITION_Y + 70);
 
     }
 
+    public void gameOver() {
+        collisionDetector.gameOver();
+    }
+
+    public void createArrow(float degrees) {
+        weaponManager.addArrow(degrees);
+    }
     //SETTER AND GETTER METHODS
     public void setGameState(GameState state) {
         gameState = state;
@@ -210,5 +231,13 @@ public class GameWorld {
 
     public WeaponManager getWeaponManager() {
         return weaponManager;
+    }
+
+    public EnemyManager getEnemyManager() {
+        return enemyManager;
+    }
+
+    public Game getGame() {
+        return game;
     }
 }

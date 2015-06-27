@@ -8,6 +8,8 @@ import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 
 public class Player extends GameObject {
 
+    private static float SCALE_LIVES = 0.45f;
+
     private Animation standingAnimation;
     private Animation movingAnimation;
     private Animation upAnimation;
@@ -15,7 +17,9 @@ public class Player extends GameObject {
     private Vector2 leftEyePosition;
     private int groundLevel;
     private State state;
-    private int score;
+    private int lives;
+    private int killScore;
+    private float timeScore;
 
     private Polygon hitBox = new Polygon();
 
@@ -28,7 +32,9 @@ public class Player extends GameObject {
         super(position, velocity, acceleration);
         super.width = 28;
         super.height = 30;
-        score = 0;
+        killScore = 0;
+        timeScore = 0;
+        lives = 3;
 
         //Store animation references
         standingAnimation = AssetLoader.AGFrontAnimation;
@@ -43,12 +49,15 @@ public class Player extends GameObject {
         hitBox.setPosition(position.x, position.y);
         hitBox.setOrigin(0, 0);
         float[] vertices = {0, 7, 12, 0, 18, 0, width, 7, //hat
-                            23, 7, 23, 22, 20, height, 9, height, 5, 22, 5, 7}; //body
+                23, 7, 23, 22, 20, height, 9, height, 5, 22, 5, 7}; //body
         hitBox.setVertices(vertices);
     }
 
     @Override
     public void update(float delta) {
+        //Increment timeScore
+        timeScore += delta;
+
         //Update velocity
         deltaVel = acceleration.cpy().scl(delta);
         velocity.add(deltaVel);
@@ -69,7 +78,8 @@ public class Player extends GameObject {
             position.y = groundLevel - height;
             velocity.y = 0;
 
-            if (state != State.DEAD) {
+            //Must check if player state is set to GOING_DOWN before changing state to ON_GROUND
+            if (state == State.GOING_DOWN) {
                 state = State.ON_GROUND;
             }
         } else if (position.y < 0) {
@@ -87,12 +97,19 @@ public class Player extends GameObject {
             batch.draw(movingAnimation.getKeyFrame(runTime), position.x, position.y, width, height);
         } else if (state == State.GOING_UP) {
             batch.draw(upAnimation.getKeyFrame(runTime), position.x, position.y, width, height);
-        } else if (state == State.GOING_DOWN){
+        } else if (state == State.GOING_DOWN) {
             batch.draw(AssetLoader.archerGuyFront1, position.x, position.y, width, height);
         } else if (state == State.DEAD) {
             batch.draw(AssetLoader.archerGuyFront2, position.x, position.y, width / 2, height, width, height,
                     1, 1, 80f);
         }
+
+        //Draw the lives remaining onto the screen
+        for (int i = 0; i < lives; i++) {
+            batch.draw(AssetLoader.archerGuyFront2, 1 + i * 6, 2, 0, 0,
+                    width * SCALE_LIVES, height * SCALE_LIVES, SCALE_LIVES, SCALE_LIVES, 0);
+        }
+
     }
 
     public void setGroundLevel(int gLev) {
@@ -113,12 +130,16 @@ public class Player extends GameObject {
         return leftEyePosition;
     }
 
-    public void incrementScore(int deltaScore) {
-        score += deltaScore;
+    public void incrementKillScore(int deltaScore) {
+        killScore += deltaScore;
+    }
+
+    public void incrementLives(int deltaLives) {
+        lives += deltaLives;
     }
 
     public int getScore() {
-        return score;
+        return killScore + (int) timeScore;
     }
 
     public Polygon getHitBox() {
@@ -129,6 +150,10 @@ public class Player extends GameObject {
         velocity.set(0, 0);
         acceleration.y = 150;
         state = State.DEAD;
+    }
+
+    public int getLives() {
+        return lives;
     }
 
 }

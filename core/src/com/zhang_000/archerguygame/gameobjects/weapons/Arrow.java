@@ -6,7 +6,7 @@ import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 
 public class Arrow extends Weapon {
 
-    public static int ARROW_VELOCITY_MAGNITUDE = 325;
+    public static final int ARROW_VELOCITY_MAGNITUDE = 325;
 
     private boolean isOnGround = false;
     private float timeOnGround = 0;
@@ -77,7 +77,6 @@ public class Arrow extends Weapon {
 
     public void setOnGround(boolean onGround, Vector2 newVelocity) {
         isOnGround = onGround;
-
         acceleration.y = 0;
         velocity.set(newVelocity);
     }

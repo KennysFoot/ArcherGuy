@@ -31,7 +31,7 @@ public class InfiniteArrows extends PowerUp {
         super();
 
         super.position =  new Vector2(GameScreen.GAME_WIDTH, MathUtils.random(50, GameWorld.GROUND_LEVEL - 50));
-        super.velocity = GameWorld.LATERAL_MOVE_SPEED.cpy().scl(2);
+        super.velocity = GameWorld.LATERAL_MOVE_SPEED.cpy().scl(3);
         super.acceleration = GameWorld.NO_ACCELERATION;
         POWER_UP_LENGTH = 5.0f;
 
@@ -65,7 +65,7 @@ public class InfiniteArrows extends PowerUp {
                 hitPolygon.setPosition(position.x, position.y);
 
                 //UP AND DOWN MOVEMENT USING COSINE AND RUNTIME
-                position.y = MEDIAN + 10 * MathUtils.cos(runTime);
+                position.y = MEDIAN + 10 * MathUtils.cos(2 * runTime);
 
                 break;
 

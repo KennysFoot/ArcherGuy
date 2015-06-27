@@ -8,6 +8,10 @@ import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 
 public class Wiggler extends GameObject {
 
+    public static final int SCORE = 2;
+    public static final int WIDTH = 20;
+    public static final int HEIGHT = 18;
+
     private Polygon hitPolygon = new Polygon();
 
     public Wiggler(Vector2 position, Vector2 velocity, Vector2 acceleration) {
@@ -31,7 +35,7 @@ public class Wiggler extends GameObject {
 
     @Override
     public void render(float runTime, SpriteBatch batch) {
-        batch.draw(AssetLoader.wigglerAni.getKeyFrame(runTime), position.x, position.y, width, height);
+        batch.draw(AssetLoader.animationWiggler.getKeyFrame(runTime), position.x, position.y, width, height);
     }
 
     public Polygon getHitPolygon() {

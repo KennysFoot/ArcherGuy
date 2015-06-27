@@ -28,7 +28,7 @@ public class InputHandlerMenu implements InputProcessor {
         screenY = scaleY(screenY);
 
         if (isTouchingPlay(screenX, screenY)) {
-            game.setScreen(new GameScreen());
+            game.setScreen(new GameScreen(game));
         } else if (isTouchingSettings(screenX, screenY)) { //TO DO
             //game.setScreen(new SettingsScreen());
         }
