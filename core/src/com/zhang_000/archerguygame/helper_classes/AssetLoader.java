@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.zhang_000.archerguygame.gameobjects.enemies.Wiggler;
 import com.zhang_000.archerguygame.gameobjects.enemies.bosses.QueenWiggler;
+import com.zhang_000.archerguygame.gameobjects.powerups.PowerUp;
 
 public class AssetLoader {
 
@@ -41,15 +42,16 @@ public class AssetLoader {
 
     //POWER UPS
     public static Texture powerUps;
-    public static TextureRegion powUpInfiniteArrows;
+    public static TextureRegion powUpInfiniteArrows, powUpExtraLife, powUpShield, powUpExlodingArrows;
 
     //FONT
     public static BitmapFont shadow, font, greenFont;
 
     //SOUNDS
-    public static Sound soundDeath;
+    public static Sound soundDeath, soundLoseLife, soundGainLife;
     public static Sound soundFireArrow, soundArrowHit;
     public static Sound soundInfArrows;
+    public static Sound soundEnergyBall;
 
     //PREFERENCES
     private static Preferences preferences;
@@ -171,15 +173,28 @@ public class AssetLoader {
 
     private static void loadPowerUps() {
         powerUps = new Texture(Gdx.files.internal("power_ups.png"));
-        powUpInfiniteArrows = new TextureRegion(powerUps, 2, 2, 12, 12);
+
+        powUpInfiniteArrows = new TextureRegion(powerUps, 2, 2, PowerUp.LENGTH, PowerUp.LENGTH);
         powUpInfiniteArrows.flip(false, true);
+
+        powUpExtraLife = new TextureRegion(powerUps, 18, 2, PowerUp.LENGTH, PowerUp.LENGTH);
+        powUpExtraLife.flip(false, true);
+
+        powUpShield = new TextureRegion(powerUps, 34, 2, PowerUp.LENGTH, PowerUp.LENGTH);
+        powUpShield.flip(false, true);
+
+        powUpExlodingArrows = new TextureRegion(powerUps, 50, 2, PowerUp.LENGTH, PowerUp.LENGTH);
+        powUpExlodingArrows.flip(false, true);
     }
 
     private static void loadSounds() {
         soundFireArrow = Gdx.audio.newSound(Gdx.files.internal("sounds/cloth3.ogg"));
         soundArrowHit = Gdx.audio.newSound(Gdx.files.internal("sounds/arrow_impact.wav"));
-        soundInfArrows = Gdx.audio.newSound(Gdx.files.internal("sounds/jingles_PIZZA02.ogg"));
+        soundInfArrows = Gdx.audio.newSound(Gdx.files.internal("sounds/infinite_arrows.ogg"));
         soundDeath = Gdx.audio.newSound(Gdx.files.internal("sounds/jingles_NES00.ogg"));
+        soundLoseLife = Gdx.audio.newSound(Gdx.files.internal("sounds/lose_life.ogg"));
+        soundEnergyBall = Gdx.audio.newSound(Gdx.files.internal("sounds/energy_ball_fire.wav"));
+        soundGainLife = Gdx.audio.newSound(Gdx.files.internal("sounds/gain_life.ogg"));
     }
 
     public static void dispose() {

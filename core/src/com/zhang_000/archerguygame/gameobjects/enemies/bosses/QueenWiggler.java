@@ -86,8 +86,10 @@ public class QueenWiggler extends Boss {
             float vel_x = EnergyBall.VELOCITY_MAGNITUDE * MathUtils.cos(angle);
             float vel_y = EnergyBall.VELOCITY_MAGNITUDE * MathUtils.sin(angle);
 
-            energyBall = new EnergyBall(new Vector2(position.x, position.y)
-                    , new Vector2(vel_x, vel_y), GameWorld.NO_ACCELERATION);
+            energyBall = new EnergyBall(new Vector2(position.x, position.y), new Vector2(vel_x, vel_y),
+                    GameWorld.NO_ACCELERATION);
+
+            AssetLoader.soundEnergyBall.play();
         }
 
         energyBall.update(delta);
@@ -97,11 +99,6 @@ public class QueenWiggler extends Boss {
             energyBall = null;
         }
 
-    }
-
-    @Override
-    public Polygon getWeaponHitPolygon() {
-        return energyBall.getHitPolygon();
     }
 
     @Override
@@ -161,6 +158,5 @@ public class QueenWiggler extends Boss {
         }
 
     }
-
 
 }

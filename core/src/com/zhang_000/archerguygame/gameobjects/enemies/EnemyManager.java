@@ -28,11 +28,12 @@ public class EnemyManager {
     //BOSSES
     private Array<Boss> bosses = new Array<Boss>();
     private QueenWigglerState queenWigglerState;
+    private int timesQueenSpawned;
 
     private Player player;
 
     public enum QueenWigglerState {
-        NOT_SPAWNED, ON_SCREEN, DEAD
+        NOT_SPAWNED, ON_SCREEN
     }
 
     public EnemyManager(GameWorld world) {
@@ -40,6 +41,7 @@ public class EnemyManager {
         player = world.getPlayer();
         lastTimeSpawningTwo = lastTimeSpawningThree = 0;
         queenWigglerState = QueenWigglerState.NOT_SPAWNED;
+        timesQueenSpawned = 0;
     }
 
     public void updateEnemies(float delta) {
@@ -54,7 +56,15 @@ public class EnemyManager {
 
         //Spawn a new wiggler every 3 seconds
         if (wigglerTimer > 3) {
-            spawnWiggler();
+
+            //Spawn a Queen Wiggler once a score benchmark has been reached
+            if (player.getScore() > 24 + 65 * timesQueenSpawned) {
+                spawnQueenWiggler();
+                queenWigglerState = QueenWigglerState.ON_SCREEN;
+                ++timesQueenSpawned;
+            } else {
+                spawnWiggler();
+            }
 
             //Reset the timer to 0 after a new wiggler is spawned
             wigglerTimer = 0;
@@ -82,13 +92,6 @@ public class EnemyManager {
         }
     }
 
-    private void checkIfGameIsOver() {
-        //If the player runs out of lives, the game is over
-        if (player.getLives() < 1) {
-            world.gameOver();
-        }
-    }
-
     private void spawnWiggler() {
         float speedFactor = 1;
 
@@ -96,21 +99,17 @@ public class EnemyManager {
         if (player.getScore() > 1) {
             speedFactor += player.getScore() / 3;
 
-            //Cap speed increase to 5 times the initial speed
-            if (speedFactor > 7) {
-                speedFactor = 7;
-                if (queenWigglerState == QueenWigglerState.NOT_SPAWNED) {
-                    spawnQueenWiggler();
-                    queenWigglerState = QueenWigglerState.ON_SCREEN;
-                }
+            //Cap speed increase to 7 times the initial speed
+            if (speedFactor > 10) {
+                speedFactor = 10;
             }
         }
 
-        //Randomly choose one of the spawning options
-        int spawnOption = MathUtils.random(0, 3);
-
         //Only spawn wigglers is the queen wiggler is not on the screen
         if (queenWigglerState != QueenWigglerState.ON_SCREEN) {
+            //Randomly choose one of the spawning options
+            int spawnOption = MathUtils.random(0, 3);
+
             //Only spawn 3 wigglers at one time once every 9 seconds
             if (spawnOption == SPAWN_THREE_WIGGLERS && lastTimeSpawningThree > 9) { //2
                 spawnThreeWigglers(speedFactor);
@@ -120,7 +119,6 @@ public class EnemyManager {
                 spawnOneWiggler(speedFactor);
             }
         }
-
     }
 
     private void spawnOneWiggler(float speedFactor) {
@@ -164,6 +162,13 @@ public class EnemyManager {
 
     private void spawnQueenWiggler() {
         bosses.add(new QueenWiggler(player));
+    }
+
+    private void checkIfGameIsOver() {
+        //If the player runs out of lives, the game is over
+        if (player.getLives() < 1) {
+            world.gameOver();
+        }
     }
 
     //SETTER AND GETTER METHODS

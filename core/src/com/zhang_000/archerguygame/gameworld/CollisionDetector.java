@@ -1,7 +1,10 @@
 package com.zhang_000.archerguygame.gameworld;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.zhang_000.archerguygame.gameobjects.Ground;
 import com.zhang_000.archerguygame.gameobjects.Player;
@@ -66,7 +69,7 @@ public class CollisionDetector {
 
                     //If the boss is dead, remove it and increase the player's score
                     if (boss.getHP() <= 0) {
-                        enemyManager.setQueenWigglerState(EnemyManager.QueenWigglerState.DEAD);
+                        enemyManager.setQueenWigglerState(EnemyManager.QueenWigglerState.NOT_SPAWNED);
                         bosses.removeValue(boss, false);
                         player.incrementKillScore(QueenWiggler.SCORE);
                     }
@@ -82,6 +85,47 @@ public class CollisionDetector {
             }
         }
 
+        if (player.isShieldActivated()) {
+            checkCollisionsShieldAndEnemies();
+        } else {
+            checkCollisionsPlayerAndEnemies();
+        }
+
+        //PLAYER AND POWER UPS
+        for (PowerUp pow : powerUpManager.getPowerUps()) {
+            //Check if the power up is on the screen
+            if (pow.getState() == PowerUp.PowerUpState.ON_SCREEN) {
+                //Check if power up is touching the player
+                if (Intersector.overlapConvexPolygons(pow.getHitPolygon(), player.getHitBox())) {
+                    pow.setState(PowerUp.PowerUpState.ACTIVE);
+                }
+            }
+        }
+    }
+
+    private void checkCollisionsShieldAndEnemies() {
+        //WIGGLERS AND SHIELD
+        for (Wiggler w : wigglers) {
+            if (overlaps(w.getHitPolygon(), player.getShield())) {
+                //Wiggler dies if it touches the shield
+                wigglers.removeValue(w, false);
+                player.incrementKillScore(Wiggler.SCORE);
+            }
+        }
+
+        //SHIELD AND BOSS WEAPON
+        for (Boss b : bosses) {
+            if (b.getWeapon() != null) {
+                //Check if the weapon hits the shield
+                if (overlaps(b.getWeapon().getHitPolygon(), player.getShield())) {
+                    //Remove the weapon if it hits the shield
+                    b.removeWeapon();
+                }
+            }
+        }
+    }
+
+    private void checkCollisionsPlayerAndEnemies() {
         //WIGGLERS AND PLAYER
         for (Wiggler w : wigglers) {
             if (Intersector.overlapConvexPolygons(w.getHitPolygon(), player.getHitBox())) {
@@ -107,17 +151,6 @@ public class CollisionDetector {
                 }
             }
         }
-
-        //PLAYER AND POWER UPS
-        for (PowerUp pow : powerUpManager.getPowerUps()) {
-            //Check if the power up is on the screen
-            if (pow.getState() == PowerUp.PowerUpState.ON_SCREEN) {
-                //Check if power up is touching the player
-                if (Intersector.overlapConvexPolygons(pow.getHitPolygon(), player.getHitBox())) {
-                    pow.setState(PowerUp.PowerUpState.ACTIVE);
-                }
-            }
-        }
     }
 
     private boolean isGameOver() {
@@ -140,4 +173,19 @@ public class CollisionDetector {
         }
     }
 
+    public static boolean overlaps(Polygon polygon, Circle circle) {
+        float[] vertices = polygon.getTransformedVertices();
+        Vector2 center = new Vector2(circle.x, circle.y);
+        float squareRadius = circle.radius * circle.radius;
+        for (int i = 0; i < vertices.length; i += 2) {
+            if (i == 0) {
+                if (Intersector.intersectSegmentCircle(new Vector2(vertices[vertices.length - 2], vertices[vertices.length - 1]), new Vector2(vertices[i], vertices[i + 1]), center, squareRadius))
+                    return true;
+            } else {
+                if (Intersector.intersectSegmentCircle(new Vector2(vertices[i - 2], vertices[i - 1]), new Vector2(vertices[i], vertices[i + 1]), center, squareRadius))
+                    return true;
+            }
+        }
+        return polygon.contains(circle.x, circle.y);
+    }
 }

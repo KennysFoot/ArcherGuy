@@ -2,6 +2,7 @@ package com.zhang_000.archerguygame.gameobjects;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
@@ -22,6 +23,11 @@ public class Player extends GameObject {
     private float timeScore;
 
     private Polygon hitBox = new Polygon();
+
+    //POWER UPS
+    private boolean shieldActivated;
+    private Circle shield;
+    private boolean explodingArrowsActivated;
 
     private enum State {
         GOING_UP, GOING_DOWN, ON_GROUND, DEAD
@@ -51,6 +57,10 @@ public class Player extends GameObject {
         float[] vertices = {0, 7, 12, 0, 18, 0, width, 7, //hat
                 23, 7, 23, 22, 20, height, 9, height, 5, 22, 5, 7}; //body
         hitBox.setVertices(vertices);
+
+        shieldActivated = explodingArrowsActivated = false;
+
+        shield = new Circle(position.x + width / 2, position.y + height / 2, 20);
     }
 
     @Override
@@ -89,6 +99,7 @@ public class Player extends GameObject {
 
         leftEyePosition.set(17, position.y + 7);
         hitBox.setPosition(position.x, position.y);
+        shield.setPosition(position.x + width / 2, position.y + height / 2);
     }
 
     @Override
@@ -106,7 +117,7 @@ public class Player extends GameObject {
 
         //Draw the lives remaining onto the screen
         for (int i = 0; i < lives; i++) {
-            batch.draw(AssetLoader.archerGuyFront2, 1 + i * 6, 2, 0, 0,
+            batch.draw(AssetLoader.archerGuyFront2, 1 + i * 6, 1, 0, 0,
                     width * SCALE_LIVES, height * SCALE_LIVES, SCALE_LIVES, SCALE_LIVES, 0);
         }
 
@@ -136,6 +147,14 @@ public class Player extends GameObject {
 
     public void incrementLives(int deltaLives) {
         lives += deltaLives;
+
+        //Play the lose_life sound if not dead yet but a life is lost
+        //If 0 lives reached, different sound will play
+        if (lives > 0 && deltaLives < 0) {
+            AssetLoader.soundLoseLife.play();
+        } else if (deltaLives > 0) {
+            AssetLoader.soundGainLife.play(0.65f);
+        }
     }
 
     public int getScore() {
@@ -154,6 +173,22 @@ public class Player extends GameObject {
 
     public int getLives() {
         return lives;
+    }
+
+    public void setShieldActivated(boolean b) {
+        shieldActivated = b;
+    }
+
+    public Circle getShield() {
+        return shield;
+    }
+
+    public boolean isShieldActivated() {
+        return shieldActivated;
+    }
+
+    public void setExplodingArrowsActivated(boolean b) {
+        explodingArrowsActivated = b;
     }
 
 }

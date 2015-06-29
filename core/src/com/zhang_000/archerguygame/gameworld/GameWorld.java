@@ -76,7 +76,7 @@ public class GameWorld {
                 new Vector2(0, 0), ACCELERATION.cpy());
         player.setGroundLevel(GROUND_LEVEL);
         ground = new Ground(new Vector2(0, GROUND_LEVEL), LATERAL_MOVE_SPEED, new Vector2(0, 0));
-        powerUpManager = new PowerUpManager();
+        powerUpManager = new PowerUpManager(this);
         weaponManager = new WeaponManager(this);
 
         //UTIL
@@ -163,6 +163,11 @@ public class GameWorld {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line); //BEGIN SHAPE RENDERER
         shapeRenderer.setColor(Color.RED);
 
+        //TEMP SHIELD CODE UNTIL ART FOR THE SHIELD IS MADE
+        if (player.isShieldActivated()) {
+            shapeRenderer.circle(player.getShield().x, player.getShield().y, player.getShield().radius);
+        }
+
         //Render the arrow boundary line
         shapeRenderer.line(50, 0, 50, GameScreen.GAME_HEIGHT);
 
@@ -204,6 +209,7 @@ public class GameWorld {
     public void createArrow(float degrees) {
         weaponManager.addArrow(degrees);
     }
+
     //SETTER AND GETTER METHODS
     public void setGameState(GameState state) {
         gameState = state;

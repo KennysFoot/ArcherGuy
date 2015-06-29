@@ -3,19 +3,28 @@ package com.zhang_000.archerguygame.gameobjects.powerups;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.zhang_000.archerguygame.gameworld.GameWorld;
 
 public class PowerUpManager {
+
+    private GameWorld world;
 
     private Array<PowerUp> powerUps = new Array<PowerUp>();
     private float runTime;
     private int tickerNewPowerUp;
 
-    private static final short LAST_POWER_UP_NUMBER = 0;
+    private static final short LAST_POWER_UP_NUMBER = 3;
     private static final int INFINITE_ARROWS = 0;
+    private static final int EXTRA_LIFE = 1;
+    private static final int SHIELD = 2;
+    private static final int EXPLODING_ARROWS = 3;
 
-    public PowerUpManager() {
+    public PowerUpManager(GameWorld world) {
+        this.world = world;
         runTime = 0;
         tickerNewPowerUp = 0;
+
+        powerUps.add(new Shield(world));
     }
 
     public void update(float delta) {
@@ -30,8 +39,20 @@ public class PowerUpManager {
                 case INFINITE_ARROWS:
                     powerUps.add(new InfiniteArrows());
                     break;
-                default:
 
+                case EXTRA_LIFE:
+                    powerUps.add(new ExtraLife(world));
+                    break;
+
+                case SHIELD:
+                    powerUps.add(new Shield(world));
+                    break;
+
+                case EXPLODING_ARROWS:
+
+                    break;
+
+                default:
                     break;
             }
             //In the next update, the ticker will most likely not have changed values by itself

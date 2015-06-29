@@ -6,7 +6,8 @@ import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 
 public class Arrow extends Weapon {
 
-    public static final int ARROW_VELOCITY_MAGNITUDE = 325;
+    public static final int VELOCITY_MAGNITUDE = 325;
+    public static final float RELOAD_TIME  = 0.3f;
 
     private boolean isOnGround = false;
     private float timeOnGround = 0;

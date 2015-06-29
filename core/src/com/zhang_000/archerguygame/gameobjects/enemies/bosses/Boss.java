@@ -24,8 +24,6 @@ public abstract class Boss extends GameObject {
         return HP;
     }
 
-    public abstract Polygon getWeaponHitPolygon();
-
     public abstract Weapon getWeapon();
 
     public abstract void removeWeapon();

@@ -34,8 +34,8 @@ public class WeaponManager {
 
     public void addArrow(float degrees) {
         arrows.add(new Arrow(player.getLeftEyePosition().cpy(),
-                new Vector2(Arrow.ARROW_VELOCITY_MAGNITUDE * MathUtils.cosDeg(degrees),
-                        Arrow.ARROW_VELOCITY_MAGNITUDE * MathUtils.sinDeg(degrees)),
+                new Vector2(Arrow.VELOCITY_MAGNITUDE * MathUtils.cosDeg(degrees),
+                        Arrow.VELOCITY_MAGNITUDE * MathUtils.sinDeg(degrees)),
                 world.ACCELERATION.cpy(), degrees));
 
     }

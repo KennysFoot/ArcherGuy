@@ -8,6 +8,8 @@ import com.zhang_000.archerguygame.gameobjects.GameObject;
 
 public abstract class PowerUp extends GameObject {
 
+    public static final int LENGTH = 12;
+
     protected float POWER_UP_LENGTH;
     protected float timeActive;
     protected TextureRegion image;
@@ -32,6 +34,14 @@ public abstract class PowerUp extends GameObject {
     public abstract void update(float delta, float runTime);
 
     public abstract void render(float runTime, SpriteBatch batch);
+
+    protected void setUpHitPolygon() {
+        hitPolygon.setPosition(position.x, position.y);
+        hitPolygon.setOrigin(0, 0);
+        //top       //right             //bottom             //left
+        float[] vertices = {3, 0, 8, 0, width, 3, width, 8, 8, height, 3, height, 0, 8, 0, 3};
+        hitPolygon.setVertices(vertices);
+    }
 
     protected abstract void activate();
 

@@ -3,6 +3,7 @@ package com.zhang_000.archerguygame.helper_classes;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.MathUtils;
 import com.zhang_000.archerguygame.gameobjects.Player;
+import com.zhang_000.archerguygame.gameobjects.weapons.Arrow;
 import com.zhang_000.archerguygame.gameworld.GameWorld;
 
 public class InputHandlerGame implements InputProcessor {
@@ -13,7 +14,7 @@ public class InputHandlerGame implements InputProcessor {
     private GameWorld world;
     private Player player;
 
-    public static float lastFire = 0.25f;
+    public static float lastFire = Arrow.RELOAD_TIME;
 
     //POWER UPS
     private static boolean infiniteArrowsActivated = false;
@@ -37,9 +38,9 @@ public class InputHandlerGame implements InputProcessor {
         float degrees = MathUtils.atan2(dy, dx) * MathUtils.radiansToDegrees;
 
         //Add a new arrow if screen is touched to the right of the boundary line and
-        //if the last fire has been more than 1/3 of a second ago or if the infinite arrows
+        //if the last fire has been more than the arrow's reload time or if the infinite arrows
         //power up is activated
-        if (touchingShootArrowRegion(screenX) && (lastFire > 0.25f || infiniteArrowsActivated)) {
+        if (touchingShootArrowRegion(screenX) && (lastFire > Arrow.RELOAD_TIME || infiniteArrowsActivated)) {
             //New arrow is created from the players left eye
             //Initial velocity is in the direction of touch on the screen
             //Magnitude of velocity is always 300
