@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.zhang_000.archerguygame.gameobjects.Ground;
@@ -73,9 +74,9 @@ public class GameWorld {
 
         //GAME OBJECTS
         player = new Player(new Vector2(10, GROUND_LEVEL - AssetLoader.archerGuyFront1.getRegionHeight()),
-                new Vector2(0, 0), ACCELERATION.cpy());
+                new Vector2(0, 0), ACCELERATION.cpy(), shapeRenderer);
         player.setGroundLevel(GROUND_LEVEL);
-        ground = new Ground(new Vector2(0, GROUND_LEVEL), LATERAL_MOVE_SPEED, new Vector2(0, 0));
+        ground = new Ground(new Vector2(0, GROUND_LEVEL), LATERAL_MOVE_SPEED.cpy(), new Vector2(0, 0));
         powerUpManager = new PowerUpManager(this);
         weaponManager = new WeaponManager(this);
 
@@ -147,9 +148,7 @@ public class GameWorld {
         powerUpManager.render(runTime, batch);
 
         //Render the arrows
-        for (Arrow a : weaponManager.getArrows()) {
-            a.render(runTime, batch);
-        }
+        weaponManager.render(runTime, batch);
 
         //Render either the current score or the game over score board depending on the game state
         if (gameState == GameState.RUNNING) {
@@ -163,15 +162,17 @@ public class GameWorld {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line); //BEGIN SHAPE RENDERER
         shapeRenderer.setColor(Color.RED);
 
-        //TEMP SHIELD CODE UNTIL ART FOR THE SHIELD IS MADE
-        if (player.isShieldActivated()) {
-            shapeRenderer.circle(player.getShield().x, player.getShield().y, player.getShield().radius);
-        }
-
         //Render the arrow boundary line
         shapeRenderer.line(50, 0, 50, GameScreen.GAME_HEIGHT);
 
+        //TEST
+        for (int i = 0; i < weaponManager.getExplosions().size; i++) {
+            Circle c = weaponManager.getExplosions().get(i).getBoundingCircle();
+            shapeRenderer.circle(c.x, c.y, c.radius);
+        }
+
         shapeRenderer.end(); //END SHAPE RENDERER
+
     }
 
     private void renderScore() {

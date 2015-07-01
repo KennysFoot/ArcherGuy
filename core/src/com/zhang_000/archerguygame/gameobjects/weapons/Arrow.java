@@ -9,8 +9,8 @@ public class Arrow extends Weapon {
     public static final int VELOCITY_MAGNITUDE = 325;
     public static final float RELOAD_TIME  = 0.3f;
 
-    private boolean isOnGround = false;
-    private float timeOnGround = 0;
+    protected boolean isOnGround = false;
+    protected float timeOnGround = 0;
 
     public Arrow(Vector2 position, Vector2 velocity, Vector2 acceleration, float rotation) {
         super(position, velocity, acceleration);
@@ -18,6 +18,10 @@ public class Arrow extends Weapon {
         super.width = AssetLoader.arrow.getRegionWidth();
         super.height = AssetLoader.arrow.getRegionHeight();
 
+        setUpHitPolygon();
+    }
+
+    protected void setUpHitPolygon() {
         hitPolygon.setPosition(position.x, position.y);
         hitPolygon.setOrigin(0, 5);
         float[] vertices = new float[]{17, 0, 21, 4, 17, 9};
@@ -43,7 +47,7 @@ public class Arrow extends Weapon {
         batch.draw(AssetLoader.arrow, position.x, position.y, 0, 5, width, height, 1, 1, rotation);
     }
 
-    private void updateVelocity(float delta) {
+    protected void updateVelocity(float delta) {
         //Update velocity and position
         deltaVel = acceleration.cpy().scl(delta);
         velocity.add(deltaVel);
@@ -54,7 +58,7 @@ public class Arrow extends Weapon {
         }
     }
 
-    private void updatePosition(float delta) {
+    protected void updatePosition(float delta) {
         deltaPos = velocity.cpy().scl(delta);
         position.add(deltaPos);
 
@@ -62,7 +66,7 @@ public class Arrow extends Weapon {
         hitPolygon.translate(deltaPos.x, deltaPos.y);
     }
 
-    private void updateRotation(float delta) {
+    protected void updateRotation(float delta) {
         //Update rotation
         float deltaRotation = 6000 * delta / velocity.x;
         rotation += deltaRotation;

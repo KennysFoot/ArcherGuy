@@ -8,7 +8,7 @@ import com.zhang_000.archerguygame.gameworld.GameWorld;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 import com.zhang_000.archerguygame.screens.GameScreen;
 
-public class Shield extends PowerUp {
+public class PowerUpShield extends PowerUp {
 
     //The shield power ups velocity will be either moving left and up || left and down
     private static final Vector2 VELOCITY_UP = new Vector2(-40, -25);
@@ -16,7 +16,7 @@ public class Shield extends PowerUp {
 
     private Player player;
 
-    public Shield(GameWorld world) {
+    public PowerUpShield(GameWorld world) {
         super();
         player = world.getPlayer();
         width = height = PowerUp.LENGTH;
@@ -73,7 +73,7 @@ public class Shield extends PowerUp {
 
     @Override
     public void update(float delta) {
-
+        //OTHER UPDATE METHOD USED INSTEAD
     }
 
     @Override
@@ -93,7 +93,7 @@ public class Shield extends PowerUp {
 
     @Override
     public void playActivationSound() {
-
+        AssetLoader.soundShieldActivated.play();
     }
 
 }

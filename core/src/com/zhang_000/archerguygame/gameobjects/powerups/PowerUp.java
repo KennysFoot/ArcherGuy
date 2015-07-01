@@ -38,7 +38,7 @@ public abstract class PowerUp extends GameObject {
     protected void setUpHitPolygon() {
         hitPolygon.setPosition(position.x, position.y);
         hitPolygon.setOrigin(0, 0);
-        //top       //right             //bottom             //left
+                            //top       //right             //bottom             //left
         float[] vertices = {3, 0, 8, 0, width, 3, width, 8, 8, height, 3, height, 0, 8, 0, 3};
         hitPolygon.setVertices(vertices);
     }

@@ -1,7 +1,10 @@
 package com.zhang_000.archerguygame.gameobjects;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
@@ -10,6 +13,7 @@ import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 public class Player extends GameObject {
 
     private static float SCALE_LIVES = 0.45f;
+    private ShapeRenderer shapeRenderer;
 
     private Animation standingAnimation;
     private Animation movingAnimation;
@@ -27,17 +31,17 @@ public class Player extends GameObject {
     //POWER UPS
     private boolean shieldActivated;
     private Circle shield;
-    private boolean explodingArrowsActivated;
 
     private enum State {
         GOING_UP, GOING_DOWN, ON_GROUND, DEAD
     }
 
-    public Player(Vector2 position, Vector2 velocity, Vector2 acceleration) {
+    public Player(Vector2 position, Vector2 velocity, Vector2 acceleration, ShapeRenderer shapeRenderer) {
         //Assign position, velocity, and acceleration
         super(position, velocity, acceleration);
         super.width = 28;
         super.height = 30;
+        this.shapeRenderer = shapeRenderer;
         killScore = 0;
         timeScore = 0;
         lives = 3;
@@ -58,9 +62,9 @@ public class Player extends GameObject {
                 23, 7, 23, 22, 20, height, 9, height, 5, 22, 5, 7}; //body
         hitBox.setVertices(vertices);
 
-        shieldActivated = explodingArrowsActivated = false;
+        shieldActivated = false;
 
-        shield = new Circle(position.x + width / 2, position.y + height / 2, 20);
+        shield = new Circle(position.x + width / 2, position.y + height / 2, 21);
     }
 
     @Override
@@ -99,7 +103,9 @@ public class Player extends GameObject {
 
         leftEyePosition.set(17, position.y + 7);
         hitBox.setPosition(position.x, position.y);
-        shield.setPosition(position.x + width / 2, position.y + height / 2);
+        if (shieldActivated) {
+            shield.setPosition(position.x + width / 2, position.y + height / 2);
+        }
     }
 
     @Override
@@ -121,6 +127,24 @@ public class Player extends GameObject {
                     width * SCALE_LIVES, height * SCALE_LIVES, SCALE_LIVES, SCALE_LIVES, 0);
         }
 
+        if (shieldActivated) {
+            //TO ENABLE BLENDING SPRITE BATCH MUST BE STOPPED
+            batch.end();
+
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+            shapeRenderer.setAutoShapeType(true);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(156 / 255f, 120 / 255f, 88 / 255f, 0.4f);
+            shapeRenderer.circle(shield.x, shield.y, shield.radius);
+
+            shapeRenderer.end();
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+
+            //RE-ENABLE THE SPRITE BATCH
+            batch.begin();
+        }
     }
 
     public void setGroundLevel(int gLev) {
@@ -185,10 +209,6 @@ public class Player extends GameObject {
 
     public boolean isShieldActivated() {
         return shieldActivated;
-    }
-
-    public void setExplodingArrowsActivated(boolean b) {
-        explodingArrowsActivated = b;
     }
 
 }

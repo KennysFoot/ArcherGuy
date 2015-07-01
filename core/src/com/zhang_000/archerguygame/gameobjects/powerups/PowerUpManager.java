@@ -13,6 +13,7 @@ public class PowerUpManager {
     private float runTime;
     private int tickerNewPowerUp;
 
+    private static final short TIME_BETWEEN_POWER_UPS = 40;
     private static final short LAST_POWER_UP_NUMBER = 3;
     private static final int INFINITE_ARROWS = 0;
     private static final int EXTRA_LIFE = 1;
@@ -24,7 +25,8 @@ public class PowerUpManager {
         runTime = 0;
         tickerNewPowerUp = 0;
 
-        powerUps.add(new Shield(world));
+        //TEST
+        powerUps.add(new PowerUpExplodingArrows(world));
     }
 
     public void update(float delta) {
@@ -33,31 +35,30 @@ public class PowerUpManager {
             ++tickerNewPowerUp;
         }
 
-        //Create new power up on screen every 50 seconds
-        if (tickerNewPowerUp % 51 == 0) {
+        //Create new power up on screen every 40 seconds
+        if (tickerNewPowerUp > TIME_BETWEEN_POWER_UPS) {
             switch(MathUtils.random(LAST_POWER_UP_NUMBER)) {
                 case INFINITE_ARROWS:
-                    powerUps.add(new InfiniteArrows());
+                    powerUps.add(new PowerUpInfiniteArrows());
                     break;
 
                 case EXTRA_LIFE:
-                    powerUps.add(new ExtraLife(world));
+                    powerUps.add(new PowerUpExtraLife(world));
                     break;
 
                 case SHIELD:
-                    powerUps.add(new Shield(world));
+                    powerUps.add(new PowerUpShield(world));
                     break;
 
                 case EXPLODING_ARROWS:
-
+                    powerUps.add(new PowerUpExplodingArrows(world));
                     break;
 
                 default:
                     break;
             }
-            //In the next update, the ticker will most likely not have changed values by itself
-            //Increment the ticker so that only one power up is created every 50 seconds
-            ++tickerNewPowerUp;
+            //Reset the ticker
+            tickerNewPowerUp = 0;
         }
 
         //Iterate through powerUps array, updating each power up

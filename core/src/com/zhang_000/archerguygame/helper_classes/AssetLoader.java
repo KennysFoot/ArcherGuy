@@ -31,10 +31,10 @@ public class AssetLoader {
     public static Animation animationWigQueen;
 
     //WEAPONS
-    public static Texture weapons;
-    public static TextureRegion arrow;
+    public static Texture weapons, textureExplosion;
+    public static TextureRegion arrow, explodingArrow;
     public static TextureRegion energyBall1, energyBall2, energyBall3;
-    public static Animation animationEnergyBall;
+    public static Animation animationEnergyBall, animationExplosion;
 
     //Tiles
     public static Texture tilesGround;
@@ -42,15 +42,15 @@ public class AssetLoader {
 
     //POWER UPS
     public static Texture powerUps;
-    public static TextureRegion powUpInfiniteArrows, powUpExtraLife, powUpShield, powUpExlodingArrows;
+    public static TextureRegion powUpInfiniteArrows, powUpExtraLife, powUpShield, powUpExplodingArrows;
 
     //FONT
     public static BitmapFont shadow, font, greenFont;
 
     //SOUNDS
     public static Sound soundDeath, soundLoseLife, soundGainLife;
-    public static Sound soundFireArrow, soundArrowHit;
-    public static Sound soundInfArrows;
+    public static Sound soundFireArrow, soundArrowHit, soundExplodingArrowHit;
+    public static Sound soundInfArrows, soundShieldActivated;
     public static Sound soundEnergyBall;
 
     //PREFERENCES
@@ -65,7 +65,6 @@ public class AssetLoader {
         loadEnemies();
         loadTiles();
         loadPowerUps();
-
 
         //FONTS
         font = new BitmapFont(Gdx.files.internal("whitetext.fnt"));
@@ -123,8 +122,12 @@ public class AssetLoader {
 
     private static void loadWeapons() {
         weapons = new Texture(Gdx.files.internal("weapons.png"));
+
         arrow = new TextureRegion(weapons, 6, 12, 21, 9);
         arrow.flip(false, true);
+
+        explodingArrow = new TextureRegion(weapons, 8, 45, 22, 5);
+        explodingArrow.flip(false, true);
 
         energyBall1 = new TextureRegion(weapons, 35, 4, QueenWiggler.EnergyBall.WIDTH, QueenWiggler.EnergyBall.HEIGHT);
         energyBall2 = new TextureRegion(weapons, 68, 4, QueenWiggler.EnergyBall.WIDTH, QueenWiggler.EnergyBall.HEIGHT);
@@ -135,6 +138,16 @@ public class AssetLoader {
         TextureRegion[] energyBallFrames = {energyBall1, energyBall2, energyBall3};
         animationEnergyBall = new Animation(0.15f, energyBallFrames);
         animationEnergyBall.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+
+        textureExplosion = new Texture(Gdx.files.internal("explosion2.png"));
+        TextureRegion[] explosionFrames = new TextureRegion[48];
+        for (int i = 0; i < explosionFrames.length; i++) {
+            explosionFrames[i] = new TextureRegion(textureExplosion, i * 64, 0, 64, 64);
+            explosionFrames[i].flip(false, true);
+        }
+        animationExplosion = new Animation(0.03f, explosionFrames);
+        animationExplosion.setPlayMode(Animation.PlayMode.NORMAL);
+
     }
 
     private static void loadEnemies() {
@@ -183,8 +196,8 @@ public class AssetLoader {
         powUpShield = new TextureRegion(powerUps, 34, 2, PowerUp.LENGTH, PowerUp.LENGTH);
         powUpShield.flip(false, true);
 
-        powUpExlodingArrows = new TextureRegion(powerUps, 50, 2, PowerUp.LENGTH, PowerUp.LENGTH);
-        powUpExlodingArrows.flip(false, true);
+        powUpExplodingArrows = new TextureRegion(powerUps, 50, 2, PowerUp.LENGTH, PowerUp.LENGTH);
+        powUpExplodingArrows.flip(false, true);
     }
 
     private static void loadSounds() {
@@ -195,6 +208,8 @@ public class AssetLoader {
         soundLoseLife = Gdx.audio.newSound(Gdx.files.internal("sounds/lose_life.ogg"));
         soundEnergyBall = Gdx.audio.newSound(Gdx.files.internal("sounds/energy_ball_fire.wav"));
         soundGainLife = Gdx.audio.newSound(Gdx.files.internal("sounds/gain_life.ogg"));
+        soundExplodingArrowHit = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion_chemistry.flac"));
+        soundShieldActivated = Gdx.audio.newSound(Gdx.files.internal("sounds/jingles_NES16.ogg"));
     }
 
     public static void dispose() {
@@ -202,6 +217,7 @@ public class AssetLoader {
         archerGuyFrontTex.dispose();
         tilesGround.dispose();
         weapons.dispose();
+        textureExplosion.dispose();
 
         //Dispose fonts
         font.dispose();
@@ -210,5 +226,13 @@ public class AssetLoader {
 
         //Dispose sounds
         soundFireArrow.dispose();
+        soundArrowHit.dispose();
+        soundInfArrows.dispose();
+        soundDeath.dispose();
+        soundLoseLife.dispose();
+        soundEnergyBall.dispose();
+        soundGainLife.dispose();
+        soundExplodingArrowHit.dispose();
+        soundShieldActivated.dispose();
     }
 }

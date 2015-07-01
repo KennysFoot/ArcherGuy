@@ -8,11 +8,11 @@ import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 import com.zhang_000.archerguygame.helper_classes.InputHandlerGame;
 import com.zhang_000.archerguygame.screens.GameScreen;
 
-public class InfiniteArrows extends PowerUp {
+public class PowerUpInfiniteArrows extends PowerUp {
 
     private final float MEDIAN;
 
-    public InfiniteArrows(Vector2 position, Vector2 velocity, Vector2 acceleration) {
+    public PowerUpInfiniteArrows(Vector2 position, Vector2 velocity, Vector2 acceleration) {
         super(position, velocity, acceleration);
         POWER_UP_LENGTH = 5.0f;
         image = AssetLoader.powUpInfiniteArrows;
@@ -27,7 +27,7 @@ public class InfiniteArrows extends PowerUp {
         hitPolygon.setVertices(vertices);
     }
 
-    public InfiniteArrows() {
+    public PowerUpInfiniteArrows() {
         super();
 
         super.position =  new Vector2(GameScreen.GAME_WIDTH, MathUtils.random(50, GameWorld.GROUND_LEVEL - 50));

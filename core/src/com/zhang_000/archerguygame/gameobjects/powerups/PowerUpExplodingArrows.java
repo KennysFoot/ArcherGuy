@@ -7,19 +7,21 @@ import com.zhang_000.archerguygame.gameworld.GameWorld;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 import com.zhang_000.archerguygame.screens.GameScreen;
 
-public class ExtraLife extends PowerUp {
+public class PowerUpExplodingArrows extends PowerUp {
 
     private GameWorld world;
 
-    public ExtraLife(GameWorld world) {
+    public PowerUpExplodingArrows(GameWorld world) {
         super();
         this.world = world;
-
         width = height = PowerUp.LENGTH;
-        POWER_UP_LENGTH = 100;
+        POWER_UP_LENGTH = 15;
 
-        position =  new Vector2(GameScreen.GAME_WIDTH, MathUtils.random(0, GameWorld.GROUND_LEVEL - height));
+        position = new Vector2(GameScreen.GAME_WIDTH, MathUtils.random(0, GameWorld.GROUND_LEVEL - height));
+
+        //TEMP VELOCITY
         velocity = GameWorld.LATERAL_MOVE_SPEED.cpy().scl(7);
+
         acceleration = GameWorld.NO_ACCELERATION;
 
         setUpHitPolygon();
@@ -27,53 +29,47 @@ public class ExtraLife extends PowerUp {
 
     @Override
     public void update(float delta, float runTime) {
-        switch (state) {
+        switch(state) {
             case ON_SCREEN:
-                //The extra life power up will just move very quickly laterally across the screen
                 deltaPos = velocity.cpy().scl(delta);
                 position.add(deltaPos);
-
-                //UPDATE HIT POLYGON
                 hitPolygon.setPosition(position.x, position.y);
                 break;
 
             case ACTIVE:
-                activate();
+                if (timeActive == 0) {
+                    activate();
+                    playActivationSound();
+                }
 
-                //We want to remove this power up from the manager after activate() is called once
-                //We do this by setting timeActive to be greater than the POWER_UP_LENGTH
-                //When the finished() method is called by the manager, it will return true and this power up
-                // will be removed from the Array
-                timeActive = POWER_UP_LENGTH + 1;
-
+                timeActive += delta;
                 break;
         }
     }
 
-    //NOT USED
     @Override
     public void update(float delta) {
-
+        //OTHER UPDATE METHOD USED INSTEAD
     }
 
     @Override
     public void render(float runTime, SpriteBatch batch) {
-        batch.draw(AssetLoader.powUpExtraLife, position.x, position.y);
+        batch.draw(AssetLoader.powUpExplodingArrows, position.x, position.y);
     }
 
     @Override
     protected void activate() {
-        //If the player gets this power up, he gains an extra life
-        world.getPlayer().incrementLives(1);
+        world.getWeaponManager().setExplodingArrowsActivated(true);
     }
 
-    //NOT USED
     @Override
     protected void deactivate() {
-
+        world.getWeaponManager().setExplodingArrowsActivated(false);
     }
+
     @Override
     public void playActivationSound() {
+        AssetLoader.soundExplodingArrowHit.play();
     }
 
 }
