@@ -8,7 +8,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.zhang_000.archerguygame.gameobjects.Ground;
 import com.zhang_000.archerguygame.gameobjects.Player;
+import com.zhang_000.archerguygame.gameobjects.enemies.Enemy;
 import com.zhang_000.archerguygame.gameobjects.enemies.EnemyManager;
+import com.zhang_000.archerguygame.gameobjects.enemies.Hopper;
 import com.zhang_000.archerguygame.gameobjects.enemies.Wiggler;
 import com.zhang_000.archerguygame.gameobjects.enemies.bosses.Boss;
 import com.zhang_000.archerguygame.gameobjects.enemies.bosses.QueenWiggler;
@@ -27,7 +29,7 @@ public class CollisionDetector {
     private GameWorld world;
     private Array<Arrow> arrows;
     private Array<Explosion> explosions;
-    private Array<Wiggler> wigglers;
+    private Array<Enemy> enemies;
     private Array<Boss> bosses;
     private Player player;
     private Ground ground;
@@ -40,7 +42,7 @@ public class CollisionDetector {
         player = world.getPlayer();
         arrows = world.getArrows();
         ground = world.getGround();
-        wigglers = world.getWigglers();
+        enemies = world.getEnemies();
         powerUpManager = world.getPowerUpManager();
         enemyManager = world.getEnemyManager();
         bosses = enemyManager.getBosses();
@@ -72,13 +74,13 @@ public class CollisionDetector {
     private void checkArrowCollisions() {
         for (Arrow a : arrows) {
             //ARROWS AND WIGGLERS
-            for (Wiggler w : wigglers) {
+            for (Enemy e : enemies) {
                 //If the tip of the arrow is within the screen, check for a collision
                 if (a.getX() < GameScreen.GAME_WIDTH - a.getWidth()) {
                     //If the tip of the arrow hits a wiggler, remove both, play sound, and increment score
-                    if (Intersector.overlapConvexPolygons(a.getHitPolygon(), w.getHitPolygon())) {
+                    if (Intersector.overlapConvexPolygons(a.getHitPolygon(), e.getHitPolygon())) {
                         arrows.removeValue(a, false);
-                        wigglers.removeValue(w, false);
+                        enemies.removeValue(e, false);
                         AssetLoader.soundArrowHit.play(0.5f);
                         player.incrementKillScore(Wiggler.SCORE);
 
@@ -116,18 +118,18 @@ public class CollisionDetector {
     private void checkArrowCollisionsExplodingArrowsEnabled() {
         for (Arrow a : arrows) {
             //ARROWS AND WIGGLERS
-            for (Wiggler w : wigglers) {
+            for (Enemy e : enemies) {
                 //If the tip of the arrow is within the screen, check for a collision
-                if (a.getX() < GameScreen.GAME_WIDTH - a.getWidth() && Intersector.overlapConvexPolygons(a.getHitPolygon(), w.getHitPolygon())) {
+                if (a.getX() < GameScreen.GAME_WIDTH - a.getWidth() && Intersector.overlapConvexPolygons(a.getHitPolygon(), e.getHitPolygon())) {
                     //If the tip of the arrow hits a wiggler, remove both, play sound, and increment score
                     if (a instanceof ExplodingArrow) {
-                        explodingArrowHitRegularEnemy(a, w);
+                        explodingArrowHitRegularEnemy(a, e);
                     } else {
                         //REGULAR ARROW
                         arrows.removeValue(a, false);
-                        wigglers.removeValue(w, false);
+                        enemies.removeValue(e, false);
                         AssetLoader.soundArrowHit.play(0.5f);
-                        player.incrementKillScore(Wiggler.SCORE);
+                        player.incrementKillScore(e.getScore());
                     }
                 }
             }
@@ -169,28 +171,41 @@ public class CollisionDetector {
         }
     }
 
-    private void explodingArrowHitRegularEnemy(Arrow a, Wiggler w) {
-        arrows.removeValue(a, false);
-        wigglers.removeValue(w, false);
-
+    private void explodingArrowHitRegularEnemy(Arrow a, Enemy e) {
         //Create the explosion
-        weaponManager.addExplosion(w.getX() - 28, w.getY() - 28);
+        weaponManager.addExplosion(e.getX() - 28, e.getY() - 28);
 
         //PLAY EXPLOSION SOUND
         AssetLoader.soundExplodingArrowHit.play();
 
         //CHECK TO SEE IF ANYMORE WIGGLERS ARE KILLED IN THE EXPLOSION
-        int wigglersKilled = 1;
-        for (int i = 0; i < wigglers.size; i++) {
-            Wiggler wig = wigglers.get(i);
-            if (overlaps(wig.getHitPolygon(), explosions.get(explosions.size - 1).getBoundingCircle())) {
-                wigglers.removeValue(wig, false);
-                ++wigglersKilled;
-            }
+        int score;
+        if (e instanceof Wiggler) {
+            score = checkExplosionSurroundings(1, 0);
+        } else {
+            score = checkExplosionSurroundings(0, 1);
         }
 
         //Increase score based on how many wigglers were killed in the explosion
-        player.incrementKillScore(Wiggler.SCORE * wigglersKilled);
+        player.incrementKillScore(score);
+
+        arrows.removeValue(a, false);
+        enemies.removeValue(e, false);
+    }
+    private int checkExplosionSurroundings(int wigglersKilled, int hoppersKilled) {
+        for (int i = 0; i < enemies.size; i++) {
+            Enemy enemy = enemies.get(i);
+            if (overlaps(enemy.getHitPolygon(), explosions.get(explosions.size - 1).getBoundingCircle())) {
+                if (enemy instanceof Wiggler) {
+                    ++wigglersKilled;
+                } else {
+                    ++hoppersKilled;
+                }
+
+                enemies.removeValue(enemy, false);
+            }
+        }
+        return wigglersKilled * Wiggler.SCORE + hoppersKilled * Hopper.SCORE;
     }
     private void explodingArrowHitBoss(Arrow a, Boss b) {
         arrows.removeValue(a, false);
@@ -201,11 +216,12 @@ public class CollisionDetector {
 
     private void checkCollisionsShieldAndEnemies() {
         //WIGGLERS AND SHIELD
-        for (Wiggler w : wigglers) {
-            if (overlaps(w.getHitPolygon(), player.getShield())) {
+        for (Enemy e : enemies) {
+            if (overlaps(e.getHitPolygon(), player.getShield())) {
                 //Wiggler dies if it touches the shield
-                wigglers.removeValue(w, false);
+                enemies.removeValue(e, false);
                 player.incrementKillScore(Wiggler.SCORE);
+                AssetLoader.soundShieldHit.play();
             }
         }
 
@@ -222,8 +238,8 @@ public class CollisionDetector {
     }
     private void checkCollisionsPlayerAndEnemies() {
         //WIGGLERS AND PLAYER
-        for (Wiggler w : wigglers) {
-            if (Intersector.overlapConvexPolygons(w.getHitPolygon(), player.getHitBox())) {
+        for (Enemy e : enemies) {
+            if (Intersector.overlapConvexPolygons(e.getHitPolygon(), player.getHitBox())) {
                 //Game over if player touches wiggler; stop everything and set the player's lives to zero
                 player.incrementLives(-player.getLives());
                 gameOver();

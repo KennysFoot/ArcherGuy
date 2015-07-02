@@ -38,8 +38,6 @@ public class InputHandlerMenu implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        screenX = scaleX(screenX);
-        screenY = scaleY(screenY);
         return false;
     }
 

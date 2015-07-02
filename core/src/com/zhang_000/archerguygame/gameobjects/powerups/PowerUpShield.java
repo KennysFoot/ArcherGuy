@@ -66,7 +66,6 @@ public class PowerUpShield extends PowerUp {
                 }
 
                 timeActive += delta;
-
                 break;
         }
     }

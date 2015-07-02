@@ -11,9 +11,8 @@ public class PowerUpManager {
 
     private Array<PowerUp> powerUps = new Array<PowerUp>();
     private float runTime;
-    private int tickerNewPowerUp;
 
-    private static final short TIME_BETWEEN_POWER_UPS = 40;
+    private static final short TIME_BETWEEN_POWER_UPS = 35;
     private static final short LAST_POWER_UP_NUMBER = 3;
     private static final int INFINITE_ARROWS = 0;
     private static final int EXTRA_LIFE = 1;
@@ -23,20 +22,16 @@ public class PowerUpManager {
     public PowerUpManager(GameWorld world) {
         this.world = world;
         runTime = 0;
-        tickerNewPowerUp = 0;
 
         //TEST
+       // powerUps.add(new PowerUpExplodingArrows(world));
+        powerUps.add(new PowerUpShield(world));
         powerUps.add(new PowerUpExplodingArrows(world));
     }
 
     public void update(float delta) {
-        //Update the ticker
-        if ((int) runTime > tickerNewPowerUp) {
-            ++tickerNewPowerUp;
-        }
-
-        //Create new power up on screen every 40 seconds
-        if (tickerNewPowerUp > TIME_BETWEEN_POWER_UPS) {
+        //Create new power up on screen every TIME_BETWEEN_POWER_UPS seconds
+        if ((int) runTime > TIME_BETWEEN_POWER_UPS) {
             switch(MathUtils.random(LAST_POWER_UP_NUMBER)) {
                 case INFINITE_ARROWS:
                     powerUps.add(new PowerUpInfiniteArrows());
@@ -57,22 +52,21 @@ public class PowerUpManager {
                 default:
                     break;
             }
-            //Reset the ticker
-            tickerNewPowerUp = 0;
+            runTime = 0;
         }
 
         //Iterate through powerUps array, updating each power up
         for (PowerUp pow : powerUps) {
             pow.update(delta, runTime);
 
-            //Deactivate and remove the power up if it is finished
+            //Deactivate and remove the power up if it has passed its use time
             if (pow.finished()) {
                 pow.deactivate();
                 powerUps.removeValue(pow, false);
             }
 
             //Remove the power up if it is off the screen past the player
-            if (pow.getX() < -pow.getWidth()) {
+            if (pow.getX() < -PowerUp.LENGTH) {
                 powerUps.removeValue(pow, false);
             }
         }

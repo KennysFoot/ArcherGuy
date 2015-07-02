@@ -20,7 +20,9 @@ public class EnemyManager {
     private GameWorld world;
 
     //WIGGLERS
-    private Array<Wiggler> wigglers = new Array<Wiggler>();
+    private Array<Enemy> enemies = new Array<Enemy>();
+    private float hopperTimer = 0;
+    private int timeBetweenSpawns = 5;
     private float wigglerTimer = 0;
     private float lastTimeSpawningThree;
     private float lastTimeSpawningTwo;
@@ -46,6 +48,7 @@ public class EnemyManager {
 
     public void updateEnemies(float delta) {
         updateWigglers(delta);
+        updateHoppers(delta);
         updateBosses(delta);
     }
 
@@ -55,7 +58,7 @@ public class EnemyManager {
         lastTimeSpawningTwo += delta;
 
         //Spawn a new wiggler every 3 seconds
-        if (wigglerTimer > 3) {
+        if (wigglerTimer > 2.75f) {
 
             //Spawn a Queen Wiggler once a score benchmark has been reached
             if (player.getScore() > 24 + 65 * timesQueenSpawned) {
@@ -71,17 +74,27 @@ public class EnemyManager {
         }
 
         //Update positions of each wiggler
-        for (Wiggler w : wigglers) {
-            w.update(delta);
+        for (Enemy e : enemies) {
+            if (e instanceof Wiggler) {
+                e.update(delta);
+                checkIfEnemyIsPastPlayer(e);
+            }
+        }
+    }
 
-            //Check if any wigglers have passed the end of the screen (left side)
-            //If one has, remove it from the wigglers array and decrease the player's lives by 1
-            if (w.getX() < -w.getWidth()) {
-                wigglers.removeValue(w, false);
-                player.incrementLives(-1);
+    private void updateHoppers(float delta) {
+        hopperTimer += delta;
 
-                //After taking away a life, check if the game is done
-                checkIfGameIsOver();
+        if (hopperTimer > timeBetweenSpawns) {
+            spawnHopper();
+            hopperTimer = 0;
+            timeBetweenSpawns = MathUtils.random(3, 15);
+        }
+
+        for (Enemy e : enemies) {
+            if (e instanceof Hopper) {
+                e.update(delta);
+                checkIfEnemyIsPastPlayer(e);
             }
         }
     }
@@ -92,10 +105,23 @@ public class EnemyManager {
         }
     }
 
+    private void checkIfEnemyIsPastPlayer(Enemy e) {
+        //Check if any enemies have passed the end of the screen (left side)
+        //If one has, remove it from the enemies array and decrease the player's lives by 1
+        if (e.getX() < -e.getWidth()) {
+            enemies.removeValue(e, false);
+            player.incrementLives(-1);
+
+            //After taking away a life, check if the game is done
+            checkIfGameIsOver();
+        }
+    }
+
+    //WIGGLER SPAWNING METHODS
     private void spawnWiggler() {
         float speedFactor = 1;
 
-        //Increase the wigglers speed as the players score increases
+        //Increase the enemies speed as the players score increases
         if (player.getScore() > 1) {
             speedFactor += player.getScore() / 3;
 
@@ -105,12 +131,12 @@ public class EnemyManager {
             }
         }
 
-        //Only spawn wigglers is the queen wiggler is not on the screen
+        //Only spawn enemies is the queen wiggler is not on the screen
         if (queenWigglerState != QueenWigglerState.ON_SCREEN) {
             //Randomly choose one of the spawning options
             int spawnOption = MathUtils.random(0, 3);
 
-            //Only spawn 3 wigglers at one time once every 9 seconds
+            //Only spawn 3 enemies at one time once every 9 seconds
             if (spawnOption == SPAWN_THREE_WIGGLERS && lastTimeSpawningThree > 9) { //2
                 spawnThreeWigglers(speedFactor);
             } else if (spawnOption == SPAWN_TWO_WIGGLERS && lastTimeSpawningTwo > 6) { //3
@@ -120,13 +146,11 @@ public class EnemyManager {
             }
         }
     }
-
     private void spawnOneWiggler(float speedFactor) {
-        wigglers.add(new Wiggler(new Vector2(GameScreen.GAME_WIDTH,
+        enemies.add(new Wiggler(new Vector2(GameScreen.GAME_WIDTH,
                 MathUtils.random(GameWorld.GROUND_LEVEL - AssetLoader.wiggler1.getRegionHeight())),
                 new Vector2(GameWorld.LATERAL_MOVE_SPEED.x * speedFactor, 0), GameWorld.NO_ACCELERATION));
     }
-
     private void spawnTwoWigglers(float speedFactor) {
         int spaceBetween = MathUtils.random(Wiggler.HEIGHT, 80);
         int maxPadding = GameWorld.GROUND_LEVEL - 2 * Wiggler.HEIGHT - spaceBetween;
@@ -136,7 +160,7 @@ public class EnemyManager {
         int topPadding = MathUtils.random(0, maxPadding);
 
         for (int i = 0; i < 2; i++) {
-            wigglers.add(new Wiggler(new Vector2(GameScreen.GAME_WIDTH, topPadding + i * spaceBetween),
+            enemies.add(new Wiggler(new Vector2(GameScreen.GAME_WIDTH, topPadding + i * spaceBetween),
                     new Vector2(GameWorld.LATERAL_MOVE_SPEED.x * speedFactor, 0),
                     GameWorld.NO_ACCELERATION));
         }
@@ -144,14 +168,13 @@ public class EnemyManager {
         //Reset timer
         lastTimeSpawningTwo = 0;
     }
-
     private void spawnThreeWigglers(float speedFactor) {
         speedFactor *= 0.95f;
         int spaceBetweenWigglers = MathUtils.random(25, 45);
         int topPadding = MathUtils.random(0, 13);
 
         for (int i = 0; i < 3; i++) {
-            wigglers.add(new Wiggler(new Vector2(GameScreen.GAME_WIDTH, topPadding + i * spaceBetweenWigglers),
+            enemies.add(new Wiggler(new Vector2(GameScreen.GAME_WIDTH, topPadding + i * spaceBetweenWigglers),
                     new Vector2(GameWorld.LATERAL_MOVE_SPEED.x * speedFactor, 0),
                     GameWorld.NO_ACCELERATION));
         }
@@ -159,6 +182,14 @@ public class EnemyManager {
         //Reset timer
         lastTimeSpawningThree = 0;
     }
+
+    //HOPPER SPAWNING METHODS
+    private void spawnHopper() {
+        enemies.add(new Hopper(
+                new Vector2(GameScreen.GAME_WIDTH, GameWorld.GROUND_LEVEL - AssetLoader.hopperOnGround.getRegionHeight()),
+                GameWorld.LATERAL_MOVE_SPEED.cpy().scl(2), GameWorld.ACCELERATION.cpy()));
+    }
+
 
     private void spawnQueenWiggler() {
         bosses.add(new QueenWiggler(player));
@@ -172,8 +203,8 @@ public class EnemyManager {
     }
 
     //SETTER AND GETTER METHODS
-    public Array<Wiggler> getWigglers() {
-        return wigglers;
+    public Array<Enemy> getEnemies() {
+        return enemies;
     }
 
     public Array<Boss> getBosses() {

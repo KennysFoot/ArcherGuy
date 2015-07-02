@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.zhang_000.archerguygame.gameobjects.enemies.Hopper;
 import com.zhang_000.archerguygame.gameobjects.enemies.Wiggler;
 import com.zhang_000.archerguygame.gameobjects.enemies.bosses.QueenWiggler;
 import com.zhang_000.archerguygame.gameobjects.powerups.PowerUp;
@@ -22,9 +23,11 @@ public class AssetLoader {
     public static Animation AGFrontAnimation, AGMovingAni, AGUpAni;
 
     //ENEMIES
-    public static Texture wiggler;
+    public static Texture textureEnemies;
     public static TextureRegion wiggler1, wiggler2;
     public static Animation animationWiggler;
+
+    public static TextureRegion hopperOnGround, hopperInAir;
 
     public static Texture wigglerQueen;
     public static TextureRegion wigQueen1, wigQueen2;
@@ -51,7 +54,7 @@ public class AssetLoader {
     public static Sound soundDeath, soundLoseLife, soundGainLife;
     public static Sound soundFireArrow, soundArrowHit, soundExplodingArrowHit;
     public static Sound soundInfArrows, soundShieldActivated;
-    public static Sound soundEnergyBall;
+    public static Sound soundEnergyBall, soundShieldHit;
 
     //PREFERENCES
     private static Preferences preferences;
@@ -152,14 +155,20 @@ public class AssetLoader {
 
     private static void loadEnemies() {
         //WIGGLER
-        wiggler = new Texture(Gdx.files.internal("wiggler.png"));
-        wiggler1 = new TextureRegion(wiggler, 0, 0, Wiggler.WIDTH, Wiggler.HEIGHT);
+        textureEnemies = new Texture(Gdx.files.internal("enemies.png"));
+        wiggler1 = new TextureRegion(textureEnemies, 0, 0, Wiggler.WIDTH, Wiggler.HEIGHT);
         wiggler1.flip(false, true);
-        wiggler2 = new TextureRegion(wiggler, 20, 0, Wiggler.WIDTH, Wiggler.HEIGHT);
+        wiggler2 = new TextureRegion(textureEnemies, 20, 0, Wiggler.WIDTH, Wiggler.HEIGHT);
         wiggler2.flip(false, true);
         TextureRegion[] wigglerFrames = {wiggler1, wiggler2};
         animationWiggler = new Animation(0.25f, wigglerFrames);
         animationWiggler.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+
+        //HOPPERS
+        hopperOnGround = new TextureRegion(textureEnemies, 23, 18, Hopper.WIDTH, Hopper.HEIGHT_AIR);
+        hopperOnGround.flip(false, true);
+        hopperInAir = new TextureRegion(textureEnemies, 0, 18, Hopper.WIDTH, Hopper.HEIGHT_AIR);
+        hopperInAir.flip(false, true);
 
         //WIGGLER QUEEN
         wigglerQueen = new Texture(Gdx.files.internal("wiggler_queen.png"));
@@ -210,6 +219,7 @@ public class AssetLoader {
         soundGainLife = Gdx.audio.newSound(Gdx.files.internal("sounds/gain_life.ogg"));
         soundExplodingArrowHit = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion_chemistry.flac"));
         soundShieldActivated = Gdx.audio.newSound(Gdx.files.internal("sounds/jingles_NES16.ogg"));
+        soundShieldHit = Gdx.audio.newSound(Gdx.files.internal("sounds/slap-hit.flac"));
     }
 
     public static void dispose() {
@@ -218,6 +228,7 @@ public class AssetLoader {
         tilesGround.dispose();
         weapons.dispose();
         textureExplosion.dispose();
+        textureEnemies.dispose();
 
         //Dispose fonts
         font.dispose();
@@ -234,5 +245,6 @@ public class AssetLoader {
         soundGainLife.dispose();
         soundExplodingArrowHit.dispose();
         soundShieldActivated.dispose();
+        soundShieldHit.dispose();
     }
 }

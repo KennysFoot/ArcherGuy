@@ -83,5 +83,5 @@ public class WeaponManager {
     public Array<Explosion> getExplosions() {
         return explosions;
     }
-    
+
 }
