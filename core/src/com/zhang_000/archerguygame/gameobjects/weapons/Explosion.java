@@ -8,6 +8,9 @@ import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 
 public class Explosion extends GameObject {
 
+    public static final int FRAMES = 40;
+    public static final int WIDTH = 96;
+
     private boolean animationFinished;
     private float animationRunTime;
 
@@ -17,7 +20,7 @@ public class Explosion extends GameObject {
         this.position = position;
         animationFinished = false;
         animationRunTime = 0;
-        boundingCircle = new Circle(position.x + 31, position.y + 31, 22);
+        boundingCircle = new Circle(position.x + 48, position.y + 48, 40);
     }
 
     @Override
@@ -27,6 +30,14 @@ public class Explosion extends GameObject {
             if (AssetLoader.animationExplosion.isAnimationFinished(animationRunTime)) {
                 animationFinished = true;
             }
+        }
+        int frameNum = AssetLoader.animationExplosion.getKeyFrameIndex(animationRunTime);
+        if (frameNum > 20) {
+            boundingCircle.set(position.x + 50, position.y + 50, 25);
+        } else if (frameNum > 30) {
+            //No more hit detection
+            //Make the radius super small
+            boundingCircle.setRadius(0.00001f);
         }
     }
 

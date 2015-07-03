@@ -193,6 +193,9 @@ public class GameWorld {
             Circle c = weaponManager.getExplosions().get(i).getBoundingCircle();
             shapeRenderer.circle(c.x, c.y, c.radius);
         }
+        for (Enemy e : getEnemies()) {
+            shapeRenderer.polygon(e.getHitPolygon().getTransformedVertices());
+        }
 
         shapeRenderer.end(); //END SHAPE RENDERER
     }

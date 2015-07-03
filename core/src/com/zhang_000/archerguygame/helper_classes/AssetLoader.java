@@ -11,6 +11,7 @@ import com.zhang_000.archerguygame.gameobjects.enemies.Hopper;
 import com.zhang_000.archerguygame.gameobjects.enemies.Wiggler;
 import com.zhang_000.archerguygame.gameobjects.enemies.bosses.QueenWiggler;
 import com.zhang_000.archerguygame.gameobjects.powerups.PowerUp;
+import com.zhang_000.archerguygame.gameobjects.weapons.Explosion;
 
 public class AssetLoader {
 
@@ -54,7 +55,7 @@ public class AssetLoader {
     public static Sound soundDeath, soundLoseLife, soundGainLife;
     public static Sound soundFireArrow, soundArrowHit, soundExplodingArrowHit;
     public static Sound soundInfArrows, soundShieldActivated;
-    public static Sound soundEnergyBall, soundShieldHit;
+    public static Sound soundEnergyBall, soundShieldHit, soundHopperHop;
 
     //PREFERENCES
     private static Preferences preferences;
@@ -142,13 +143,13 @@ public class AssetLoader {
         animationEnergyBall = new Animation(0.15f, energyBallFrames);
         animationEnergyBall.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
 
-        textureExplosion = new Texture(Gdx.files.internal("explosion2.png"));
-        TextureRegion[] explosionFrames = new TextureRegion[48];
+        textureExplosion = new Texture(Gdx.files.internal("explosion.png"));
+        TextureRegion[] explosionFrames = new TextureRegion[Explosion.FRAMES];
         for (int i = 0; i < explosionFrames.length; i++) {
-            explosionFrames[i] = new TextureRegion(textureExplosion, i * 64, 0, 64, 64);
+            explosionFrames[i] = new TextureRegion(textureExplosion, i * Explosion.WIDTH, 0, Explosion.WIDTH, Explosion.WIDTH);
             explosionFrames[i].flip(false, true);
         }
-        animationExplosion = new Animation(0.03f, explosionFrames);
+        animationExplosion = new Animation(0.035f, explosionFrames);
         animationExplosion.setPlayMode(Animation.PlayMode.NORMAL);
 
     }
@@ -220,6 +221,7 @@ public class AssetLoader {
         soundExplodingArrowHit = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion_chemistry.flac"));
         soundShieldActivated = Gdx.audio.newSound(Gdx.files.internal("sounds/jingles_NES16.ogg"));
         soundShieldHit = Gdx.audio.newSound(Gdx.files.internal("sounds/slap-hit.flac"));
+        soundHopperHop = Gdx.audio.newSound(Gdx.files.internal("sounds/boing.wav"));
     }
 
     public static void dispose() {
@@ -246,5 +248,6 @@ public class AssetLoader {
         soundExplodingArrowHit.dispose();
         soundShieldActivated.dispose();
         soundShieldHit.dispose();
+        soundHopperHop.dispose();
     }
 }
