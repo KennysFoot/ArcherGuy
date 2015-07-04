@@ -31,6 +31,7 @@ public class Explosion extends GameObject {
                 animationFinished = true;
             }
         }
+
         int frameNum = AssetLoader.animationExplosion.getKeyFrameIndex(animationRunTime);
         if (frameNum > 20) {
             boundingCircle.set(position.x + 50, position.y + 50, 25);

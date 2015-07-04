@@ -136,7 +136,6 @@ public class CollisionDetector {
             }
         }
     }
-
     private void explodingArrowHitRegularEnemy(Arrow a, Enemy e) {
         //Create the explosion
         weaponManager.addExplosion(e.getX() - 48, e.getY() - 48);
@@ -179,7 +178,7 @@ public class CollisionDetector {
         }
     }
     private void checkCollisionsPlayerAndEnemies() {
-        //WIGGLERS AND PLAYER
+        //ENEMIES AND PLAYER
         for (Enemy e : enemies) {
             if (Intersector.overlapConvexPolygons(e.getHitPolygon(), player.getHitBox())) {
                 //Game over if player touches wiggler; stop everything and set the player's lives to zero
