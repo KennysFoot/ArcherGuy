@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Rectangle;
 import com.zhang_000.archerguygame.screens.GameScreen;
+import com.zhang_000.archerguygame.screens.SettingsScreen;
 
 public class InputHandlerMenu implements InputProcessor {
 
@@ -30,7 +31,7 @@ public class InputHandlerMenu implements InputProcessor {
         if (isTouchingPlay(screenX, screenY)) {
             game.setScreen(new GameScreen(game));
         } else if (isTouchingSettings(screenX, screenY)) { //TO DO
-            //game.setScreen(new SettingsScreen());
+            game.setScreen(new SettingsScreen(game));
         }
 
         return false;

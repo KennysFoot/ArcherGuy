@@ -2,13 +2,13 @@ package com.zhang_000.archerguygame.gameworld;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.zhang_000.archerguygame.gameobjects.Ground;
@@ -22,6 +22,7 @@ import com.zhang_000.archerguygame.gameobjects.weapons.WeaponManager;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 import com.zhang_000.archerguygame.helper_classes.InputHandlerGame;
 import com.zhang_000.archerguygame.screens.GameScreen;
+import com.zhang_000.archerguygame.screens.SettingsScreen;
 
 public class GameWorld {
 
@@ -66,6 +67,10 @@ public class GameWorld {
     private EnemyManager enemyManager;
     private WeaponManager weaponManager;
 
+    //SETTINGS
+    private Preferences prefs;
+    private boolean soundOn, redLineOn;
+
     public enum GameState {
         RUNNING, GAME_OVER
     }
@@ -107,6 +112,15 @@ public class GameWorld {
         enemyManager = new EnemyManager(this);
         //collision detector must be instantiated last as it needs a reference to everything else
         collisionDetector = new CollisionDetector(this);
+
+        getSettings();
+    }
+
+    private void getSettings() {
+        prefs = Gdx.app.getPreferences(AssetLoader.ARCHER_GUY);
+
+        soundOn = prefs.getBoolean(SettingsScreen.MUSIC, true);
+        redLineOn = prefs.getBoolean(SettingsScreen.RED_LINE, true);
     }
 
     public void update(float delta) {
@@ -182,13 +196,16 @@ public class GameWorld {
 
         batch.end(); //END SPRITE BATCH
 
+        //*********************************************************************************************
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line); //BEGIN SHAPE RENDERER
         shapeRenderer.setColor(Color.RED);
 
-        //Render the arrow boundary line
-        shapeRenderer.line(50, 0, 50, GameScreen.GAME_HEIGHT);
+        if (redLineOn) {
+            shapeRenderer.line(50, 0, 50, GameScreen.GAME_HEIGHT);
+        }
 
-        //TEST
+        /*
         for (int i = 0; i < weaponManager.getExplosions().size; i++) {
             Circle c = weaponManager.getExplosions().get(i).getBoundingCircle();
             shapeRenderer.circle(c.x, c.y, c.radius);
@@ -196,6 +213,7 @@ public class GameWorld {
         for (Enemy e : getEnemies()) {
             shapeRenderer.polygon(e.getHitPolygon().getTransformedVertices());
         }
+        */
 
         shapeRenderer.end(); //END SHAPE RENDERER
     }

@@ -126,7 +126,7 @@ public class CollisionDetector {
                 if (a instanceof ExplodingArrow) {
                     arrows.removeValue(a, false);
                     AssetLoader.soundExplodingArrowHit.play();
-                    weaponManager.addExplosion(a.getHitPolygon().getX(), a.getHitPolygon().getY() - 18);
+                    weaponManager.addExplosion(a.getHitPolygon().getX() - 18, a.getHitPolygon().getY() - 36);
                 } else {
                     a.setOnGround(true, GameWorld.LATERAL_MOVE_SPEED);
                     if (a.getTimeOnGround() > 0.5f) {

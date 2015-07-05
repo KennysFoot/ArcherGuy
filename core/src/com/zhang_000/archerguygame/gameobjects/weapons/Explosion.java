@@ -20,7 +20,7 @@ public class Explosion extends GameObject {
         this.position = position;
         animationFinished = false;
         animationRunTime = 0;
-        boundingCircle = new Circle(position.x + 48, position.y + 48, 40);
+        boundingCircle = new Circle(position.x + 48, position.y + 48, 36);
     }
 
     @Override
@@ -33,9 +33,9 @@ public class Explosion extends GameObject {
         }
 
         int frameNum = AssetLoader.animationExplosion.getKeyFrameIndex(animationRunTime);
-        if (frameNum > 20) {
+        if (frameNum > 17 && frameNum < 26) {
             boundingCircle.set(position.x + 50, position.y + 50, 25);
-        } else if (frameNum > 30) {
+        } else if (frameNum > 26) {
             //No more hit detection
             //Make the radius super small
             boundingCircle.setRadius(0.00001f);

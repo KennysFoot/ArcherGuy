@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.zhang_000.archerguygame.gameobjects.enemies.Hopper;
 import com.zhang_000.archerguygame.gameobjects.enemies.Wiggler;
 import com.zhang_000.archerguygame.gameobjects.enemies.bosses.QueenWiggler;
@@ -62,6 +63,10 @@ public class AssetLoader {
     public static String ARCHER_GUY = "ArcherGuy";
     public static String HIGH_SCORE = "HighScore";
 
+    //SETTINGS
+    public static Texture settingsAssets;
+    public static TextureRegionDrawable yes, no;
+
     public static void load() {
         //GAME OBJECTS
         loadArcherGuy();
@@ -86,6 +91,15 @@ public class AssetLoader {
             preferences.putInteger(HIGH_SCORE, 0);
             preferences.flush();
         }
+
+        //SETTINGS ASSETS
+        settingsAssets = new Texture(Gdx.files.internal("settings_yes_no.png"));
+        TextureRegion yesReg = new TextureRegion(settingsAssets, 31, 0, 31, 30);
+        yesReg.flip(false, true);
+        yes = new TextureRegionDrawable(yesReg);
+        TextureRegion noReg = new TextureRegion(settingsAssets, 0, 0, 31, 30);
+        noReg.flip(false, true);
+        no = new TextureRegionDrawable(noReg);
     }
 
     public static void setHighScore(int value) {
@@ -231,6 +245,7 @@ public class AssetLoader {
         weapons.dispose();
         textureExplosion.dispose();
         textureEnemies.dispose();
+        settingsAssets.dispose();
 
         //Dispose fonts
         font.dispose();

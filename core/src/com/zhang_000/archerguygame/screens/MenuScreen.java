@@ -22,8 +22,10 @@ public class MenuScreen implements Screen {
     private final Texture backgroundMainMenuTex;
     private final TextureRegion backgroundMainMenu;
 
-    private final float GAME_WIDTH;
-    private final float GAME_HEIGHT;
+    public static float GAME_WIDTH;
+    public static float GAME_HEIGHT;
+    public static float SCALE_X;
+    public static float SCALE_Y;
 
     //BUTTONS
     private Rectangle playGameRect;
@@ -45,9 +47,9 @@ public class MenuScreen implements Screen {
         float SCREEN_WIDTH = Gdx.graphics.getWidth();
         float SCREEN_HEIGHT = Gdx.graphics.getHeight();
         GAME_WIDTH = 210; //GAME_WIDTH constant at 210 pixels; scale height accordingly
-        float scaleFactorX = SCREEN_WIDTH / GAME_WIDTH;
-        GAME_HEIGHT = SCREEN_HEIGHT / scaleFactorX;
-        float scaleFactorY = SCREEN_HEIGHT / GAME_HEIGHT;
+        SCALE_X = SCREEN_WIDTH / GAME_WIDTH;
+        GAME_HEIGHT = SCREEN_HEIGHT / SCALE_X;
+        SCALE_Y = SCREEN_HEIGHT / GAME_HEIGHT;
 
         camera = new OrthographicCamera();
         camera.setToOrtho(true, GAME_WIDTH, GAME_HEIGHT);
@@ -71,7 +73,7 @@ public class MenuScreen implements Screen {
         settingsRect = new Rectangle(SETTINGS_X, SETTINGS_Y - layout.height, layout.width, layout.height);
 
         //SET INPUT PROCESSOR
-        Gdx.input.setInputProcessor(new InputHandlerMenu(myGame, scaleFactorX, scaleFactorY, playGameRect, settingsRect));
+        Gdx.input.setInputProcessor(new InputHandlerMenu(myGame, SCALE_X, SCALE_Y, playGameRect, settingsRect));
 
         //MAIN MENU BACKGROUND
         backgroundMainMenuTex = new Texture(Gdx.files.internal("archer_guy_background_mainmenu.png"));
