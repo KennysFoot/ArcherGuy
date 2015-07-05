@@ -51,31 +51,28 @@ public class PowerUpInfiniteArrows extends PowerUp {
 
     @Override
     public void update(float delta, float runTime) {
-        switch(state) {
-            case ON_SCREEN:
-                //Update position
-                deltaPos = velocity.cpy().scl(delta);
-                position.add(deltaPos);
+        if (!paused) {
+            switch (state) {
+                case ON_SCREEN:
+                    updateOnScreen(delta);
 
-                //Update the hit box to match new position
-                hitPolygon.setPosition(position.x, position.y);
+                    //UP AND DOWN MOVEMENT USING COSINE AND RUNTIME
+                    position.y = MEDIAN + 10 * MathUtils.cos(2 * runTime);
 
-                //UP AND DOWN MOVEMENT USING COSINE AND RUNTIME
-                position.y = MEDIAN + 10 * MathUtils.cos(2 * runTime);
+                    break;
 
-                break;
+                case ACTIVE:
+                    //Call execute method to activate the power up
+                    //Deactivate is called by the power up manager after timeActive has exceeded POWER_UP_LENGTH
+                    if (timeActive == 0) {
+                        activate();
+                        playActivationSound();
+                    }
 
-            case ACTIVE:
-                //Call execute method to activate the power up
-                //Deactivate is called by the power up manager after timeActive has exceeded POWER_UP_LENGTH
-                if (timeActive == 0) {
-                    activate();
-                    playActivationSound();
-                }
+                    timeActive += delta;
 
-                timeActive += delta;
-
-                break;
+                    break;
+            }
         }
     }
 

@@ -12,6 +12,8 @@ public class Arrow extends Weapon {
     protected boolean isOnGround = false;
     protected float timeOnGround = 0;
 
+    private boolean paused = false;
+
     public Arrow(Vector2 position, Vector2 velocity, Vector2 acceleration, float rotation) {
         super(position, velocity, acceleration);
         super.rotation = rotation;
@@ -31,14 +33,16 @@ public class Arrow extends Weapon {
 
     @Override
     public void update(float delta) {
-        if (!isOnGround) {
-            updateVelocity(delta);
-            updatePosition(delta);
-            updateRotation(delta);
-        } else {
-            //Update timeOnGround variable if the arrow is on the ground
-            timeOnGround += delta;
-            updatePosition(delta);
+        if (!paused) {
+            if (!isOnGround) {
+                updateVelocity(delta);
+                updatePosition(delta);
+                updateRotation(delta);
+            } else {
+                //Update timeOnGround variable if the arrow is on the ground
+                timeOnGround += delta;
+                updatePosition(delta);
+            }
         }
     }
 
@@ -63,7 +67,7 @@ public class Arrow extends Weapon {
         position.add(deltaPos);
 
         //Move hit polygon to match arrow tip
-        hitPolygon.translate(deltaPos.x, deltaPos.y);
+        hitPolygon.setPosition(position.x, position.y);
     }
 
     protected void updateRotation(float delta) {
@@ -78,6 +82,18 @@ public class Arrow extends Weapon {
             //Only rotate polygon further if arrow has not reached the max rotation
             hitPolygon.rotate(deltaRotation);
         }
+    }
+
+    @Override
+    public void pause() {
+        super.pause();
+        paused = true;
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+        paused = false;
     }
 
     public void setOnGround(boolean onGround, Vector2 newVelocity) {

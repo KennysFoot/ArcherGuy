@@ -75,6 +75,24 @@ public class WeaponManager {
         explosions.add(new Explosion(new Vector2(x, y)));
     }
 
+    public void pause() {
+        for (Arrow a : arrows) {
+            a.pause();
+        }
+        for (Explosion e : explosions) {
+            e.pause();
+        }
+    }
+
+    public void resume() {
+        for (Arrow a : arrows) {
+            a.resume();
+        }
+        for (Explosion e : explosions) {
+            e.resume();
+        }
+    }
+
     public void setExplodingArrowsActivated(boolean b) {
         explodingArrowsActivated = b;
     }

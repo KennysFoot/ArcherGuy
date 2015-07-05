@@ -13,19 +13,20 @@ public class Explosion extends GameObject {
 
     private boolean animationFinished;
     private float animationRunTime;
+    private boolean paused;
 
     private Circle boundingCircle;
 
     public Explosion(Vector2 position) {
         this.position = position;
-        animationFinished = false;
+        paused = animationFinished = false;
         animationRunTime = 0;
         boundingCircle = new Circle(position.x + 48, position.y + 48, 36);
     }
 
     @Override
     public void update(float delta) {
-        if (!animationFinished) {
+        if (!animationFinished && !paused) {
             animationRunTime += delta;
             if (AssetLoader.animationExplosion.isAnimationFinished(animationRunTime)) {
                 animationFinished = true;
@@ -51,12 +52,12 @@ public class Explosion extends GameObject {
 
     @Override
     public void pause() {
-
+        paused = true;
     }
 
     @Override
     public void resume() {
-
+        paused = false;
     }
 
     public boolean isAnimationFinished() {

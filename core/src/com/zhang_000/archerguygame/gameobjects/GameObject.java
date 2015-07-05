@@ -16,8 +16,8 @@ public abstract class GameObject {
     protected Vector2 deltaVel;
 
     //For pausing the game
-    private Vector2 savedAccel;
-    private Vector2 savedVel;
+    private Vector2 savedAccel = new Vector2(0, 0);
+    private Vector2 savedVel = new Vector2(0, 0);
 
     public GameObject() {
 
@@ -34,8 +34,8 @@ public abstract class GameObject {
     public abstract void render(float runTime, SpriteBatch batch);
 
     public void pause() {
-        savedAccel = acceleration.cpy();
-        savedVel = acceleration.cpy();
+        savedAccel.set(acceleration.cpy());
+        savedVel.set(velocity.cpy());
         acceleration.set(0, 0);
         velocity.set(0, 0);
     }

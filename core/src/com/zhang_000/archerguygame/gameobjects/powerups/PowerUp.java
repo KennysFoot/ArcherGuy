@@ -16,6 +16,8 @@ public abstract class PowerUp extends GameObject {
     protected PowerUpState state;
     protected Polygon hitPolygon = new Polygon();
 
+    protected boolean paused;
+
     public enum PowerUpState {
         ON_SCREEN, ACTIVE
     }
@@ -23,15 +25,23 @@ public abstract class PowerUp extends GameObject {
     public PowerUp() {
         state = PowerUpState.ON_SCREEN;
         timeActive = 0;
+        paused = false;
     }
 
     public PowerUp(Vector2 position, Vector2 velocity, Vector2 acceleration) {
         super(position, velocity, acceleration);
         state = PowerUpState.ON_SCREEN;
         timeActive = 0;
+        paused = false;
     }
 
     public abstract void update(float delta, float runTime);
+
+    protected void updateOnScreen(float delta) {
+        deltaPos = velocity.cpy().scl(delta);
+        position.add(deltaPos);
+        hitPolygon.setPosition(position.x, position.y);
+    }
 
     public abstract void render(float runTime, SpriteBatch batch);
 
@@ -51,6 +61,16 @@ public abstract class PowerUp extends GameObject {
 
     public boolean finished() {
         return timeActive > POWER_UP_LENGTH;
+    }
+
+    @Override
+    public void pause() {
+        paused = true;
+    }
+
+    @Override
+    public void resume() {
+        paused = false;
     }
 
     public void setState(PowerUpState state) {

@@ -24,55 +24,56 @@ public class PowerUpManager {
         runTime = 0;
 
         //TEST
-       // powerUps.add(new PowerUpExplodingArrows(world));
         powerUps.add(new PowerUpShield(world));
         powerUps.add(new PowerUpExplodingArrows(world));
     }
 
     public void update(float delta) {
-        //Create new power up on screen every TIME_BETWEEN_POWER_UPS seconds
-        if ((int) runTime > TIME_BETWEEN_POWER_UPS) {
-            switch(MathUtils.random(LAST_POWER_UP_NUMBER)) {
-                case INFINITE_ARROWS:
-                    powerUps.add(new PowerUpInfiniteArrows());
-                    break;
+        if (!world.isPaused()) {
+            //Create new power up on screen every TIME_BETWEEN_POWER_UPS seconds
+            if ((int) runTime > TIME_BETWEEN_POWER_UPS) {
+                switch (MathUtils.random(LAST_POWER_UP_NUMBER)) {
+                    case INFINITE_ARROWS:
+                        powerUps.add(new PowerUpInfiniteArrows());
+                        break;
 
-                case EXTRA_LIFE:
-                    powerUps.add(new PowerUpExtraLife(world));
-                    break;
+                    case EXTRA_LIFE:
+                        powerUps.add(new PowerUpExtraLife(world));
+                        break;
 
-                case SHIELD:
-                    powerUps.add(new PowerUpShield(world));
-                    break;
+                    case SHIELD:
+                        powerUps.add(new PowerUpShield(world));
+                        break;
 
-                case EXPLODING_ARROWS:
-                    powerUps.add(new PowerUpExplodingArrows(world));
-                    break;
+                    case EXPLODING_ARROWS:
+                        powerUps.add(new PowerUpExplodingArrows(world));
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
+                runTime = 0;
             }
-            runTime = 0;
+
+            //Iterate through powerUps array, updating each power up
+            for (PowerUp pow : powerUps) {
+                pow.update(delta, runTime);
+
+                //Deactivate and remove the power up if it has passed its use time
+                if (pow.finished()) {
+                    pow.deactivate();
+                    powerUps.removeValue(pow, false);
+                }
+
+                //Remove the power up if it is off the screen past the player
+                if (pow.getX() < -PowerUp.LENGTH) {
+                    powerUps.removeValue(pow, false);
+                }
+            }
+
+            //Increment runTime variable
+            runTime += delta;
         }
-
-        //Iterate through powerUps array, updating each power up
-        for (PowerUp pow : powerUps) {
-            pow.update(delta, runTime);
-
-            //Deactivate and remove the power up if it has passed its use time
-            if (pow.finished()) {
-                pow.deactivate();
-                powerUps.removeValue(pow, false);
-            }
-
-            //Remove the power up if it is off the screen past the player
-            if (pow.getX() < -PowerUp.LENGTH) {
-                powerUps.removeValue(pow, false);
-            }
-        }
-
-        //Increment runTime variable
-        runTime += delta;
     }
 
     public void render(float runTime, SpriteBatch batch) {
@@ -80,6 +81,18 @@ public class PowerUpManager {
             if (pow.getState() == PowerUp.PowerUpState.ON_SCREEN) {
                 pow.render(runTime, batch);
             }
+        }
+    }
+
+    public void pause() {
+        for (PowerUp p : powerUps) {
+            p.pause();
+        }
+    }
+
+    public void resume() {
+        for (PowerUp p : powerUps) {
+            p.resume();
         }
     }
 

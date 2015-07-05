@@ -16,10 +16,8 @@ import com.zhang_000.archerguygame.gameobjects.Player;
 import com.zhang_000.archerguygame.gameobjects.enemies.Enemy;
 import com.zhang_000.archerguygame.gameobjects.enemies.EnemyManager;
 import com.zhang_000.archerguygame.gameobjects.enemies.bosses.Boss;
-import com.zhang_000.archerguygame.gameobjects.powerups.PowerUp;
 import com.zhang_000.archerguygame.gameobjects.powerups.PowerUpManager;
 import com.zhang_000.archerguygame.gameobjects.weapons.Arrow;
-import com.zhang_000.archerguygame.gameobjects.weapons.Explosion;
 import com.zhang_000.archerguygame.gameobjects.weapons.WeaponManager;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 import com.zhang_000.archerguygame.helper_classes.InputHandlerGame;
@@ -72,6 +70,11 @@ public class GameWorld {
     //SETTINGS
     private Preferences prefs;
     private boolean soundOn, redLineOn;
+
+    //PLAY AND PAUSE
+    public static final int POS_X_PAUSE = 198;
+    public static final int POS_Y_PAUSE = 2;
+    private boolean paused = false;
 
     public enum GameState {
         RUNNING, GAME_OVER
@@ -196,6 +199,8 @@ public class GameWorld {
             renderButtonsOnGameOver();
         }
 
+        renderPausePlayButton();
+
         batch.end(); //END SPRITE BATCH
 
         //*********************************************************************************************
@@ -239,6 +244,15 @@ public class GameWorld {
         AssetLoader.shadow.draw(batch, "High Score: " + HIGH_SCORE, POSITION_X, POSITION_Y + 19);
         AssetLoader.greenFont.draw(batch, "High Score: " + HIGH_SCORE, POSITION_X, POSITION_Y + 20);
     }
+    private void renderPausePlayButton() {
+        if (paused) {
+            //Render play button
+            batch.draw(AssetLoader.play, POS_X_PAUSE, POS_Y_PAUSE);
+        } else {
+            //Render pause button
+            batch.draw(AssetLoader.pause, POS_X_PAUSE, POS_Y_PAUSE);
+        }
+    }
 
     private void renderButtonsOnGameOver() {
         AssetLoader.shadow.draw(batch, PLAY_AGAIN, POS_X_PLAY_AGAIN, POS_Y_PLAY_AGAIN - 1);
@@ -249,45 +263,21 @@ public class GameWorld {
     }
 
     public void pause() {
+        paused = true;
         player.pause();
-        for (Enemy e : enemyManager.getEnemies()) {
-            e.pause();
-        }
-        for (Boss b : enemyManager.getBosses()) {
-            b.pause();
-        }
-        for (Arrow a : weaponManager.getArrows()) {
-            a.pause();
-        }
-        for (Explosion e : weaponManager.getExplosions()) {
-            //todo override pause method for explosions
-            e.pause();
-        }
-        for (PowerUp p : powerUpManager.getPowerUps()) {
-            //todo override pause method
-            p.pause();
-        }
+        enemyManager.pause();
+        weaponManager.pause();
+        powerUpManager.pause();
+        ground.stop();
     }
 
     public void resume() {
+        paused = false;
         player.resume();
-        for (Enemy e : enemyManager.getEnemies()) {
-            e.resume();
-        }
-        for (Boss b : enemyManager.getBosses()) {
-            b.resume();
-        }
-        for (Arrow a : weaponManager.getArrows()) {
-            a.resume();
-        }
-        for (Explosion e : weaponManager.getExplosions()) {
-            //todo override resume method for explosions
-            e.resume();
-        }
-        for (PowerUp p : powerUpManager.getPowerUps()) {
-            //todo override resume method
-            p.resume();
-        }
+        enemyManager.resume();
+        weaponManager.resume();
+        powerUpManager.resume();
+        ground.resume();
     }
 
     public void gameOver() {
@@ -333,5 +323,9 @@ public class GameWorld {
 
     public Game getGame() {
         return game;
+    }
+
+    public boolean isPaused() {
+        return paused;
     }
 }

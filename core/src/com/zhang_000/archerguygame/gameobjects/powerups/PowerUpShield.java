@@ -37,36 +37,34 @@ public class PowerUpShield extends PowerUp {
 
     @Override
     public void update(float delta, float runTime) {
-        switch(state) {
-            case ON_SCREEN:
-                //Update position
-                deltaPos = velocity.cpy().scl(delta);
-                position.add(deltaPos);
+        if (!paused) {
+            switch (state) {
+                case ON_SCREEN:
+                    updateOnScreen(delta);
 
-                //Check if top of screen or ground is hit
-                if (position.y < 0) {
-                    //If the top of the screen is hit, change the velocity so that the power up is
-                    //going down
-                    position.y = 0;
-                    velocity = VELOCITY_DOWN;
-                } else if (position.y > GameWorld.GROUND_LEVEL - height) {
-                    //Do the opposite for the power up hitting the ground
-                    position.y = GameWorld.GROUND_LEVEL - height;
-                    velocity = VELOCITY_UP;
-                }
+                    //Check if top of screen or ground is hit
+                    if (position.y < 0) {
+                        //If the top of the screen is hit, change the velocity so that the power up is
+                        //going down
+                        position.y = 0;
+                        velocity = VELOCITY_DOWN;
+                    } else if (position.y > GameWorld.GROUND_LEVEL - height) {
+                        //Do the opposite for the power up hitting the ground
+                        position.y = GameWorld.GROUND_LEVEL - height;
+                        velocity = VELOCITY_UP;
+                    }
 
-                //Update hit polygon
-                hitPolygon.setPosition(position.x, position.y);
-                break;
+                    break;
 
-            case ACTIVE:
-                if (timeActive == 0) {
-                    activate();
-                    playActivationSound();
-                }
+                case ACTIVE:
+                    if (timeActive == 0) {
+                        activate();
+                        playActivationSound();
+                    }
 
-                timeActive += delta;
-                break;
+                    timeActive += delta;
+                    break;
+            }
         }
     }
 

@@ -28,6 +28,8 @@ public class Player extends GameObject {
 
     private Polygon hitBox = new Polygon();
 
+    private boolean paused = false;
+
     //POWER UPS
     private boolean shieldActivated;
     private Circle shield;
@@ -69,51 +71,53 @@ public class Player extends GameObject {
 
     @Override
     public void update(float delta) {
-        //Increment timeScore
-        timeScore += delta;
+        if (!paused) {
+            //Increment timeScore
+            timeScore += delta;
 
-        //Update velocity
-        deltaVel = acceleration.cpy().scl(delta);
-        velocity.add(deltaVel);
+            //Update velocity
+            deltaVel = acceleration.cpy().scl(delta);
+            velocity.add(deltaVel);
 
-        //Cap velocity
-        if (velocity.y > 175) {
-            velocity.y = 175;
-        } else if (velocity.y < -175) {
-            velocity.y = -175;
-        }
-
-        //Update position
-        deltaPos = velocity.cpy().scl(delta);
-        position.add(deltaPos);
-
-        //Cap position (Don't let him fall through the ground or go off the top of the screen)
-        if (position.y + height > groundLevel) {
-            position.y = groundLevel - height;
-            velocity.y = 0;
-
-            //Must check if player state is set to GOING_DOWN before changing state to ON_GROUND
-            if (state == State.GOING_DOWN) {
-                state = State.ON_GROUND;
+            //Cap velocity
+            if (velocity.y > 175) {
+                velocity.y = 175;
+            } else if (velocity.y < -175) {
+                velocity.y = -175;
             }
-        } else if (position.y < 0) {
-            position.y = 0;
-            velocity.y = 0;
-        }
 
-        leftEyePosition.set(17, position.y + 7);
-        hitBox.setPosition(position.x, position.y);
-        if (shieldActivated) {
-            shield.setPosition(position.x + width / 2, position.y + height / 2);
+            //Update position
+            deltaPos = velocity.cpy().scl(delta);
+            position.add(deltaPos);
+
+            //Cap position (Don't let him fall through the ground or go off the top of the screen)
+            if (position.y + height > groundLevel) {
+                position.y = groundLevel - height;
+                velocity.y = 0;
+
+                //Must check if player state is set to GOING_DOWN before changing state to ON_GROUND
+                if (state == State.GOING_DOWN) {
+                    state = State.ON_GROUND;
+                }
+            } else if (position.y < 0) {
+                position.y = 0;
+                velocity.y = 0;
+            }
+
+            leftEyePosition.set(17, position.y + 7);
+            hitBox.setPosition(position.x, position.y);
+            if (shieldActivated) {
+                shield.setPosition(position.x + width / 2, position.y + height / 2);
+            }
         }
     }
 
     @Override
     public void render(float runTime, SpriteBatch batch) {
         if (state == State.ON_GROUND) {
-            batch.draw(movingAnimation.getKeyFrame(runTime), position.x, position.y, width, height);
+            batch.draw(movingAnimation.getKeyFrame(timeScore), position.x, position.y, width, height);
         } else if (state == State.GOING_UP) {
-            batch.draw(upAnimation.getKeyFrame(runTime), position.x, position.y, width, height);
+            batch.draw(upAnimation.getKeyFrame(timeScore), position.x, position.y, width, height);
         } else if (state == State.GOING_DOWN) {
             batch.draw(AssetLoader.archerGuyFront1, position.x, position.y, width, height);
         } else if (state == State.DEAD) {
@@ -147,6 +151,18 @@ public class Player extends GameObject {
             //RE-ENABLE THE SPRITE BATCH
             batch.begin();
         }
+    }
+
+    @Override
+    public void pause() {
+        super.pause();
+        paused = true;
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+        paused = false;
     }
 
     public void setGroundLevel(int gLev) {

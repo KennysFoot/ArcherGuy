@@ -47,9 +47,11 @@ public class EnemyManager {
     }
 
     public void updateEnemies(float delta) {
-        updateWigglers(delta);
-        updateHoppers(delta);
-        updateBosses(delta);
+        if (!world.isPaused()) {
+            updateWigglers(delta);
+            updateHoppers(delta);
+            updateBosses(delta);
+        }
     }
 
     private void updateWigglers(float delta) {
@@ -199,6 +201,24 @@ public class EnemyManager {
         //If the player runs out of lives, the game is over
         if (player.getLives() < 1) {
             world.gameOver();
+        }
+    }
+
+    public void pause() {
+        for (Enemy e : enemies) {
+            e.pause();
+        }
+        for (Boss b : bosses) {
+            b.pause();
+        }
+    }
+
+    public void resume() {
+        for (Enemy e : enemies) {
+            e.resume();
+        }
+        for (Boss b : bosses) {
+            b.resume();
         }
     }
 

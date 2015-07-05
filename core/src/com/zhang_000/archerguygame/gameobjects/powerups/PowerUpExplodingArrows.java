@@ -15,7 +15,7 @@ public class PowerUpExplodingArrows extends PowerUp {
         super();
         this.world = world;
         width = height = PowerUp.LENGTH;
-        POWER_UP_LENGTH = 15;
+        POWER_UP_LENGTH = 10;
 
         position = new Vector2(GameScreen.GAME_WIDTH, MathUtils.random(0, GameWorld.GROUND_LEVEL - height));
 
@@ -29,21 +29,21 @@ public class PowerUpExplodingArrows extends PowerUp {
 
     @Override
     public void update(float delta, float runTime) {
-        switch(state) {
-            case ON_SCREEN:
-                deltaPos = velocity.cpy().scl(delta);
-                position.add(deltaPos);
-                hitPolygon.setPosition(position.x, position.y);
-                break;
+        if (!paused) {
+            switch (state) {
+                case ON_SCREEN:
+                    updateOnScreen(delta);
+                    break;
 
-            case ACTIVE:
-                if (timeActive == 0) {
-                    activate();
-                    playActivationSound();
-                }
+                case ACTIVE:
+                    if (timeActive == 0) {
+                        activate();
+                        playActivationSound();
+                    }
 
-                timeActive += delta;
-                break;
+                    timeActive += delta;
+                    break;
+            }
         }
     }
 

@@ -68,6 +68,10 @@ public class AssetLoader {
     public static Texture settingsAssets;
     public static TextureRegionDrawable yes, no;
 
+    //PLAY AND PAUSE BUTTONS
+    public static Texture texturePlay, texturePause;
+    public static TextureRegion play, pause;
+
     public static void load() {
         //GAME OBJECTS
         loadArcherGuy();
@@ -101,6 +105,14 @@ public class AssetLoader {
         TextureRegion noReg = new TextureRegion(settingsAssets, 0, 0, 31, 30);
         noReg.flip(false, true);
         no = new TextureRegionDrawable(noReg);
+
+        //Play and Pause buttons
+        texturePlay = new Texture(Gdx.files.internal("play.png"));
+        texturePause = new Texture(Gdx.files.internal("pause.png"));
+        play = new TextureRegion(texturePlay);
+        pause = new TextureRegion(texturePause);
+        play.flip(false, true);
+        pause.flip(false, true);
     }
 
     public static void playSound(Sound sound, float volume) {
@@ -253,6 +265,8 @@ public class AssetLoader {
         textureExplosion.dispose();
         textureEnemies.dispose();
         settingsAssets.dispose();
+        texturePlay.dispose();
+        texturePause.dispose();
 
         //Dispose fonts
         font.dispose();

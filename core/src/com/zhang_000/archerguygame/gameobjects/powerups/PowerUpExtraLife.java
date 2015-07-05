@@ -27,26 +27,23 @@ public class PowerUpExtraLife extends PowerUp {
 
     @Override
     public void update(float delta, float runTime) {
-        switch (state) {
-            case ON_SCREEN:
-                //The extra life power up will just move very quickly laterally across the screen
-                deltaPos = velocity.cpy().scl(delta);
-                position.add(deltaPos);
+        if (!paused) {
+            switch (state) {
+                case ON_SCREEN:
+                    updateOnScreen(delta);
+                    break;
 
-                //UPDATE HIT POLYGON
-                hitPolygon.setPosition(position.x, position.y);
-                break;
+                case ACTIVE:
+                    activate();
 
-            case ACTIVE:
-                activate();
+                    //We want to remove this power up from the manager after activate() is called once
+                    //We do this by setting timeActive to be greater than the POWER_UP_LENGTH
+                    //When the finished() method is called by the manager, it will return true and this power up
+                    // will be removed from the Array
+                    timeActive = POWER_UP_LENGTH + 1;
 
-                //We want to remove this power up from the manager after activate() is called once
-                //We do this by setting timeActive to be greater than the POWER_UP_LENGTH
-                //When the finished() method is called by the manager, it will return true and this power up
-                // will be removed from the Array
-                timeActive = POWER_UP_LENGTH + 1;
-
-                break;
+                    break;
+            }
         }
     }
 
