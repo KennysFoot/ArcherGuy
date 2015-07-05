@@ -96,7 +96,7 @@ public class PowerUpInfiniteArrows extends PowerUp {
 
     @Override
     public void playActivationSound() {
-        AssetLoader.soundInfArrows.play();
+        AssetLoader.playSound(AssetLoader.soundInfArrows, 1);
     }
 
 }

@@ -94,7 +94,7 @@ public class CollisionDetector {
                         //REGULAR ARROW
                         arrows.removeValue(a, false);
                         enemies.removeValue(e, false);
-                        AssetLoader.soundArrowHit.play(0.5f);
+                        playArrowHitSound();
                         player.incrementKillScore(e.getScore());
                     }
                 }
@@ -125,7 +125,7 @@ public class CollisionDetector {
             if (Intersector.overlapConvexPolygons(a.getHitPolygon(), ground.getBoundingPolygon())) {
                 if (a instanceof ExplodingArrow) {
                     arrows.removeValue(a, false);
-                    AssetLoader.soundExplodingArrowHit.play();
+                    playExplosionSound();
                     weaponManager.addExplosion(a.getHitPolygon().getX() - 18, a.getHitPolygon().getY() - 36);
                 } else {
                     a.setOnGround(true, GameWorld.LATERAL_MOVE_SPEED);
@@ -140,8 +140,7 @@ public class CollisionDetector {
         //Create the explosion
         weaponManager.addExplosion(e.getX() - 48, e.getY() - 48);
 
-        //PLAY EXPLOSION SOUND
-        AssetLoader.soundExplodingArrowHit.play();
+        playExplosionSound();
 
         player.incrementKillScore(e.getScore());
 
@@ -151,8 +150,20 @@ public class CollisionDetector {
     private void explodingArrowHitBoss(Arrow a, Boss b) {
         arrows.removeValue(a, false);
         b.doDamage(2);
-        AssetLoader.soundExplodingArrowHit.play();
+        playExplosionSound();
         weaponManager.addExplosion(a.getHitPolygon().getX() - 40, a.getHitPolygon().getY() - 40);
+    }
+    private void playExplosionSound() {
+        AssetLoader.playSound(AssetLoader.soundExplodingArrowHit, 1);
+    }
+    private void playArrowHitSound() {
+        AssetLoader.playSound(AssetLoader.soundArrowHit, 0.5f);
+    }
+    private void playShieldHitSound() {
+        AssetLoader.playSound(AssetLoader.soundShieldHit, 0.8f);
+    }
+    private void playDeathSound() {
+        AssetLoader.playSound(AssetLoader.soundDeath, 0.7f);
     }
 
     private void checkCollisionsShieldAndEnemies() {
@@ -162,7 +173,7 @@ public class CollisionDetector {
                 //Enemies dies if it touches the shield
                 enemies.removeValue(e, false);
                 player.incrementKillScore(Wiggler.SCORE);
-                AssetLoader.soundShieldHit.play(0.8f);
+                playShieldHitSound();
             }
         }
 
@@ -217,7 +228,7 @@ public class CollisionDetector {
         ground.stop();
         world.setGameState(GameWorld.GameState.GAME_OVER);
 
-        AssetLoader.soundDeath.play(0.70f);
+        playDeathSound();
 
         //If a new high score has been reached, save it
         if (player.getScore() > AssetLoader.getHighScore()) {

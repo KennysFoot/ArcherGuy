@@ -131,9 +131,11 @@ public class Player extends GameObject {
             //TO ENABLE BLENDING SPRITE BATCH MUST BE STOPPED
             batch.end();
 
+            //Enable blending
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
+            //Render the shield (a translucent circle around the player)
             shapeRenderer.setAutoShapeType(true);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(156 / 255f, 120 / 255f, 88 / 255f, 0.4f);
@@ -175,9 +177,9 @@ public class Player extends GameObject {
         //Play the lose_life sound if not dead yet but a life is lost
         //If 0 lives reached, different sound will play
         if (lives > 0 && deltaLives < 0) {
-            AssetLoader.soundLoseLife.play();
+            AssetLoader.playSound(AssetLoader.soundLoseLife, 1);
         } else if (deltaLives > 0) {
-            AssetLoader.soundGainLife.play(0.65f);
+            AssetLoader.playSound(AssetLoader.soundGainLife, 0.65f);
         }
     }
 

@@ -89,7 +89,7 @@ public class QueenWiggler extends Boss {
             energyBall = new EnergyBall(new Vector2(position.x, position.y), new Vector2(vel_x, vel_y),
                     GameWorld.NO_ACCELERATION);
 
-            AssetLoader.soundEnergyBall.play();
+            AssetLoader.playSound(AssetLoader.soundEnergyBall, 1);
         }
 
         energyBall.update(delta);

@@ -92,7 +92,7 @@ public class PowerUpShield extends PowerUp {
 
     @Override
     public void playActivationSound() {
-        AssetLoader.soundShieldActivated.play();
+        AssetLoader.playSound(AssetLoader.soundShieldActivated, 1);
     }
 
 }

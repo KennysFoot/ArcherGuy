@@ -52,7 +52,7 @@ public class Hopper extends Enemy {
         } else {
             velocity.y = -150;
             state = HopperState.IN_AIR;
-            AssetLoader.soundHopperHop.play();
+            AssetLoader.playSound(AssetLoader.soundHopperHop, 1);
         }
 
         hitPolygon.setPosition(position.x, position.y);

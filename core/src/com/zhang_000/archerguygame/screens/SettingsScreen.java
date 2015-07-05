@@ -21,6 +21,7 @@ public class SettingsScreen implements Screen {
 
     public static final String RED_LINE = "red line";
     public static final String MUSIC = "music";
+    public static String SFX = "sfx";
 
     private Preferences prefs;
 
@@ -30,7 +31,7 @@ public class SettingsScreen implements Screen {
 
     private Stage stage;
     private CheckBox.CheckBoxStyle checkBoxStyle;
-    private CheckBox checkBoxRedLine, checkBoxMusic;
+    private CheckBox checkBoxRedLine, checkBoxMusic, checkBoxSFX;
     private TextButton buttonMainMenu;
 
     public SettingsScreen(Game game) {
@@ -67,6 +68,7 @@ public class SettingsScreen implements Screen {
         //Add the buttons and check boxes to the stage
         stage.addActor(checkBoxRedLine);
         stage.addActor(checkBoxMusic);
+        stage.addActor(checkBoxSFX);
         stage.addActor(buttonMainMenu);
 
         //Make the stage handle input
@@ -80,6 +82,9 @@ public class SettingsScreen implements Screen {
         if (!prefs.contains(MUSIC)) {
             prefs.putBoolean(MUSIC, true);
         }
+        if (!prefs.contains(SFX)) {
+            prefs.putBoolean(SFX, true);
+        }
         prefs.flush();
     }
 
@@ -92,10 +97,12 @@ public class SettingsScreen implements Screen {
 
         checkBoxRedLine = new CheckBox("red boundary line", checkBoxStyle);
         checkBoxMusic = new CheckBox("music", checkBoxStyle);
+        checkBoxSFX = new CheckBox("sfx", checkBoxStyle);
 
         //Retrieve preferences and apply them to the check boxes
         checkBoxRedLine.setChecked(prefs.getBoolean(RED_LINE));
         checkBoxMusic.setChecked(prefs.getBoolean(MUSIC));
+        checkBoxSFX.setChecked(prefs.getBoolean(SFX));
 
         //Add the listeners to the check boxes
         checkBoxRedLine.addListener(new ClickListener() {
@@ -113,10 +120,18 @@ public class SettingsScreen implements Screen {
                 prefs.flush();
             }
         });
+        checkBoxSFX.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                prefs.putBoolean(SFX, checkBoxSFX.isChecked());
+                prefs.flush();
+            }
+        });
 
         //Set the bounds on the checkboxes
         checkBoxRedLine.setBounds(PADDING, PADDING, checkBoxRedLine.getWidth(), BUTTON_HEIGHT);
         checkBoxMusic.setBounds(PADDING, PADDING + BUTTON_HEIGHT + 1, checkBoxMusic.getWidth(), BUTTON_HEIGHT);
+        checkBoxSFX.setBounds(PADDING, PADDING + 2 * BUTTON_HEIGHT + 2, checkBoxSFX.getWidth(), BUTTON_HEIGHT);
     }
 
     @Override

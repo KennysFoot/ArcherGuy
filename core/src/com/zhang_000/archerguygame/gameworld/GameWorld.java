@@ -16,8 +16,10 @@ import com.zhang_000.archerguygame.gameobjects.Player;
 import com.zhang_000.archerguygame.gameobjects.enemies.Enemy;
 import com.zhang_000.archerguygame.gameobjects.enemies.EnemyManager;
 import com.zhang_000.archerguygame.gameobjects.enemies.bosses.Boss;
+import com.zhang_000.archerguygame.gameobjects.powerups.PowerUp;
 import com.zhang_000.archerguygame.gameobjects.powerups.PowerUpManager;
 import com.zhang_000.archerguygame.gameobjects.weapons.Arrow;
+import com.zhang_000.archerguygame.gameobjects.weapons.Explosion;
 import com.zhang_000.archerguygame.gameobjects.weapons.WeaponManager;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 import com.zhang_000.archerguygame.helper_classes.InputHandlerGame;
@@ -244,6 +246,48 @@ public class GameWorld {
 
         AssetLoader.shadow.draw(batch, MAIN_MENU, POS_X_MAIN_MENU, POS_Y_MAIN_MENU);
         AssetLoader.font.draw(batch, MAIN_MENU, POS_X_MAIN_MENU, POS_Y_MAIN_MENU);
+    }
+
+    public void pause() {
+        player.pause();
+        for (Enemy e : enemyManager.getEnemies()) {
+            e.pause();
+        }
+        for (Boss b : enemyManager.getBosses()) {
+            b.pause();
+        }
+        for (Arrow a : weaponManager.getArrows()) {
+            a.pause();
+        }
+        for (Explosion e : weaponManager.getExplosions()) {
+            //todo override pause method for explosions
+            e.pause();
+        }
+        for (PowerUp p : powerUpManager.getPowerUps()) {
+            //todo override pause method
+            p.pause();
+        }
+    }
+
+    public void resume() {
+        player.resume();
+        for (Enemy e : enemyManager.getEnemies()) {
+            e.resume();
+        }
+        for (Boss b : enemyManager.getBosses()) {
+            b.resume();
+        }
+        for (Arrow a : weaponManager.getArrows()) {
+            a.resume();
+        }
+        for (Explosion e : weaponManager.getExplosions()) {
+            //todo override resume method for explosions
+            e.resume();
+        }
+        for (PowerUp p : powerUpManager.getPowerUps()) {
+            //todo override resume method
+            p.resume();
+        }
     }
 
     public void gameOver() {

@@ -69,7 +69,7 @@ public class PowerUpExplodingArrows extends PowerUp {
 
     @Override
     public void playActivationSound() {
-        AssetLoader.soundExplodingArrowHit.play();
+        AssetLoader.playSound(AssetLoader.soundExplodingArrowHit, 1);
     }
 
 }

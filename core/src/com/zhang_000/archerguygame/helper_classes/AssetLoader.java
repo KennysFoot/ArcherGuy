@@ -13,6 +13,7 @@ import com.zhang_000.archerguygame.gameobjects.enemies.Wiggler;
 import com.zhang_000.archerguygame.gameobjects.enemies.bosses.QueenWiggler;
 import com.zhang_000.archerguygame.gameobjects.powerups.PowerUp;
 import com.zhang_000.archerguygame.gameobjects.weapons.Explosion;
+import com.zhang_000.archerguygame.screens.SettingsScreen;
 
 public class AssetLoader {
 
@@ -59,7 +60,7 @@ public class AssetLoader {
     public static Sound soundEnergyBall, soundShieldHit, soundHopperHop;
 
     //PREFERENCES
-    private static Preferences preferences;
+    private static Preferences prefs;
     public static String ARCHER_GUY = "ArcherGuy";
     public static String HIGH_SCORE = "HighScore";
 
@@ -85,11 +86,11 @@ public class AssetLoader {
 
         loadSounds();
 
-        //Create or retrieve existing preferences file
-        preferences = Gdx.app.getPreferences(ARCHER_GUY);
-        if (!preferences.contains(HIGH_SCORE)) {
-            preferences.putInteger(HIGH_SCORE, 0);
-            preferences.flush();
+        //Create or retrieve existing prefs file
+        prefs = Gdx.app.getPreferences(ARCHER_GUY);
+        if (!prefs.contains(HIGH_SCORE)) {
+            prefs.putInteger(HIGH_SCORE, 0);
+            prefs.flush();
         }
 
         //SETTINGS ASSETS
@@ -102,13 +103,19 @@ public class AssetLoader {
         no = new TextureRegionDrawable(noReg);
     }
 
+    public static void playSound(Sound sound, float volume) {
+        if (prefs.getBoolean(SettingsScreen.SFX, true)) {
+            sound.play(volume);
+        }
+    }
+
     public static void setHighScore(int value) {
-        preferences.putInteger(HIGH_SCORE, value);
-        preferences.flush();
+        prefs.putInteger(HIGH_SCORE, value);
+        prefs.flush();
     }
 
     public static int getHighScore() {
-        return preferences.getInteger(HIGH_SCORE);
+        return prefs.getInteger(HIGH_SCORE);
     }
 
     private static void loadArcherGuy() {

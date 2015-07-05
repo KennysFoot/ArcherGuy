@@ -42,13 +42,10 @@ public class InputHandlerGame implements InputProcessor {
         //power up is activated
         if (touchingShootArrowRegion(screenX) && (lastFire > Arrow.RELOAD_TIME || infiniteArrowsActivated)) {
             world.createArrow(degrees);
-            //Play the arrow firing sound effect
-            AssetLoader.soundFireArrow.play();
-
             //Reset the last fire timer
             lastFire = 0;
-
             return true;
+
         } else if (touchingMovementRegion(screenX)) {
             //Make Arrow guy go up
             player.goUp();

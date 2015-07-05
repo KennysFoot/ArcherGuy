@@ -74,6 +74,7 @@ public class PowerUpExtraLife extends PowerUp {
     }
     @Override
     public void playActivationSound() {
+        //Sound for this power up is taken care of in the player's increment lives method
     }
 
 }

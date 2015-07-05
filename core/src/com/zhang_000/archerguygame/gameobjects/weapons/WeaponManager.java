@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.zhang_000.archerguygame.gameobjects.Player;
 import com.zhang_000.archerguygame.gameworld.GameWorld;
+import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 import com.zhang_000.archerguygame.screens.GameScreen;
 
 public class WeaponManager {
@@ -58,14 +59,16 @@ public class WeaponManager {
             arrows.add(new ExplodingArrow(player.getLeftEyePosition().cpy(),
                     new Vector2(Arrow.VELOCITY_MAGNITUDE * MathUtils.cosDeg(degrees),
                             Arrow.VELOCITY_MAGNITUDE * MathUtils.sinDeg(degrees)),
-                    world.ACCELERATION.cpy(), degrees));
+                    GameWorld.ACCELERATION.cpy(), degrees));
         } else {
             //REGULAR ARROWS
             arrows.add(new Arrow(player.getLeftEyePosition().cpy(),
                     new Vector2(Arrow.VELOCITY_MAGNITUDE * MathUtils.cosDeg(degrees),
                             Arrow.VELOCITY_MAGNITUDE * MathUtils.sinDeg(degrees)),
-                    world.ACCELERATION.cpy(), degrees));
+                    GameWorld.ACCELERATION.cpy(), degrees));
         }
+
+        AssetLoader.playSound(AssetLoader.soundFireArrow, 1);
     }
 
     public void addExplosion(float x, float y) {

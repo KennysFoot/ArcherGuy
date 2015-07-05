@@ -49,6 +49,16 @@ public class Explosion extends GameObject {
         }
     }
 
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
     public boolean isAnimationFinished() {
         return animationFinished;
     }
