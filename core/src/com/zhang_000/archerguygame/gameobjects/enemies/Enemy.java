@@ -8,6 +8,7 @@ import com.zhang_000.archerguygame.gameobjects.GameObject;
 public abstract class Enemy extends GameObject {
 
     protected int score;
+    protected boolean paused = false;
 
     protected Polygon hitPolygon = new Polygon();
 
@@ -18,6 +19,18 @@ public abstract class Enemy extends GameObject {
     public abstract void update(float delta);
 
     public abstract void render(float runTime, SpriteBatch batch);
+
+    @Override
+    public void pause() {
+        super.pause();
+        paused = true;
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+        paused = false;
+    }
 
     public Polygon getHitPolygon() {
         return hitPolygon;

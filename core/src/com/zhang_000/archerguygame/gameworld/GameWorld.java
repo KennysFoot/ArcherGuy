@@ -269,6 +269,7 @@ public class GameWorld {
         weaponManager.pause();
         powerUpManager.pause();
         ground.stop();
+        AssetLoader.pauseSounds();
     }
 
     public void resume() {
@@ -278,6 +279,7 @@ public class GameWorld {
         weaponManager.resume();
         powerUpManager.resume();
         ground.resume();
+        AssetLoader.resumeSounds();
     }
 
     public void gameOver() {

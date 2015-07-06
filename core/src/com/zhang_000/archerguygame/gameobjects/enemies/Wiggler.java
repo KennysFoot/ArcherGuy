@@ -10,6 +10,8 @@ public class Wiggler extends Enemy {
     public static final int WIDTH = 20;
     public static final int HEIGHT = 18;
 
+    private float animationRunTime = 0;
+
     public Wiggler(Vector2 position, Vector2 velocity, Vector2 acceleration) {
         super(position, velocity, acceleration);
         super.width = AssetLoader.wiggler1.getRegionWidth();
@@ -25,15 +27,19 @@ public class Wiggler extends Enemy {
 
     @Override
     public void update(float delta) {
-        deltaPos = velocity.cpy().scl(delta);
-        position.add(deltaPos);
+        if (!paused) {
+            animationRunTime += delta;
 
-        hitPolygon.translate(deltaPos.x, deltaPos.y);
+            deltaPos = velocity.cpy().scl(delta);
+            position.add(deltaPos);
+
+            hitPolygon.translate(deltaPos.x, deltaPos.y);
+        }
     }
 
     @Override
     public void render(float runTime, SpriteBatch batch) {
-        batch.draw(AssetLoader.animationWiggler.getKeyFrame(runTime), position.x, position.y, width, height);
+        batch.draw(AssetLoader.animationWiggler.getKeyFrame(animationRunTime), position.x, position.y, width, height);
     }
 
 }

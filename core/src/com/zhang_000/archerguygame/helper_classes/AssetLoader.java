@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.zhang_000.archerguygame.gameobjects.enemies.Hopper;
 import com.zhang_000.archerguygame.gameobjects.enemies.Wiggler;
 import com.zhang_000.archerguygame.gameobjects.enemies.bosses.QueenWiggler;
@@ -54,6 +55,7 @@ public class AssetLoader {
     public static BitmapFont shadow, font, greenFont;
 
     //SOUNDS
+    public static Array<Sound> sounds = new Array<Sound>();
     public static Sound soundDeath, soundLoseLife, soundGainLife;
     public static Sound soundFireArrow, soundArrowHit, soundExplodingArrowHit;
     public static Sound soundInfArrows, soundShieldActivated;
@@ -255,6 +257,21 @@ public class AssetLoader {
         soundShieldActivated = Gdx.audio.newSound(Gdx.files.internal("sounds/jingles_NES16.ogg"));
         soundShieldHit = Gdx.audio.newSound(Gdx.files.internal("sounds/slap-hit.flac"));
         soundHopperHop = Gdx.audio.newSound(Gdx.files.internal("sounds/boing.wav"));
+
+        sounds.addAll(soundFireArrow, soundArrowHit, soundInfArrows, soundDeath, soundLoseLife, soundEnergyBall,
+                soundGainLife, soundExplodingArrowHit, soundShieldActivated, soundShieldHit, soundHopperHop);
+    }
+
+    public static void pauseSounds() {
+        for (Sound s : sounds) {
+            s.pause();
+        }
+    }
+
+    public static void resumeSounds() {
+        for (Sound s : sounds) {
+            s.resume();
+        }
     }
 
     public static void dispose() {

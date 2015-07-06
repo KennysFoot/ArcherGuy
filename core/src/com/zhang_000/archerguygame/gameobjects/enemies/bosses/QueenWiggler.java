@@ -20,6 +20,9 @@ public class QueenWiggler extends Boss {
 
     private PositionState positionState;
     private EnergyBall energyBall;
+    private float animationRunTime = 0;
+
+    private boolean paused = false;
 
     //Reference to the player needed to calculate direction that new energy ball should head in
     private Player player;
@@ -51,64 +54,80 @@ public class QueenWiggler extends Boss {
 
     @Override
     public void update(float delta) {
-        //If not entirely on screen yet (recently spawned)
-        if (position.x > ENTERED_X) {
-            deltaPos = velocity.cpy().scl(delta);
-            position.add(deltaPos);
-        } else if (positionState == PositionState.ENTERING) { //If the Queen Wiggler has JUST entered the screen fully
-            positionState = PositionState.ENTERED;
-            velocity.set(0, QueenWiggler.VELOCITY_UP);
-        }
+        if (!paused) {
+            animationRunTime += delta;
 
-        //If the Queen Wiggler has fully entered the screen, move her up and down at a constant speed
-        if (positionState == PositionState.ENTERED) {
-            deltaPos = velocity.cpy().scl(delta);
-            position.add(deltaPos);
-
-            //If top of screen has been reached, start going down
-            if (position.y < 0) {
-                position.set(position.x, 0);
-                velocity.set(0, QueenWiggler.VELOCITY_DOWN);
-            } else if (position.y > GROUND_Y) {
-                position.y = GROUND_Y;
-                velocity.set(0, VELOCITY_UP);
+            //If not entirely on screen yet (recently spawned)
+            if (position.x > ENTERED_X) {
+                deltaPos = velocity.cpy().scl(delta);
+                position.add(deltaPos);
+            } else if (positionState == PositionState.ENTERING) { //If the Queen Wiggler has JUST entered the screen fully
+                positionState = PositionState.ENTERED;
+                velocity.set(0, QueenWiggler.VELOCITY_UP);
             }
-        }
 
-        //Update the hit polygon
-        hitPolygon.setPosition(position.x, position.y);
+            //If the Queen Wiggler has fully entered the screen, move her up and down at a constant speed
+            if (positionState == PositionState.ENTERED) {
+                deltaPos = velocity.cpy().scl(delta);
+                position.add(deltaPos);
 
-        //UPDATE ENERGY BALL
-        if (energyBall == null) {
-            float dy = player.getY() - position.y;
-            float dx = player.getX() - position.x;
-            float angle = MathUtils.atan2(dy, dx);
-            float vel_x = EnergyBall.VELOCITY_MAGNITUDE * MathUtils.cos(angle);
-            float vel_y = EnergyBall.VELOCITY_MAGNITUDE * MathUtils.sin(angle);
+                //If top of screen has been reached, start going down
+                if (position.y < 0) {
+                    position.set(position.x, 0);
+                    velocity.set(0, QueenWiggler.VELOCITY_DOWN);
+                } else if (position.y > GROUND_Y) {
+                    position.y = GROUND_Y;
+                    velocity.set(0, VELOCITY_UP);
+                }
+            }
 
-            energyBall = new EnergyBall(new Vector2(position.x, position.y), new Vector2(vel_x, vel_y),
-                    GameWorld.NO_ACCELERATION);
+            //Update the hit polygon
+            hitPolygon.setPosition(position.x, position.y);
 
-            AssetLoader.playSound(AssetLoader.soundEnergyBall, 1);
-        }
+            //UPDATE ENERGY BALL
+            if (energyBall == null) {
+                float dy = player.getY() - position.y;
+                float dx = player.getX() - position.x;
+                float angle = MathUtils.atan2(dy, dx);
+                float vel_x = EnergyBall.VELOCITY_MAGNITUDE * MathUtils.cos(angle);
+                float vel_y = EnergyBall.VELOCITY_MAGNITUDE * MathUtils.sin(angle);
 
-        energyBall.update(delta);
+                energyBall = new EnergyBall(new Vector2(position.x, position.y), new Vector2(vel_x, vel_y),
+                        GameWorld.NO_ACCELERATION);
 
-        //Remove the energy ball if it is off the screen or hits the ground
-        if (energyBall.getX() < -EnergyBall.WIDTH || energyBall.getY() > GameWorld.GROUND_LEVEL - EnergyBall.HEIGHT) {
-            energyBall = null;
+                AssetLoader.playSound(AssetLoader.soundEnergyBall, 1);
+            }
+
+            energyBall.update(delta);
+
+            //Remove the energy ball if it is off the screen or hits the ground
+            if (energyBall.getX() < -EnergyBall.WIDTH || energyBall.getY() > GameWorld.GROUND_LEVEL - EnergyBall.HEIGHT) {
+                energyBall = null;
+            }
         }
 
     }
 
     @Override
     public void render(float runTime, SpriteBatch batch) {
-        batch.draw(AssetLoader.animationWigQueen.getKeyFrame(runTime), position.x, position.y,
-                AssetLoader.animationWigQueen.getKeyFrame(runTime).getRegionWidth(), height);
+        batch.draw(AssetLoader.animationWigQueen.getKeyFrame(animationRunTime), position.x, position.y,
+                AssetLoader.animationWigQueen.getKeyFrame(animationRunTime).getRegionWidth(), height);
 
         if (energyBall != null) {
             energyBall.render(runTime, batch);
         }
+    }
+
+    @Override
+    public void pause() {
+        super.pause();
+        paused = true;
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+        paused = false;
     }
 
     @Override
@@ -149,7 +168,7 @@ public class QueenWiggler extends Boss {
 
         @Override
         public void render(float runTime, SpriteBatch batch) {
-            batch.draw(AssetLoader.animationEnergyBall.getKeyFrame(runTime), position.x, position.y);
+            batch.draw(AssetLoader.animationEnergyBall.getKeyFrame(animationRunTime), position.x, position.y);
         }
 
         @Override
