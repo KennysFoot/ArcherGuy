@@ -89,15 +89,15 @@ public class SettingsScreen implements Screen {
     }
 
     private void setUpCheckBoxes() {
-        final int PADDING = 10;
+        final int PADDING = 8;
         final int BUTTON_HEIGHT = 30;
 
         //Create new check boxes
         checkBoxStyle = new CheckBox.CheckBoxStyle(AssetLoader.no, AssetLoader.yes, AssetLoader.font, Color.WHITE);
 
-        checkBoxRedLine = new CheckBox("red boundary line", checkBoxStyle);
-        checkBoxMusic = new CheckBox("music", checkBoxStyle);
-        checkBoxSFX = new CheckBox("sfx", checkBoxStyle);
+        checkBoxRedLine = new CheckBox("RED BOUNDARY LINE", checkBoxStyle);
+        checkBoxMusic = new CheckBox("MUSIC", checkBoxStyle);
+        checkBoxSFX = new CheckBox("SFX", checkBoxStyle);
 
         //Retrieve preferences and apply them to the check boxes
         checkBoxRedLine.setChecked(prefs.getBoolean(RED_LINE));

@@ -12,8 +12,8 @@ public class PowerUpManager {
     private Array<PowerUp> powerUps = new Array<PowerUp>();
     private float runTime;
 
-    private static final short TIME_BETWEEN_POWER_UPS = 35;
-    private static final short LAST_POWER_UP_NUMBER = 3;
+    private static final int TIME_BETWEEN_POWER_UPS = 30;
+    private static final int LAST_POWER_UP_NUMBER = 3;
     private static final int INFINITE_ARROWS = 0;
     private static final int EXTRA_LIFE = 1;
     private static final int SHIELD = 2;

@@ -37,6 +37,7 @@ public class InputHandlerGame implements InputProcessor {
             } else {
                 world.pause();
             }
+        //NOT PAUSED
         } else if (!world.isPaused()) {
             if (touchingShootArrowRegion(screenX) && (lastFire > Arrow.RELOAD_TIME || infiniteArrowsActivated)) {
                 //Calculate the distance between the finger touch position and Archer Guy
@@ -55,6 +56,10 @@ public class InputHandlerGame implements InputProcessor {
                 player.goUp();
                 return true;
             }
+        }
+        //PAUSED
+        else {
+            //todo paused touch input handling
         }
 
         return false;

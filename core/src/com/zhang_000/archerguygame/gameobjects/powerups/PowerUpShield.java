@@ -15,12 +15,14 @@ public class PowerUpShield extends PowerUp {
     private static final Vector2 VELOCITY_DOWN = new Vector2(-40, 25);
 
     private Player player;
+    private boolean flickering;
 
     public PowerUpShield(GameWorld world) {
         super();
         player = world.getPlayer();
         width = height = PowerUp.LENGTH;
         POWER_UP_LENGTH = 10;
+        flickering = false;
 
         position = new Vector2(GameScreen.GAME_WIDTH, MathUtils.random(0, GameWorld.GROUND_LEVEL - height));
         //0 = up and 1 = down
@@ -63,6 +65,13 @@ public class PowerUpShield extends PowerUp {
                     }
 
                     timeActive += delta;
+
+                    //Start flickering once every 0.1 seconds after 7 seconds
+                    if (timeActive > 7 && ((int) (timeActive * 10)) % 2 == 0) {
+                        player.setFlicker(true);
+                    } else {
+                        player.setFlicker(false);
+                    }
                     break;
             }
         }

@@ -12,7 +12,7 @@ import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 
 public class Player extends GameObject {
 
-    private static float SCALE_LIVES = 0.45f;
+    private static float SCALE_LIVES = 0.5f;
     private ShapeRenderer shapeRenderer;
 
     private Animation standingAnimation;
@@ -31,8 +31,9 @@ public class Player extends GameObject {
     private boolean paused = false;
 
     //POWER UPS
-    private boolean shieldActivated;
-    private Circle shield;
+    private boolean shieldActivated; //Shield lasts 10 seconds
+    private Circle shield;           //Start flickering at 7 seconds
+    private boolean flicker = false; //Shield won't be rendered when flicker is set to true
 
     private enum State {
         GOING_UP, GOING_DOWN, ON_GROUND, DEAD
@@ -73,7 +74,7 @@ public class Player extends GameObject {
     public void update(float delta) {
         if (!paused) {
             //Increment timeScore
-            timeScore += delta;
+            timeScore += delta / 2;
 
             //Update velocity
             deltaVel = acceleration.cpy().scl(delta);
@@ -95,7 +96,7 @@ public class Player extends GameObject {
                 position.y = groundLevel - height;
                 velocity.y = 0;
 
-                //Must check if player state is set to GOING_DOWN before changing state to ON_GROUND
+                //Make sure state isn't set to GOING_UP before changing it to ON_GROUND
                 if (state == State.GOING_DOWN) {
                     state = State.ON_GROUND;
                 }
@@ -127,11 +128,12 @@ public class Player extends GameObject {
 
         //Draw the lives remaining onto the screen
         for (int i = 0; i < lives; i++) {
-            batch.draw(AssetLoader.archerGuyFront2, 1 + i * 6, 1, 0, 0,
+            batch.draw(AssetLoader.archerGuyFront2, 1 + i * 7.5f, 1, 0, 0,
                     width * SCALE_LIVES, height * SCALE_LIVES, SCALE_LIVES, SCALE_LIVES, 0);
         }
 
-        if (shieldActivated) {
+        //Render the shield if it is activated and flicker is set to false
+        if (shieldActivated && !flicker) {
             //TO ENABLE BLENDING SPRITE BATCH MUST BE STOPPED
             batch.end();
 
@@ -227,6 +229,10 @@ public class Player extends GameObject {
 
     public boolean isShieldActivated() {
         return shieldActivated;
+    }
+
+    public void setFlicker(boolean b) {
+        flicker = b;
     }
 
 }

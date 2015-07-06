@@ -19,7 +19,7 @@ public class PowerUpExtraLife extends PowerUp {
         POWER_UP_LENGTH = 100;
 
         position =  new Vector2(GameScreen.GAME_WIDTH, MathUtils.random(0, GameWorld.GROUND_LEVEL - height));
-        velocity = GameWorld.LATERAL_MOVE_SPEED.cpy().scl(7);
+        velocity = GameWorld.LATERAL_MOVE_SPEED.cpy().scl(8);
         acceleration = GameWorld.NO_ACCELERATION;
 
         setUpHitPolygon();

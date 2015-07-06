@@ -20,7 +20,7 @@ public class PowerUpExplodingArrows extends PowerUp {
         position = new Vector2(GameScreen.GAME_WIDTH, MathUtils.random(0, GameWorld.GROUND_LEVEL - height));
 
         //TEMP VELOCITY
-        velocity = GameWorld.LATERAL_MOVE_SPEED.cpy().scl(7);
+        velocity = GameWorld.LATERAL_MOVE_SPEED.cpy().scl(8);
 
         acceleration = GameWorld.NO_ACCELERATION;
 
