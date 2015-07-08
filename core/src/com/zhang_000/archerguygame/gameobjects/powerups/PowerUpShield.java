@@ -68,9 +68,9 @@ public class PowerUpShield extends PowerUp {
 
                     //Start flickering once every 0.1 seconds after 7 seconds
                     if (timeActive > 7 && ((int) (timeActive * 10)) % 2 == 0) {
-                        player.setFlicker(true);
+                        player.setShieldFlicker(true);
                     } else {
-                        player.setFlicker(false);
+                        player.setShieldFlicker(false);
                     }
                     break;
             }

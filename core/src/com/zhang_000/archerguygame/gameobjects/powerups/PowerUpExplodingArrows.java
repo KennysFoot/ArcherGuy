@@ -3,6 +3,7 @@ package com.zhang_000.archerguygame.gameobjects.powerups;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.zhang_000.archerguygame.gameobjects.Player;
 import com.zhang_000.archerguygame.gameworld.GameWorld;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 import com.zhang_000.archerguygame.screens.GameScreen;
@@ -10,10 +11,12 @@ import com.zhang_000.archerguygame.screens.GameScreen;
 public class PowerUpExplodingArrows extends PowerUp {
 
     private GameWorld world;
+    private Player player;
 
     public PowerUpExplodingArrows(GameWorld world) {
         super();
         this.world = world;
+        player = world.getPlayer();
         width = height = PowerUp.LENGTH;
         POWER_UP_LENGTH = 10;
 
@@ -42,6 +45,13 @@ public class PowerUpExplodingArrows extends PowerUp {
                     }
 
                     timeActive += delta;
+
+                    if (timeActive > 8 && ((int) (timeActive * 10)) % 3 == 0) {
+                        player.setExplodingArrowsFlicker(true);
+                    } else {
+                        player.setExplodingArrowsFlicker(false);
+                    }
+
                     break;
             }
         }
@@ -60,11 +70,14 @@ public class PowerUpExplodingArrows extends PowerUp {
     @Override
     protected void activate() {
         world.getWeaponManager().setExplodingArrowsActivated(true);
+        player.setExplodingArrowsActivated(true);
     }
 
     @Override
     protected void deactivate() {
         world.getWeaponManager().setExplodingArrowsActivated(false);
+        player.setExplodingArrowsActivated(false);
+        player.setExplodingArrowsFlicker(false);
     }
 
     @Override

@@ -33,7 +33,10 @@ public class Player extends GameObject {
     //POWER UPS
     private boolean shieldActivated; //Shield lasts 10 seconds
     private Circle shield;           //Start flickering at 7 seconds
-    private boolean flicker = false; //Shield won't be rendered when flicker is set to true
+    private boolean shieldFlicker = false; //Shield won't be rendered when shieldFlicker is set to true
+    private boolean explodingArrowsActivated, infiniteArrowsActivated;
+    private boolean explodingArrowsFlicker = false;
+    private boolean infArrowsFlicker = false;
 
     private enum State {
         GOING_UP, GOING_DOWN, ON_GROUND, DEAD
@@ -65,7 +68,7 @@ public class Player extends GameObject {
                 23, 7, 23, 22, 20, height, 9, height, 5, 22, 5, 7}; //body
         hitBox.setVertices(vertices);
 
-        shieldActivated = false;
+        explodingArrowsActivated = infiniteArrowsActivated = shieldActivated = false;
 
         shield = new Circle(position.x + width / 2, position.y + height / 2, 21);
     }
@@ -132,8 +135,12 @@ public class Player extends GameObject {
                     width * SCALE_LIVES, height * SCALE_LIVES, SCALE_LIVES, SCALE_LIVES, 0);
         }
 
-        //Render the shield if it is activated and flicker is set to false
-        if (shieldActivated && !flicker) {
+        renderPowerUpEffects(batch);
+    }
+
+    private void renderPowerUpEffects(SpriteBatch batch) {
+        //Render the shield if it is activated and shieldFlicker is set to false
+        if (shieldActivated && !shieldFlicker) {
             //TO ENABLE BLENDING SPRITE BATCH MUST BE STOPPED
             batch.end();
 
@@ -152,6 +159,27 @@ public class Player extends GameObject {
 
             //RE-ENABLE THE SPRITE BATCH
             batch.begin();
+        }
+
+        //It's possible to die with the exploding arrows and infinite arrows power ups
+        //Don't render the coloured yes if the player dies
+        if (state != State.DEAD) {
+            //Render eye shading
+            //The eyes are 1 pixel higher when state is set to GOING_DOWN
+            if (explodingArrowsActivated && !explodingArrowsFlicker) {
+                if (state == State.GOING_DOWN) {
+                    batch.draw(AssetLoader.eyeExplodingArrows, position.x, position.y, width, height);
+                } else {
+                    batch.draw(AssetLoader.eyeExplodingArrows, position.x, position.y + 1, width, height);
+                }
+            }
+            if (infiniteArrowsActivated && !infArrowsFlicker) {
+                if (state == State.GOING_DOWN) {
+                    batch.draw(AssetLoader.eyeInfArrows, position.x, position.y, width, height);
+                } else {
+                    batch.draw(AssetLoader.eyeInfArrows, position.x, position.y + 1, width, height);
+                }
+            }
         }
     }
 
@@ -231,8 +259,24 @@ public class Player extends GameObject {
         return shieldActivated;
     }
 
-    public void setFlicker(boolean b) {
-        flicker = b;
+    public void setShieldFlicker(boolean b) {
+        shieldFlicker = b;
+    }
+
+    public void setExplodingArrowsActivated(boolean explodingArrowsActivated) {
+        this.explodingArrowsActivated = explodingArrowsActivated;
+    }
+
+    public void setInfiniteArrowsActivated(boolean infiniteArrowsActivated) {
+        this.infiniteArrowsActivated = infiniteArrowsActivated;
+    }
+
+    public void setInfArrowsFlicker(boolean infArrowsFlicker) {
+        this.infArrowsFlicker = infArrowsFlicker;
+    }
+
+    public void setExplodingArrowsFlicker(boolean explodingArrowsFlicker) {
+        this.explodingArrowsFlicker = explodingArrowsFlicker;
     }
 
 }

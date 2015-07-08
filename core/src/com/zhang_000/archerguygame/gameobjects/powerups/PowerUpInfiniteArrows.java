@@ -3,6 +3,7 @@ package com.zhang_000.archerguygame.gameobjects.powerups;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.zhang_000.archerguygame.gameobjects.Player;
 import com.zhang_000.archerguygame.gameworld.GameWorld;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 import com.zhang_000.archerguygame.helper_classes.InputHandlerGame;
@@ -11,10 +12,12 @@ import com.zhang_000.archerguygame.screens.GameScreen;
 public class PowerUpInfiniteArrows extends PowerUp {
 
     private final float MEDIAN;
+    private GameWorld world;
+    private Player player;
 
     public PowerUpInfiniteArrows(Vector2 position, Vector2 velocity, Vector2 acceleration) {
         super(position, velocity, acceleration);
-        POWER_UP_LENGTH = 5.0f;
+        POWER_UP_LENGTH = 8;
         image = AssetLoader.powUpInfiniteArrows;
         width = AssetLoader.powUpInfiniteArrows.getRegionWidth();
         height = AssetLoader.powUpInfiniteArrows.getRegionHeight();
@@ -27,13 +30,15 @@ public class PowerUpInfiniteArrows extends PowerUp {
         hitPolygon.setVertices(vertices);
     }
 
-    public PowerUpInfiniteArrows() {
+    public PowerUpInfiniteArrows(GameWorld world) {
         super();
+        this.world = world;
+        player = world.getPlayer();
 
         super.position =  new Vector2(GameScreen.GAME_WIDTH, MathUtils.random(30, GameWorld.GROUND_LEVEL - 50));
         super.velocity = GameWorld.LATERAL_MOVE_SPEED.cpy().scl(5);
         super.acceleration = GameWorld.NO_ACCELERATION;
-        POWER_UP_LENGTH = 5.0f;
+        POWER_UP_LENGTH = 8;
 
         image = AssetLoader.powUpInfiniteArrows;
         width = AssetLoader.powUpInfiniteArrows.getRegionWidth();
@@ -71,6 +76,12 @@ public class PowerUpInfiniteArrows extends PowerUp {
 
                     timeActive += delta;
 
+                    if (timeActive > 6 && ((int) (timeActive * 10)) % 3 == 0) {
+                        player.setInfArrowsFlicker(true);
+                    } else {
+                        player.setInfArrowsFlicker(false);
+                    }
+
                     break;
             }
         }
@@ -84,11 +95,15 @@ public class PowerUpInfiniteArrows extends PowerUp {
     @Override
     protected void activate() {
         InputHandlerGame.setInfiniteArrowsActivated(true);
+        player.setInfiniteArrowsActivated(true);
+
     }
 
     @Override
     protected void deactivate() {
         InputHandlerGame.setInfiniteArrowsActivated(false);
+        player.setInfiniteArrowsActivated(false);
+        player.setInfArrowsFlicker(false);
     }
 
     @Override

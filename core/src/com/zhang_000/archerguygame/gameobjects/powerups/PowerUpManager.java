@@ -58,7 +58,7 @@ public class PowerUpManager {
     private void createNewPowerUp() {
         switch (MathUtils.random(LAST_POWER_UP_NUMBER)) {
             case INFINITE_ARROWS:
-                powerUps.add(new PowerUpInfiniteArrows());
+                powerUps.add(new PowerUpInfiniteArrows(world));
                 break;
 
             case EXTRA_LIFE:

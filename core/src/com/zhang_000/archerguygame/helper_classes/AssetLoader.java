@@ -24,6 +24,7 @@ public class AssetLoader {
     public static Texture archerGuyFrontTex;
     public static TextureRegion archerGuyFront1, archerGuyFront2, archerGuyFront3, AGMoving, AGUp;
     public static Animation AGFrontAnimation, AGMovingAni, AGUpAni;
+    public static TextureRegion eyeInfArrows, eyeExplodingArrows;
 
     //ENEMIES
     public static Texture textureEnemies;
@@ -143,6 +144,11 @@ public class AssetLoader {
         TextureRegion[] goingUp = {archerGuyFront2, archerGuyFront3, AGUp};
         AGUpAni = new Animation(0.07f, goingUp);
         AGUpAni.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+
+        eyeInfArrows = new TextureRegion(archerGuyFrontTex, 2, 33, 28, 30);
+        eyeExplodingArrows = new TextureRegion(archerGuyFrontTex, 34, 33, 28, 30);
+        eyeInfArrows.flip(false, true);
+        eyeExplodingArrows.flip(false, true);
     }
 
     private static void loadWeapons() {
