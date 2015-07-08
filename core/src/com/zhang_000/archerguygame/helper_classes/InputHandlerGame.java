@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.zhang_000.archerguygame.gameobjects.Player;
 import com.zhang_000.archerguygame.gameobjects.weapons.Arrow;
 import com.zhang_000.archerguygame.gameworld.GameWorld;
+import com.zhang_000.archerguygame.screens.GameScreen;
 
 public class InputHandlerGame implements InputProcessor {
 
@@ -37,7 +38,7 @@ public class InputHandlerGame implements InputProcessor {
             } else {
                 world.pause();
             }
-        //NOT PAUSED
+            //NOT PAUSED
         } else if (!world.isPaused()) {
             if (touchingShootArrowRegion(screenX) && (lastFire > Arrow.RELOAD_TIME || infiniteArrowsActivated)) {
                 //Calculate the distance between the finger touch position and Archer Guy
@@ -60,6 +61,9 @@ public class InputHandlerGame implements InputProcessor {
         //PAUSED
         else {
             //todo paused touch input handling
+            if (touchingMainMenuRegion(screenX, screenY)) {
+                world.backToMainMenu();
+            }
         }
 
         return false;
@@ -73,6 +77,11 @@ public class InputHandlerGame implements InputProcessor {
     }
     private boolean touchingPauseRegion(int screenX, int screenY) {
         return GameWorld.POS_X_PAUSE < screenX && screenY < GameWorld.POS_Y_PAUSE + AssetLoader.pause.getRegionHeight();
+    }
+   private boolean touchingMainMenuRegion(int screenX, int screenY) {
+        return GameWorld.POS_X_MAIN_MENU < screenX && screenX < GameWorld.POS_X_MAIN_MENU + GameWorld.WIDTH_MAIN_MENU &&
+                (GameScreen.GAME_HEIGHT - GameWorld.HEIGHT_BUTTON) / 2 < screenY &&
+                screenY < (GameScreen.GAME_HEIGHT - GameWorld.HEIGHT_BUTTON) / 2 + GameWorld.HEIGHT_BUTTON;
     }
 
     @Override

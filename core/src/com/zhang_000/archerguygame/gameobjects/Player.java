@@ -128,7 +128,7 @@ public class Player extends GameObject {
 
         //Draw the lives remaining onto the screen
         for (int i = 0; i < lives; i++) {
-            batch.draw(AssetLoader.archerGuyFront2, 1 + i * 7.5f, 1, 0, 0,
+            batch.draw(AssetLoader.archerGuyFront2, 2 + i * 7.5f, 2, 0, 0,
                     width * SCALE_LIVES, height * SCALE_LIVES, SCALE_LIVES, SCALE_LIVES, 0);
         }
 

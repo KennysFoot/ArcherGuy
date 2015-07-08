@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.zhang_000.archerguygame.gameobjects.enemies.Hopper;
 import com.zhang_000.archerguygame.gameobjects.enemies.Wiggler;
@@ -66,10 +65,6 @@ public class AssetLoader {
     public static String ARCHER_GUY = "ArcherGuy";
     public static String HIGH_SCORE = "HighScore";
 
-    //SETTINGS
-    public static Texture settingsAssets;
-    public static TextureRegionDrawable yes, no;
-
     //PLAY AND PAUSE BUTTONS
     public static Texture texturePlay, texturePause;
     public static TextureRegion play, pause;
@@ -98,15 +93,6 @@ public class AssetLoader {
             prefs.putInteger(HIGH_SCORE, 0);
             prefs.flush();
         }
-
-        //SETTINGS ASSETS
-        settingsAssets = new Texture(Gdx.files.internal("settings_yes_no.png"));
-        TextureRegion yesReg = new TextureRegion(settingsAssets, 31, 0, 31, 30);
-        yesReg.flip(false, true);
-        yes = new TextureRegionDrawable(yesReg);
-        TextureRegion noReg = new TextureRegion(settingsAssets, 0, 0, 31, 30);
-        noReg.flip(false, true);
-        no = new TextureRegionDrawable(noReg);
 
         //Play and Pause buttons
         texturePlay = new Texture(Gdx.files.internal("play.png"));
@@ -149,13 +135,13 @@ public class AssetLoader {
         AGMoving = new TextureRegion(archerGuyFrontTex, 98, 1, 28, 30);
         AGMoving.flip(false, true);
         TextureRegion[] moving = {archerGuyFront2, AGMoving};
-        AGMovingAni = new Animation(0.15f, moving);
+        AGMovingAni = new Animation(0.10f, moving);
         AGMovingAni.setPlayMode(Animation.PlayMode.LOOP);
 
         AGUp = new TextureRegion(archerGuyFrontTex, 130, 1, 28, 30);
         AGUp.flip(false, true);
         TextureRegion[] goingUp = {archerGuyFront2, archerGuyFront3, AGUp};
-        AGUpAni = new Animation(0.08f, goingUp);
+        AGUpAni = new Animation(0.07f, goingUp);
         AGUpAni.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
     }
 
@@ -281,7 +267,6 @@ public class AssetLoader {
         weapons.dispose();
         textureExplosion.dispose();
         textureEnemies.dispose();
-        settingsAssets.dispose();
         texturePlay.dispose();
         texturePause.dispose();
 

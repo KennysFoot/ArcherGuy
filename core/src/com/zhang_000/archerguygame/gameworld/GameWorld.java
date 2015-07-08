@@ -22,6 +22,7 @@ import com.zhang_000.archerguygame.gameobjects.weapons.WeaponManager;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 import com.zhang_000.archerguygame.helper_classes.InputHandlerGame;
 import com.zhang_000.archerguygame.screens.GameScreen;
+import com.zhang_000.archerguygame.screens.MenuScreen;
 import com.zhang_000.archerguygame.screens.SettingsScreen;
 
 public class GameWorld {
@@ -41,9 +42,9 @@ public class GameWorld {
     private GameState gameState;
     private String score;
     public int SCORE_POSITION_X;
-    public final int SCORE_POSITION_Y = 5;
+    public final int SCORE_POSITION_Y = 2;
     public static int GROUND_LEVEL;
-    public static final Vector2 LATERAL_MOVE_SPEED = new Vector2(-10, 0);
+    public static final Vector2 LATERAL_MOVE_SPEED = new Vector2(-13, 0);
     public static final Vector2 NO_ACCELERATION = new Vector2(0, 0);
     public static final Vector2 ACCELERATION = new Vector2(0, 150);
 
@@ -69,7 +70,7 @@ public class GameWorld {
 
     //SETTINGS
     private Preferences prefs;
-    private boolean soundOn, redLineOn;
+    private boolean redLineOn;
 
     //PLAY AND PAUSE
     public static final int POS_X_PAUSE = 198;
@@ -109,7 +110,7 @@ public class GameWorld {
         player = new Player(new Vector2(10, GROUND_LEVEL - AssetLoader.archerGuyFront1.getRegionHeight()),
                 new Vector2(0, 0), ACCELERATION.cpy(), shapeRenderer);
         player.setGroundLevel(GROUND_LEVEL);
-        ground = new Ground(new Vector2(0, GROUND_LEVEL), LATERAL_MOVE_SPEED.cpy(), new Vector2(0, 0));
+        ground = new Ground(new Vector2(0, GROUND_LEVEL), LATERAL_MOVE_SPEED.cpy(), new Vector2(0, 0), player);
         powerUpManager = new PowerUpManager(this);
         weaponManager = new WeaponManager(this);
 
@@ -123,8 +124,6 @@ public class GameWorld {
 
     private void getSettings() {
         prefs = Gdx.app.getPreferences(AssetLoader.ARCHER_GUY);
-
-        soundOn = prefs.getBoolean(SettingsScreen.MUSIC, true);
         redLineOn = prefs.getBoolean(SettingsScreen.RED_LINE, true);
     }
 
@@ -248,8 +247,13 @@ public class GameWorld {
         if (paused) {
             //Render play button
             batch.draw(AssetLoader.play, POS_X_PAUSE, POS_Y_PAUSE);
-        } else {
-            //Render pause button
+
+            //Render options on pause screen
+            layout.setText(AssetLoader.font, MAIN_MENU);
+            AssetLoader.font.draw(batch, MAIN_MENU, POS_X_MAIN_MENU, (GameScreen.GAME_HEIGHT + layout.height) / 2);
+
+        } else if (gameState != GameState.GAME_OVER){
+            //Render pause button if the game is NOT currently paused and the game is not over
             batch.draw(AssetLoader.pause, POS_X_PAUSE, POS_Y_PAUSE);
         }
     }
@@ -288,6 +292,10 @@ public class GameWorld {
 
     public void createArrow(float degrees) {
         weaponManager.addArrow(degrees);
+    }
+
+    public void backToMainMenu() {
+        game.setScreen(new MenuScreen(game));
     }
 
     //SETTER AND GETTER METHODS

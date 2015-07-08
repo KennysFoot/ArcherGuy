@@ -23,35 +23,14 @@ public class PowerUpManager {
         this.world = world;
         runTime = 0;
 
-        //TEST
-        powerUps.add(new PowerUpShield(world));
-        powerUps.add(new PowerUpExplodingArrows(world));
+        createNewPowerUp();
     }
 
     public void update(float delta) {
         if (!world.isPaused()) {
             //Create new power up on screen every TIME_BETWEEN_POWER_UPS seconds
             if ((int) runTime > TIME_BETWEEN_POWER_UPS) {
-                switch (MathUtils.random(LAST_POWER_UP_NUMBER)) {
-                    case INFINITE_ARROWS:
-                        powerUps.add(new PowerUpInfiniteArrows());
-                        break;
-
-                    case EXTRA_LIFE:
-                        powerUps.add(new PowerUpExtraLife(world));
-                        break;
-
-                    case SHIELD:
-                        powerUps.add(new PowerUpShield(world));
-                        break;
-
-                    case EXPLODING_ARROWS:
-                        powerUps.add(new PowerUpExplodingArrows(world));
-                        break;
-
-                    default:
-                        break;
-                }
+                createNewPowerUp();
                 runTime = 0;
             }
 
@@ -73,6 +52,29 @@ public class PowerUpManager {
 
             //Increment runTime variable
             runTime += delta;
+        }
+    }
+
+    private void createNewPowerUp() {
+        switch (MathUtils.random(LAST_POWER_UP_NUMBER)) {
+            case INFINITE_ARROWS:
+                powerUps.add(new PowerUpInfiniteArrows());
+                break;
+
+            case EXTRA_LIFE:
+                powerUps.add(new PowerUpExtraLife(world));
+                break;
+
+            case SHIELD:
+                powerUps.add(new PowerUpShield(world));
+                break;
+
+            case EXPLODING_ARROWS:
+                powerUps.add(new PowerUpExplodingArrows(world));
+                break;
+
+            default:
+                break;
         }
     }
 

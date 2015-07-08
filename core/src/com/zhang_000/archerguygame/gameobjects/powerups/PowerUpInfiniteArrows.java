@@ -30,8 +30,8 @@ public class PowerUpInfiniteArrows extends PowerUp {
     public PowerUpInfiniteArrows() {
         super();
 
-        super.position =  new Vector2(GameScreen.GAME_WIDTH, MathUtils.random(50, GameWorld.GROUND_LEVEL - 50));
-        super.velocity = GameWorld.LATERAL_MOVE_SPEED.cpy().scl(3);
+        super.position =  new Vector2(GameScreen.GAME_WIDTH, MathUtils.random(30, GameWorld.GROUND_LEVEL - 50));
+        super.velocity = GameWorld.LATERAL_MOVE_SPEED.cpy().scl(5);
         super.acceleration = GameWorld.NO_ACCELERATION;
         POWER_UP_LENGTH = 5.0f;
 
@@ -57,7 +57,7 @@ public class PowerUpInfiniteArrows extends PowerUp {
                     updateOnScreen(delta);
 
                     //UP AND DOWN MOVEMENT USING COSINE AND RUNTIME
-                    position.y = MEDIAN + 10 * MathUtils.cos(2 * runTime);
+                    position.y = MEDIAN + 20 * MathUtils.cos(2 * runTime);
 
                     break;
 

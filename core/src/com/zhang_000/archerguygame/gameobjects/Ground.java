@@ -11,9 +11,12 @@ public class Ground extends GameObject{
 
     private final int NUM_TILES = 11; //10 tiles to fill screen + 1 extra needed for scrolling
     private Polygon boundingPolygon = new Polygon();
+    private Player player;
+    private boolean paused = false;
 
-    public Ground(Vector2 position, Vector2 velocity, Vector2 acceleration) {
+    public Ground(Vector2 position, Vector2 velocity, Vector2 acceleration, Player player) {
         super(position, velocity, acceleration);
+        this.player = player;
 
         boundingPolygon.setPosition(position.x, position.y);
         boundingPolygon.setOrigin(position.x, position.y);
@@ -24,11 +27,26 @@ public class Ground extends GameObject{
 
     @Override
     public void update(float delta) {
-        deltaPos = velocity.cpy().scl(delta);
-        position.add(deltaPos);
+        if (!paused) {
+            deltaPos = velocity.cpy().scl(delta);
+            position.add(deltaPos);
 
-        if (position.x < -AssetLoader.tileGrass.getRegionWidth()) {
-            position.x = 0;
+            if (position.x < -AssetLoader.tileGrass.getRegionWidth()) {
+                position.x = 0;
+            }
+
+            /*
+            float speedFactor = 1;
+            if (player.getScore() > 1) {
+                speedFactor += player.getScore() / 10;
+
+                if (speedFactor > 4) {
+                    speedFactor = 4;
+                }
+            }
+
+            velocity.set(GameWorld.LATERAL_MOVE_SPEED.cpy().scl(speedFactor));
+            */
         }
     }
 
@@ -41,10 +59,12 @@ public class Ground extends GameObject{
 
     public void stop() {
         velocity.set(0, 0);
+        paused = true;
     }
 
     public void resume() {
         velocity.set(GameWorld.LATERAL_MOVE_SPEED.cpy());
+        paused = false;
     }
 
     public Polygon getBoundingPolygon() {

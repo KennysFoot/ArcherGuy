@@ -12,7 +12,7 @@ import com.zhang_000.archerguygame.screens.GameScreen;
 
 public class EnemyManager {
 
-    //SPAWN OPTIONS
+    //WIGGLER SPAWN OPTIONS
     public static final int SPAWN_ONE_WIGGLER_RANDOM_PLACEMENT = 1;
     public static final int SPAWN_THREE_WIGGLERS = 2;
     public static final int SPAWN_TWO_WIGGLERS = 3;
@@ -48,13 +48,25 @@ public class EnemyManager {
 
     public void updateEnemies(float delta) {
         if (!world.isPaused()) {
-            updateWigglers(delta);
-            updateHoppers(delta);
+            float speedFactor = 1;
+
+            //Increase the enemies speed as the players score increases
+            if (player.getScore() > 1) {
+                speedFactor += player.getScore() / 3;
+
+                //Cap speed increase to 9 times the initial speed
+                if (speedFactor > 10) {
+                    speedFactor = 10;
+                }
+            }
+
+            updateWigglers(delta, speedFactor);
+            updateHoppers(delta, speedFactor);
             updateBosses(delta);
         }
     }
 
-    private void updateWigglers(float delta) {
+    private void updateWigglers(float delta, float speedFactor) {
         wigglerTimer += delta;
         lastTimeSpawningThree += delta;
         lastTimeSpawningTwo += delta;
@@ -68,7 +80,7 @@ public class EnemyManager {
                 queenWigglerState = QueenWigglerState.ON_SCREEN;
                 ++timesQueenSpawned;
             } else {
-                spawnWiggler();
+                spawnWiggler(speedFactor);
             }
 
             //Reset the timer to 0 after a new wiggler is spawned
@@ -83,14 +95,13 @@ public class EnemyManager {
             }
         }
     }
-
-    private void updateHoppers(float delta) {
+    private void updateHoppers(float delta, float speedFactor) {
         hopperTimer += delta;
 
         if (hopperTimer > timeBetweenSpawns) {
-            spawnHopper();
+            spawnHopper(speedFactor);
             hopperTimer = 0;
-            timeBetweenSpawns = MathUtils.random(3, 15);
+            timeBetweenSpawns = MathUtils.random(3, 10);
         }
 
         for (Enemy e : enemies) {
@@ -100,7 +111,6 @@ public class EnemyManager {
             }
         }
     }
-
     private void updateBosses(float delta) {
         for (Boss boss : bosses) {
             boss.update(delta);
@@ -120,19 +130,7 @@ public class EnemyManager {
     }
 
     //WIGGLER SPAWNING METHODS
-    private void spawnWiggler() {
-        float speedFactor = 1;
-
-        //Increase the enemies speed as the players score increases
-        if (player.getScore() > 1) {
-            speedFactor += player.getScore() / 3;
-
-            //Cap speed increase to 7 times the initial speed
-            if (speedFactor > 10) {
-                speedFactor = 10;
-            }
-        }
-
+    private void spawnWiggler(float speedFactor) {
         //Only spawn enemies is the queen wiggler is not on the screen
         if (queenWigglerState != QueenWigglerState.ON_SCREEN) {
             //Randomly choose one of the spawning options
@@ -186,10 +184,11 @@ public class EnemyManager {
     }
 
     //HOPPER SPAWNING METHODS
-    private void spawnHopper() {
+    private void spawnHopper(float speedFactor) {
+        speedFactor *= 0.5f;
         enemies.add(new Hopper(
                 new Vector2(GameScreen.GAME_WIDTH, GameWorld.GROUND_LEVEL - AssetLoader.hopperOnGround.getRegionHeight()),
-                GameWorld.LATERAL_MOVE_SPEED.cpy().scl(2), GameWorld.ACCELERATION.cpy()));
+                GameWorld.LATERAL_MOVE_SPEED.cpy().scl(speedFactor), GameWorld.ACCELERATION.cpy()));
     }
 
 

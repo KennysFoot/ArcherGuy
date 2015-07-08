@@ -7,12 +7,15 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
@@ -20,7 +23,6 @@ import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 public class SettingsScreen implements Screen {
 
     public static final String RED_LINE = "red line";
-    public static final String MUSIC = "music";
     public static String SFX = "sfx";
 
     private Preferences prefs;
@@ -31,10 +33,16 @@ public class SettingsScreen implements Screen {
 
     private Stage stage;
     private CheckBox.CheckBoxStyle checkBoxStyle;
-    private CheckBox checkBoxRedLine, checkBoxMusic, checkBoxSFX;
+    private CheckBox checkBoxRedLine, checkBoxSFX;
     private TextButton buttonMainMenu;
 
+    //GRAPHICAL ASSETS
+    private Texture settingsAssets, textureButtons;
+    private TextureRegionDrawable yes, no, mainMenuBacking;
+
     public SettingsScreen(Game game) {
+        loadGraphicalAssets();
+
         this.game = game;
         final Game myGame = game;
 
@@ -51,9 +59,9 @@ public class SettingsScreen implements Screen {
                 batch);
 
         //Create buttons
-        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle(AssetLoader.yes, AssetLoader.yes, AssetLoader.yes,
-                AssetLoader.font);
-        buttonMainMenu = new TextButton("main menu", style);
+        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle(mainMenuBacking, mainMenuBacking,
+                mainMenuBacking, AssetLoader.font);
+        buttonMainMenu = new TextButton("MAIN MENU", style);
         buttonMainMenu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -67,7 +75,6 @@ public class SettingsScreen implements Screen {
 
         //Add the buttons and check boxes to the stage
         stage.addActor(checkBoxRedLine);
-        stage.addActor(checkBoxMusic);
         stage.addActor(checkBoxSFX);
         stage.addActor(buttonMainMenu);
 
@@ -75,12 +82,24 @@ public class SettingsScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
     }
 
+    private void loadGraphicalAssets() {
+        settingsAssets = new Texture(Gdx.files.internal("settings_yes_no.png"));
+        TextureRegion yesReg = new TextureRegion(settingsAssets, 31, 0, 31, 30);
+        yesReg.flip(false, true);
+        yes = new TextureRegionDrawable(yesReg);
+        TextureRegion noReg = new TextureRegion(settingsAssets, 0, 0, 31, 30);
+        noReg.flip(false, true);
+        no = new TextureRegionDrawable(noReg);
+
+        textureButtons = new Texture(Gdx.files.internal("buttons.png"));
+        TextureRegion mainMenuBackingRegion = new TextureRegion(textureButtons);
+        mainMenuBackingRegion.flip(false, true);
+        mainMenuBacking = new TextureRegionDrawable(mainMenuBackingRegion);
+    }
+
     private void createPrefsFirstLaunch() {
         if (!prefs.contains(RED_LINE)) {
             prefs.putBoolean(RED_LINE, true);
-        }
-        if (!prefs.contains(MUSIC)) {
-            prefs.putBoolean(MUSIC, true);
         }
         if (!prefs.contains(SFX)) {
             prefs.putBoolean(SFX, true);
@@ -93,15 +112,13 @@ public class SettingsScreen implements Screen {
         final int BUTTON_HEIGHT = 30;
 
         //Create new check boxes
-        checkBoxStyle = new CheckBox.CheckBoxStyle(AssetLoader.no, AssetLoader.yes, AssetLoader.font, Color.WHITE);
+        checkBoxStyle = new CheckBox.CheckBoxStyle(no, yes, AssetLoader.font, Color.WHITE);
 
         checkBoxRedLine = new CheckBox("RED BOUNDARY LINE", checkBoxStyle);
-        checkBoxMusic = new CheckBox("MUSIC", checkBoxStyle);
         checkBoxSFX = new CheckBox("SFX", checkBoxStyle);
 
         //Retrieve preferences and apply them to the check boxes
         checkBoxRedLine.setChecked(prefs.getBoolean(RED_LINE));
-        checkBoxMusic.setChecked(prefs.getBoolean(MUSIC));
         checkBoxSFX.setChecked(prefs.getBoolean(SFX));
 
         //Add the listeners to the check boxes
@@ -111,13 +128,6 @@ public class SettingsScreen implements Screen {
                 prefs.putBoolean(RED_LINE, checkBoxRedLine.isChecked());
                 prefs.flush();
                 System.out.println(checkBoxRedLine.isChecked());
-            }
-        });
-        checkBoxMusic.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                prefs.putBoolean(MUSIC, checkBoxRedLine.isChecked());
-                prefs.flush();
             }
         });
         checkBoxSFX.addListener(new ClickListener() {
@@ -130,8 +140,7 @@ public class SettingsScreen implements Screen {
 
         //Set the bounds on the checkboxes
         checkBoxRedLine.setBounds(PADDING, PADDING, checkBoxRedLine.getWidth(), BUTTON_HEIGHT);
-        checkBoxMusic.setBounds(PADDING, PADDING + BUTTON_HEIGHT + 1, checkBoxMusic.getWidth(), BUTTON_HEIGHT);
-        checkBoxSFX.setBounds(PADDING, PADDING + 2 * BUTTON_HEIGHT + 2, checkBoxSFX.getWidth(), BUTTON_HEIGHT);
+        checkBoxSFX.setBounds(PADDING, PADDING + BUTTON_HEIGHT + 1, checkBoxSFX.getWidth(), BUTTON_HEIGHT);
     }
 
     @Override
@@ -169,6 +178,7 @@ public class SettingsScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        settingsAssets.dispose();
     }
 
 }
