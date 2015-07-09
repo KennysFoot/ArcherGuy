@@ -98,6 +98,15 @@ public class PowerUpManager {
         }
     }
 
+    public void gameOver() {
+        //Deactivate any power ups currently active
+        for (PowerUp p : powerUps) {
+            if (p.getState() == PowerUp.PowerUpState.ACTIVE) {
+                p.deactivate();
+            }
+        }
+    }
+
     public Array<PowerUp> getPowerUps() {
         return powerUps;
     }

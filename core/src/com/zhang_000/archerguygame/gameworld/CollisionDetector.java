@@ -227,6 +227,7 @@ public class CollisionDetector {
         player.stop();
         ground.stop();
         world.setGameState(GameWorld.GameState.GAME_OVER);
+        powerUpManager.gameOver();
 
         playDeathSound();
 
