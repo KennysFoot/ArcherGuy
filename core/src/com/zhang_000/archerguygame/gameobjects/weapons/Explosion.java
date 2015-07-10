@@ -10,6 +10,7 @@ public class Explosion extends GameObject {
 
     public static final int FRAMES = 40;
     public static final int WIDTH = 96;
+    public static final int HEIGHT = 96;
 
     private boolean animationFinished;
     private float animationRunTime;

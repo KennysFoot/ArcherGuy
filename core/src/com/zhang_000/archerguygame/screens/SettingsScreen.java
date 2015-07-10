@@ -7,15 +7,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
@@ -36,13 +33,7 @@ public class SettingsScreen implements Screen {
     private CheckBox checkBoxRedLine, checkBoxSFX;
     private TextButton buttonMainMenu;
 
-    //GRAPHICAL ASSETS
-    private Texture settingsAssets, textureButtons;
-    private TextureRegionDrawable yes, no, mainMenuBacking;
-
     public SettingsScreen(Game game) {
-        loadGraphicalAssets();
-
         this.game = game;
         final Game myGame = game;
 
@@ -59,8 +50,8 @@ public class SettingsScreen implements Screen {
                 batch);
 
         //Create buttons
-        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle(mainMenuBacking, mainMenuBacking,
-                mainMenuBacking, AssetLoader.font);
+        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle(AssetLoader.mainMenuBacking,
+                AssetLoader.mainMenuBacking, AssetLoader.mainMenuBacking, AssetLoader.font);
         buttonMainMenu = new TextButton("MAIN MENU", style);
         buttonMainMenu.addListener(new ClickListener() {
             @Override
@@ -82,21 +73,6 @@ public class SettingsScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
     }
 
-    private void loadGraphicalAssets() {
-        settingsAssets = new Texture(Gdx.files.internal("settings_yes_no.png"));
-        TextureRegion yesReg = new TextureRegion(settingsAssets, 31, 0, 31, 30);
-        yesReg.flip(false, true);
-        yes = new TextureRegionDrawable(yesReg);
-        TextureRegion noReg = new TextureRegion(settingsAssets, 0, 0, 31, 30);
-        noReg.flip(false, true);
-        no = new TextureRegionDrawable(noReg);
-
-        textureButtons = new Texture(Gdx.files.internal("buttons.png"));
-        TextureRegion mainMenuBackingRegion = new TextureRegion(textureButtons);
-        mainMenuBackingRegion.flip(false, true);
-        mainMenuBacking = new TextureRegionDrawable(mainMenuBackingRegion);
-    }
-
     private void createPrefsFirstLaunch() {
         if (!prefs.contains(RED_LINE)) {
             prefs.putBoolean(RED_LINE, true);
@@ -112,7 +88,7 @@ public class SettingsScreen implements Screen {
         final int BUTTON_HEIGHT = 30;
 
         //Create new check boxes
-        checkBoxStyle = new CheckBox.CheckBoxStyle(no, yes, AssetLoader.font, Color.WHITE);
+        checkBoxStyle = new CheckBox.CheckBoxStyle(AssetLoader.no, AssetLoader.yes, AssetLoader.font, Color.WHITE);
 
         checkBoxRedLine = new CheckBox("RED BOUNDARY LINE", checkBoxStyle);
         checkBoxSFX = new CheckBox("SFX", checkBoxStyle);
@@ -178,7 +154,6 @@ public class SettingsScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-        settingsAssets.dispose();
     }
 
 }

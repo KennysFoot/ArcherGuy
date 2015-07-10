@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.zhang_000.archerguygame.gameobjects.enemies.Hopper;
 import com.zhang_000.archerguygame.gameobjects.enemies.Wiggler;
@@ -70,6 +71,14 @@ public class AssetLoader {
     public static Texture texturePlay, texturePause;
     public static TextureRegion play, pause;
 
+    //SETTINGS GRAPHICAL ASSETS
+    public static Texture settingsAssets, textureButtons;
+    public static TextureRegionDrawable yes, no, mainMenuBacking;
+
+    //SKIN SELECTION ASSETS
+    public static TextureRegionDrawable nextArrow, prevArrow;
+    public static TextureRegionDrawable regSkin;
+
     public static void load() {
         //GAME OBJECTS
         loadArcherGuy();
@@ -102,6 +111,17 @@ public class AssetLoader {
         pause = new TextureRegion(texturePause);
         play.flip(false, true);
         pause.flip(false, true);
+
+        //SETTINGS ASSETS
+        settingsAssets = new Texture(Gdx.files.internal("settings_yes_no.png"));
+        TextureRegion yesReg = new TextureRegion(settingsAssets, 31, 0, 31, 30);
+        yesReg.flip(false, true);
+        yes = new TextureRegionDrawable(yesReg);
+        TextureRegion noReg = new TextureRegion(settingsAssets, 0, 0, 31, 30);
+        noReg.flip(false, true);
+        no = new TextureRegionDrawable(noReg);
+
+        loadButtons();
     }
 
     public static void playSound(Sound sound, float volume) {
@@ -173,7 +193,7 @@ public class AssetLoader {
         textureExplosion = new Texture(Gdx.files.internal("explosion.png"));
         TextureRegion[] explosionFrames = new TextureRegion[Explosion.FRAMES];
         for (int i = 0; i < explosionFrames.length; i++) {
-            explosionFrames[i] = new TextureRegion(textureExplosion, i * Explosion.WIDTH, 0, Explosion.WIDTH, Explosion.WIDTH);
+            explosionFrames[i] = new TextureRegion(textureExplosion, i * Explosion.WIDTH, 0, Explosion.WIDTH, Explosion.HEIGHT);
             explosionFrames[i].flip(false, true);
         }
         animationExplosion = new Animation(0.035f, explosionFrames);
@@ -254,6 +274,26 @@ public class AssetLoader {
                 soundGainLife, soundExplodingArrowHit, soundShieldActivated, soundShieldHit, soundHopperHop);
     }
 
+    private static void loadButtons() {
+        textureButtons = new Texture(Gdx.files.internal("buttons.png"));
+
+        TextureRegion mainMenuBackingRegion = new TextureRegion(textureButtons, 0, 0, 100, 26);
+        mainMenuBackingRegion.flip(false, true);
+        mainMenuBacking = new TextureRegionDrawable(mainMenuBackingRegion);
+
+        TextureRegion nextArrowReg = new TextureRegion(textureButtons, 0, 27, 13, 25);
+        TextureRegion prevArrowReg = new TextureRegion(nextArrowReg);
+        nextArrowReg.flip(false, true);
+        prevArrowReg.flip(true, true);
+
+        nextArrow = new TextureRegionDrawable(nextArrowReg);
+        prevArrow = new TextureRegionDrawable(prevArrowReg);
+
+        regSkin = new TextureRegionDrawable(archerGuyFront2);
+        regSkin.setMinWidth(regSkin.getMinWidth() * 2.2f);
+        regSkin.setMinHeight(regSkin.getMinHeight() * 2.2f);
+    }
+
     public static void pauseSounds() {
         for (Sound s : sounds) {
             s.pause();
@@ -275,6 +315,7 @@ public class AssetLoader {
         textureEnemies.dispose();
         texturePlay.dispose();
         texturePause.dispose();
+        settingsAssets.dispose();
 
         //Dispose fonts
         font.dispose();

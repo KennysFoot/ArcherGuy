@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Rectangle;
 import com.zhang_000.archerguygame.screens.GameScreen;
 import com.zhang_000.archerguygame.screens.SettingsScreen;
+import com.zhang_000.archerguygame.screens.SkinSelectionScreen;
 
 public class InputHandlerMenu implements InputProcessor {
 
@@ -12,15 +13,16 @@ public class InputHandlerMenu implements InputProcessor {
 
     private float scaleFactorX;
     private float scaleFactorY;
-    private Rectangle playButton, settingsButton;
+    private Rectangle playButton, settingsButton, skinSelectionButton;
 
     public InputHandlerMenu(Game game, float scaleFactorX, float scaleFactorY,
-                            Rectangle playButton, Rectangle settingsButton) {
+                            Rectangle playButton, Rectangle settingsButton, Rectangle skinSelectionButton) {
         this.game = game;
         this.scaleFactorX = scaleFactorX;
         this.scaleFactorY = scaleFactorY;
         this.playButton = playButton;
         this.settingsButton = settingsButton;
+        this.skinSelectionButton = skinSelectionButton;
     }
 
     @Override
@@ -30,8 +32,13 @@ public class InputHandlerMenu implements InputProcessor {
 
         if (isTouchingPlay(screenX, screenY)) {
             game.setScreen(new GameScreen(game));
+            return true;
         } else if (isTouchingSettings(screenX, screenY)) { //TO DO
             game.setScreen(new SettingsScreen(game));
+            return true;
+        } else if (isTouchingSkinSelection(screenX, screenY)) {
+            game.setScreen(new SkinSelectionScreen(game));
+            return true;
         }
 
         return false;
@@ -50,6 +57,11 @@ public class InputHandlerMenu implements InputProcessor {
     private boolean isTouchingSettings(int screenX, int screenY) {
         return settingsButton.x < screenX && screenX < (settingsButton.x + settingsButton.width) &&
                 settingsButton.y > screenY && screenY > (settingsButton.y + settingsButton.height);
+    }
+
+    private boolean isTouchingSkinSelection(int screenX, int screenY) {
+        return skinSelectionButton.x < screenX && screenX < (skinSelectionButton.x + skinSelectionButton.width) &&
+                skinSelectionButton.y > screenY && screenY > (skinSelectionButton.y + skinSelectionButton.height);
     }
 
     private int scaleX(int screenX) {

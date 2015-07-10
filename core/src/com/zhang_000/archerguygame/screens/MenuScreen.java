@@ -29,13 +29,17 @@ public class MenuScreen implements Screen {
 
     //BUTTONS
     private Rectangle playGameRect;
-    private final String PLAY_GAME = "Play Game";
+    private final String PLAY_GAME = "PLAY GAME";
     private final float PLAY_GAME_X;
     private final float PLAY_GAME_Y;
 
     private Rectangle settingsRect;
     private final float SETTINGS_X;
     private final float SETTINGS_Y;
+
+    private Rectangle skinSelectionRect;
+    private final float SKIN_X;
+    private final float SKIN_Y;
 
     //ARCHER GUY ANIMATION
     private float runTime = 0;
@@ -67,13 +71,20 @@ public class MenuScreen implements Screen {
         playGameRect = new Rectangle(PLAY_GAME_X, PLAY_GAME_Y - layout.height, layout.width, layout.height);
 
         //Settings button
-        layout.setText(AssetLoader.font, "Settings");
+        layout.setText(AssetLoader.font, "SETTINGS");
         SETTINGS_X = (GAME_WIDTH - layout.width) / 2;
         SETTINGS_Y = PLAY_GAME_Y + 25;
         settingsRect = new Rectangle(SETTINGS_X, SETTINGS_Y - layout.height, layout.width, layout.height);
 
+        //Skin selection button
+        layout.setText(AssetLoader.font, "SKIN SELECTION");
+        SKIN_X = (GAME_WIDTH - layout.width) / 2;
+        SKIN_Y = SETTINGS_Y + 25;
+        skinSelectionRect = new Rectangle(SKIN_X, SKIN_Y - layout.height, layout.width, layout.height);
+
         //SET INPUT PROCESSOR
-        Gdx.input.setInputProcessor(new InputHandlerMenu(myGame, SCALE_X, SCALE_Y, playGameRect, settingsRect));
+        Gdx.input.setInputProcessor(new InputHandlerMenu(myGame, SCALE_X, SCALE_Y, playGameRect, settingsRect,
+                skinSelectionRect));
 
         //MAIN MENU BACKGROUND
         backgroundMainMenuTex = new Texture(Gdx.files.internal("archer_guy_background_mainmenu.png"));
@@ -104,8 +115,12 @@ public class MenuScreen implements Screen {
         AssetLoader.font.draw(batch, PLAY_GAME, PLAY_GAME_X, PLAY_GAME_Y + 1);
 
         //SETTINGS
-        AssetLoader.shadow.draw(batch, "Settings", SETTINGS_X, SETTINGS_Y);
-        AssetLoader.font.draw(batch, "Settings", SETTINGS_X, SETTINGS_Y + 1);
+        AssetLoader.shadow.draw(batch, "SETTINGS", SETTINGS_X, SETTINGS_Y);
+        AssetLoader.font.draw(batch, "SETTINGS", SETTINGS_X, SETTINGS_Y + 1);
+
+        //SKIN SELECTION
+        AssetLoader.shadow.draw(batch, "SKIN SELECTION", SKIN_X, SKIN_Y);
+        AssetLoader.font.draw(batch, "SKIN SELECTION", SKIN_X, SKIN_Y + 1);
     }
 
     @Override
