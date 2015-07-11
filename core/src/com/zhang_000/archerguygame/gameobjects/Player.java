@@ -1,23 +1,26 @@
 package com.zhang_000.archerguygame.gameobjects;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
+import com.zhang_000.archerguygame.screens.SkinSelectionScreen;
 
 public class Player extends GameObject {
 
     private static float SCALE_LIVES = 0.5f;
     private ShapeRenderer shapeRenderer;
 
-    private Animation standingAnimation;
     private Animation movingAnimation;
     private Animation upAnimation;
+    private TextureRegion goingDown, dead;
 
     private Vector2 leftEyePosition;
     private int groundLevel;
@@ -53,9 +56,7 @@ public class Player extends GameObject {
         lives = 3;
 
         //Store animation references
-        standingAnimation = AssetLoader.AGFrontAnimation;
-        movingAnimation = AssetLoader.AGMovingAni;
-        upAnimation = AssetLoader.AGUpAni;
+        getSkinFromPrefs();
 
         //Set state and position of the left eye
         state = State.ON_GROUND;
@@ -71,6 +72,63 @@ public class Player extends GameObject {
         explodingArrowsActivated = infiniteArrowsActivated = shieldActivated = false;
 
         shield = new Circle(position.x + width / 2, position.y + height / 2, 21);
+    }
+
+    private void getSkinFromPrefs() {
+        Preferences prefs = Gdx.app.getPreferences(AssetLoader.ARCHER_GUY);
+
+        switch (prefs.getInteger(SkinSelectionScreen.SKIN_INDEX, 0)) {
+            case 0: //Regular
+                movingAnimation = AssetLoader.AGMovingAni;
+                upAnimation = AssetLoader.AGUpAni;
+                goingDown = AssetLoader.archerGuyFront1;
+                dead = AssetLoader.archerGuyFront2;
+                break;
+
+            case 1: //Pink
+                movingAnimation = AssetLoader.AGPinkMovingAni;
+                upAnimation = AssetLoader.AGPinkUpAni;
+                goingDown = AssetLoader.AGPink1;
+                dead = AssetLoader.AGPink2;
+                break;
+
+            case 2: //Santa
+                movingAnimation = AssetLoader.AGSantaMovingAni;
+                upAnimation = AssetLoader.AGSantaUpAni;
+                goingDown = AssetLoader.AGSanta1;
+                dead = AssetLoader.AGSanta2;
+
+                break;
+
+            case 3: //Asian
+                movingAnimation = AssetLoader.AGAsianMovingAni;
+                upAnimation = AssetLoader.AGAsianUpAni;
+                goingDown = AssetLoader.AGAsian1;
+                dead = AssetLoader.AGAsian2;
+                break;
+
+            case 4: //Brown
+                movingAnimation = AssetLoader.AGBrownMovingAni;
+                upAnimation = AssetLoader.AGBrownUpAni;
+                goingDown = AssetLoader.AGBrown1;
+                dead = AssetLoader.AGBrown2;
+                break;
+
+            case 5: //Metallic
+                movingAnimation = AssetLoader.AGMetallicMovingAni;
+                upAnimation = AssetLoader.AGMetallicUpAni;
+                goingDown = AssetLoader.AGMetallic1;
+                dead = AssetLoader.AGMetallic2;
+                break;
+
+            default:
+                movingAnimation = AssetLoader.AGMovingAni;
+                upAnimation = AssetLoader.AGUpAni;
+                goingDown = AssetLoader.archerGuyFront1;
+                dead = AssetLoader.archerGuyFront2;
+
+                break;
+        }
     }
 
     @Override
@@ -123,9 +181,9 @@ public class Player extends GameObject {
         } else if (state == State.GOING_UP) {
             batch.draw(upAnimation.getKeyFrame(timeScore), position.x, position.y, width, height);
         } else if (state == State.GOING_DOWN) {
-            batch.draw(AssetLoader.archerGuyFront1, position.x, position.y, width, height);
+            batch.draw(goingDown, position.x, position.y, width, height);
         } else if (state == State.DEAD) {
-            batch.draw(AssetLoader.archerGuyFront2, position.x, position.y, width / 2, height, width, height,
+            batch.draw(dead, position.x, position.y, width / 2, height, width, height,
                     1, 1, 80f);
         }
 

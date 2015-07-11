@@ -26,6 +26,14 @@ public class AssetLoader {
     public static TextureRegion archerGuyFront1, archerGuyFront2, archerGuyFront3, AGMoving, AGUp;
     public static Animation AGFrontAnimation, AGMovingAni, AGUpAni;
     public static TextureRegion eyeInfArrows, eyeExplodingArrows;
+    //SKINS
+    public static TextureRegion AGPink1, AGSanta1, AGAsian1, AGBrown1, AGMetallic1;
+    public static TextureRegion AGPink2, AGSanta2, AGAsian2, AGBrown2, AGMetallic2;
+    public static Animation AGPinkMovingAni, AGPinkUpAni,
+        AGSantaMovingAni, AGSantaUpAni,
+        AGAsianMovingAni, AGAsianUpAni,
+        AGBrownMovingAni, AGBrownUpAni,
+        AGMetallicMovingAni, AGMetallicUpAni;
 
     //ENEMIES
     public static Texture textureEnemies;
@@ -77,7 +85,7 @@ public class AssetLoader {
 
     //SKIN SELECTION ASSETS
     public static TextureRegionDrawable nextArrow, prevArrow;
-    public static TextureRegionDrawable regSkin;
+    public static TextureRegionDrawable regSkin, pinkSkin, santaSkin, asianSkin, brownSkin, metallicSkin;
 
     public static void load() {
         //GAME OBJECTS
@@ -142,6 +150,21 @@ public class AssetLoader {
     private static void loadArcherGuy() {
         archerGuyFrontTex =  new Texture(Gdx.files.internal("archer_guy_front_belt.png"));
         archerGuyFrontTex.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+
+        loadReg();
+        loadPink();
+        loadSanta();
+        loadAsian();
+        loadBrown();
+        loadMetallic();
+
+        eyeInfArrows = new TextureRegion(archerGuyFrontTex, 2, 33, 28, 30);
+        eyeExplodingArrows = new TextureRegion(archerGuyFrontTex, 34, 33, 28, 30);
+        eyeInfArrows.flip(false, true);
+        eyeExplodingArrows.flip(false, true);
+    }
+
+    private static void loadReg() {
         archerGuyFront1 = new TextureRegion(archerGuyFrontTex, 2, 1, 28, 30);
         archerGuyFront1.flip(false, true);
         archerGuyFront2 = new TextureRegion(archerGuyFrontTex, 34, 1, 28, 30);
@@ -164,11 +187,111 @@ public class AssetLoader {
         TextureRegion[] goingUp = {archerGuyFront2, archerGuyFront3, AGUp};
         AGUpAni = new Animation(0.07f, goingUp);
         AGUpAni.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+    }
 
-        eyeInfArrows = new TextureRegion(archerGuyFrontTex, 2, 33, 28, 30);
-        eyeExplodingArrows = new TextureRegion(archerGuyFrontTex, 34, 33, 28, 30);
-        eyeInfArrows.flip(false, true);
-        eyeExplodingArrows.flip(false, true);
+    private static void loadPink() {
+        AGPink1 = new TextureRegion(archerGuyFrontTex, 2, 97, 28, 30);
+        AGPink1.flip(false, true);
+        AGPink2 = new TextureRegion(archerGuyFrontTex, 34, 97, 28, 30);
+        AGPink2.flip(false, true);
+        TextureRegion AGPink3 = new TextureRegion(archerGuyFrontTex, 66, 97, 28, 30);
+        AGPink3.flip(false, true);
+
+        TextureRegion AGPinkMoving = new TextureRegion(archerGuyFrontTex, 98, 97, 28, 30);
+        AGPinkMoving.flip(false, true);
+        TextureRegion[] moving = {AGPink2, AGPinkMoving};
+        AGPinkMovingAni = new Animation(0.10f, moving);
+        AGPinkMovingAni.setPlayMode(Animation.PlayMode.LOOP);
+
+        TextureRegion AGPinkUp = new TextureRegion(archerGuyFrontTex, 130, 97, 28, 30);
+        AGPinkUp.flip(false, true);
+        TextureRegion[] goingUp = {AGPink2, AGPink3, AGPinkUp};
+        AGPinkUpAni = new Animation(0.07f, goingUp);
+        AGPinkUpAni.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+    }
+
+    private static void loadSanta() {
+        AGSanta1 = new TextureRegion(archerGuyFrontTex, 2, 65, 28, 30);
+        AGSanta1.flip(false, true);
+        AGSanta2 = new TextureRegion(archerGuyFrontTex, 34, 65, 28, 30);
+        AGSanta2.flip(false, true);
+        TextureRegion AGSanta3 = new TextureRegion(archerGuyFrontTex, 66, 65, 28, 30);
+        AGSanta3.flip(false, true);
+
+        TextureRegion AGSantaMoving = new TextureRegion(archerGuyFrontTex, 98, 65, 28, 30);
+        AGSantaMoving.flip(false, true);
+        TextureRegion[] moving = {AGSanta2, AGSantaMoving};
+        AGSantaMovingAni = new Animation(0.10f, moving);
+        AGSantaMovingAni.setPlayMode(Animation.PlayMode.LOOP);
+
+        TextureRegion AGSantaUp = new TextureRegion(archerGuyFrontTex, 130, 65, 28, 30);
+        AGSantaUp.flip(false, true);
+        TextureRegion[] goingUp = {AGSanta2, AGSanta3, AGSantaUp};
+        AGSantaUpAni = new Animation(0.07f, goingUp);
+        AGSantaUpAni.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+    }
+
+    private static void loadAsian() {
+        AGAsian1 = new TextureRegion(archerGuyFrontTex, 2, 129, 28, 30);
+        AGAsian1.flip(false, true);
+        AGAsian2 = new TextureRegion(archerGuyFrontTex, 34, 129, 28, 30);
+        AGAsian2.flip(false, true);
+        TextureRegion AGAsian3 = new TextureRegion(archerGuyFrontTex, 66, 129, 28, 30);
+        AGAsian3.flip(false, true);
+
+        TextureRegion AGAsianMoving = new TextureRegion(archerGuyFrontTex, 98, 129, 28, 30);
+        AGAsianMoving.flip(false, true);
+        TextureRegion[] moving = {AGAsian2, AGAsianMoving};
+        AGAsianMovingAni = new Animation(0.10f, moving);
+        AGAsianMovingAni.setPlayMode(Animation.PlayMode.LOOP);
+
+        TextureRegion AGAsianUp = new TextureRegion(archerGuyFrontTex, 130, 129, 28, 30);
+        AGAsianUp.flip(false, true);
+        TextureRegion[] goingUp = {AGAsian2, AGAsian3, AGAsianUp};
+        AGAsianUpAni = new Animation(0.07f, goingUp);
+        AGAsianUpAni.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+    }
+
+    private static void loadBrown() {
+        AGBrown1 = new TextureRegion(archerGuyFrontTex, 2, 161, 28, 30);
+        AGBrown1.flip(false, true);
+        AGBrown2 = new TextureRegion(archerGuyFrontTex, 34, 161, 28, 30);
+        AGBrown2.flip(false, true);
+        TextureRegion AGBrown3 = new TextureRegion(archerGuyFrontTex, 66, 161, 28, 30);
+        AGBrown3.flip(false, true);
+
+        TextureRegion AGBrownMoving = new TextureRegion(archerGuyFrontTex, 98, 161, 28, 30);
+        AGBrownMoving.flip(false, true);
+        TextureRegion[] moving = {AGBrown2, AGBrownMoving};
+        AGBrownMovingAni = new Animation(0.10f, moving);
+        AGBrownMovingAni.setPlayMode(Animation.PlayMode.LOOP);
+
+        TextureRegion AGBrownUp = new TextureRegion(archerGuyFrontTex, 130, 161, 28, 30);
+        AGBrownUp.flip(false, true);
+        TextureRegion[] goingUp = {AGBrown2, AGBrown3, AGBrownUp};
+        AGBrownUpAni = new Animation(0.07f, goingUp);
+        AGBrownUpAni.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+    }
+
+    private static void loadMetallic() {
+        AGMetallic1 = new TextureRegion(archerGuyFrontTex, 2, 193, 28, 30);
+        AGMetallic1.flip(false, true);
+        AGMetallic2 = new TextureRegion(archerGuyFrontTex, 34, 193, 28, 30);
+        AGMetallic2.flip(false, true);
+        TextureRegion AGMetallic3 = new TextureRegion(archerGuyFrontTex, 66, 193, 28, 30);
+        AGMetallic3.flip(false, true);
+
+        TextureRegion AGMetallicMoving = new TextureRegion(archerGuyFrontTex, 98, 193, 28, 30);
+        AGMetallicMoving.flip(false, true);
+        TextureRegion[] moving = {AGMetallic2, AGMetallicMoving};
+        AGMetallicMovingAni = new Animation(0.10f, moving);
+        AGMetallicMovingAni.setPlayMode(Animation.PlayMode.LOOP);
+
+        TextureRegion AGMetallicUp = new TextureRegion(archerGuyFrontTex, 130, 193, 28, 30);
+        AGMetallicUp.flip(false, true);
+        TextureRegion[] goingUp = {AGMetallic2, AGMetallic3, AGMetallicUp};
+        AGMetallicUpAni = new Animation(0.07f, goingUp);
+        AGMetallicUpAni.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
     }
 
     private static void loadWeapons() {
@@ -289,9 +412,30 @@ public class AssetLoader {
         nextArrow = new TextureRegionDrawable(nextArrowReg);
         prevArrow = new TextureRegionDrawable(prevArrowReg);
 
+        //Skin drawables
         regSkin = new TextureRegionDrawable(archerGuyFront2);
         regSkin.setMinWidth(regSkin.getMinWidth() * 2.2f);
         regSkin.setMinHeight(regSkin.getMinHeight() * 2.2f);
+
+        pinkSkin = new TextureRegionDrawable(AGPink2);
+        pinkSkin.setMinWidth(pinkSkin.getMinWidth() * 2.2f);
+        pinkSkin.setMinHeight(pinkSkin.getMinHeight() * 2.2f);
+
+        santaSkin = new TextureRegionDrawable(AGSanta2);
+        santaSkin.setMinWidth(santaSkin.getMinWidth() * 2.2f);
+        santaSkin.setMinHeight(santaSkin.getMinHeight() * 2.2f);
+
+        asianSkin = new TextureRegionDrawable(AGAsian2);
+        asianSkin.setMinWidth(asianSkin.getMinWidth() * 2.2f);
+        asianSkin.setMinHeight(asianSkin.getMinHeight() * 2.2f);
+
+        brownSkin = new TextureRegionDrawable(AGBrown2);
+        brownSkin.setMinWidth(brownSkin.getMinWidth() * 2.2f);
+        brownSkin.setMinHeight(brownSkin.getMinHeight() * 2.2f);
+
+        metallicSkin = new TextureRegionDrawable(AGMetallic2);
+        metallicSkin.setMinWidth(metallicSkin.getMinWidth() * 2.2f);
+        metallicSkin.setMinHeight(metallicSkin.getMinHeight() * 2.2f);
     }
 
     public static void pauseSounds() {

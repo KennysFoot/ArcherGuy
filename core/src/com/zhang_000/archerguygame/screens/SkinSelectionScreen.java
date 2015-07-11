@@ -15,23 +15,27 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
 
 public class SkinSelectionScreen implements Screen {
 
-    public static final String SKIN = "skin";
     public static final String SKIN_INDEX = "skin index";
 
-    public static final String REGULAR = "REGULAR";          //0
-    public static final String PINK_SKIN = "PINK SKIN";      //1
-    public static final String SANTA = "SANTA";              //2
-    public static final String ASIAN = "ASIAN";              //3
-    public static final String BROWN = "BROWN";              //4
-    public static final String METALLIC = "METALLIC";        //5
+    public static final String REGULAR = "REGULAR";       //0
+    public static final String PINK_SKIN = "PINK";        //1
+    public static final String SANTA = "SANTA";           //2
+    public static final String ASIAN = "ASIAN";           //3
+    public static final String BROWN = "BROWN";           //4
+    public static final String METALLIC = "METALLIC";     //5
+
+    public static final int LAST_INDEX = 5;
 
     public static final String[] SKIN_CHOICES = {REGULAR, PINK_SKIN, SANTA, ASIAN, BROWN, METALLIC};
+    private Array<String> unlockedSkins = new Array<String>();
     private int i;
 
     private Preferences prefs;
@@ -45,6 +49,7 @@ public class SkinSelectionScreen implements Screen {
     private ImageButton buttonPrev, buttonNext;
     private Image selectedSkin;
     private Label label;
+    Label.LabelStyle style = new Label.LabelStyle(AssetLoader.font, Color.WHITE);
 
     public SkinSelectionScreen(Game game) {
         this.game = game;
@@ -60,6 +65,7 @@ public class SkinSelectionScreen implements Screen {
         stage = new Stage(new ScalingViewport(Scaling.fit, MenuScreen.GAME_WIDTH, MenuScreen.GAME_HEIGHT, camera),
                 batch);
 
+        getUnlockedSkins();
         setUpMainMenuButton(game);
         getIndexFromPrefs();
         setUpSkinViewer();
@@ -67,6 +73,25 @@ public class SkinSelectionScreen implements Screen {
         setUpNextAndPrevButtons();
 
         Gdx.input.setInputProcessor(stage);
+    }
+
+    private void getUnlockedSkins() {
+        unlockedSkins.add(REGULAR);
+        //if (prefs.getBoolean(PINK_SKIN, false)) {
+        unlockedSkins.add(PINK_SKIN);
+        // }
+        // if (prefs.getBoolean(SANTA, false)) {
+        unlockedSkins.add(SANTA);
+        // }
+        //  if (prefs.getBoolean(ASIAN, false)) {
+        unlockedSkins.add(ASIAN);
+        //  }
+        //  if (prefs.getBoolean(BROWN, false)) {
+        unlockedSkins.add(BROWN);
+        //  }
+        //  if (prefs.getBoolean(METALLIC, false)) {
+        unlockedSkins.add(METALLIC);
+        //  }
     }
 
     private void setUpMainMenuButton(Game game) {
@@ -92,8 +117,7 @@ public class SkinSelectionScreen implements Screen {
     }
 
     private void setUpSkinViewer() {
-        //todo change selected skin initialization to be based on index from prefs
-        selectedSkin = new Image(AssetLoader.regSkin);
+        selectedSkin = new Image(getImage());
         selectedSkin.setBounds(buttonMainMenu.getX() + (buttonMainMenu.getWidth() - selectedSkin.getWidth()) / 2,
                 25, selectedSkin.getWidth(), selectedSkin.getHeight());
 
@@ -101,19 +125,71 @@ public class SkinSelectionScreen implements Screen {
     }
 
     private void setUpLabel() {
-        Label.LabelStyle style = new Label.LabelStyle(AssetLoader.font, Color.WHITE);
-        label = new Label(SKIN_CHOICES[i], style);
+        label = new Label(unlockedSkins.get(i), style);
         label.setBounds(buttonMainMenu.getX() + (buttonMainMenu.getWidth() - label.getWidth()) / 2,
                 25, label.getWidth(), label.getHeight());
 
         stage.addActor(label);
     }
 
+    private TextureRegionDrawable getImage() {
+        switch (i) {
+            case 0: //REGULAR
+                return AssetLoader.regSkin;
+
+            case 1: //Pink
+                return AssetLoader.pinkSkin;
+
+            case 2: //Santa
+                return AssetLoader.santaSkin;
+
+            case 3: //Asian
+                return AssetLoader.asianSkin;
+
+            case 4: //Brown
+                return AssetLoader.brownSkin;
+
+            case 5: //Metallic
+                return AssetLoader.metallicSkin;
+        }
+        return new TextureRegionDrawable();
+    }
+
     private void setUpNextAndPrevButtons() {
         buttonPrev = new ImageButton(AssetLoader.prevArrow);
         buttonNext = new ImageButton(AssetLoader.nextArrow);
 
-        //todo add ClickListener's
+        //Add Click Listeners
+        buttonPrev.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (i > 0) {
+                    --i;
+                } else {
+                    i = unlockedSkins.size - 1;
+                }
+
+                prefs.putInteger(SKIN_INDEX, i);
+                prefs.flush();
+
+                updateSkinAndLabel();
+            }
+        });
+        buttonNext.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (i < unlockedSkins.size - 1) {
+                    ++i;
+                } else {
+                    i = 0;
+                }
+
+                prefs.putInteger(SKIN_INDEX, i);
+                prefs.flush();
+
+                updateSkinAndLabel();
+            }
+        });
 
         //Set position on screen
         buttonPrev.setBounds(buttonMainMenu.getX() - buttonPrev.getWidth(),
@@ -128,8 +204,19 @@ public class SkinSelectionScreen implements Screen {
         stage.addActor(buttonNext);
     }
 
+    private void updateSkinAndLabel() {
+        //Remove previous label
+        label.remove();
 
+        //Create new label
+        label = new Label(unlockedSkins.get(i), style);
+        label.setBounds(buttonMainMenu.getX() + (buttonMainMenu.getWidth() - label.getWidth()) / 2,
+                25, label.getWidth(), label.getHeight());
+        stage.addActor(label);
 
+        //Update image
+        selectedSkin.setDrawable(getImage());
+    }
 
     @Override
     public void show() {
@@ -148,7 +235,6 @@ public class SkinSelectionScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
     }
 
     @Override

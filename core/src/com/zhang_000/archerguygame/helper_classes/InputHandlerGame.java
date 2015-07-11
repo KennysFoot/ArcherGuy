@@ -18,13 +18,14 @@ public class InputHandlerGame implements InputProcessor {
     public static float lastFire = Arrow.RELOAD_TIME;
 
     //POWER UPS
-    private static boolean infiniteArrowsActivated = false;
+    private static boolean infiniteArrowsActivated;
 
     public InputHandlerGame(GameWorld world, float scaleFactorX, float scaleFactorY) {
         this.world = world;
         this.player = world.getPlayer();
         this.scaleFactorX = scaleFactorX;
         this.scaleFactorY = scaleFactorY;
+        infiniteArrowsActivated = false;
     }
 
     @Override
