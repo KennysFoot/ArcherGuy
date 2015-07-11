@@ -77,21 +77,20 @@ public class SkinSelectionScreen implements Screen {
 
     private void getUnlockedSkins() {
         unlockedSkins.add(REGULAR);
-        //if (prefs.getBoolean(PINK_SKIN, false)) {
         unlockedSkins.add(PINK_SKIN);
-        // }
-        // if (prefs.getBoolean(SANTA, false)) {
-        unlockedSkins.add(SANTA);
-        // }
-        //  if (prefs.getBoolean(ASIAN, false)) {
-        unlockedSkins.add(ASIAN);
-        //  }
-        //  if (prefs.getBoolean(BROWN, false)) {
-        unlockedSkins.add(BROWN);
-        //  }
-        //  if (prefs.getBoolean(METALLIC, false)) {
-        unlockedSkins.add(METALLIC);
-        //  }
+
+        if (prefs.getBoolean(SANTA, false)) {
+            unlockedSkins.add(SANTA);
+        }
+        if (prefs.getBoolean(ASIAN, false)) {
+            unlockedSkins.add(ASIAN);
+        }
+        if (prefs.getBoolean(BROWN, false)) {
+            unlockedSkins.add(BROWN);
+        }
+        if (prefs.getBoolean(METALLIC, false)) {
+            unlockedSkins.add(METALLIC);
+        }
     }
 
     private void setUpMainMenuButton(Game game) {

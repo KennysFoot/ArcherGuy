@@ -37,6 +37,7 @@ public class GameWorld {
     //UTIL
     private GlyphLayout layout;
     private CollisionDetector collisionDetector;
+    private SkinUnlockDetector skinUnlockDetector;
 
     //VALUES
     private GameState gameState;
@@ -68,7 +69,6 @@ public class GameWorld {
     private EnemyManager enemyManager;
     private WeaponManager weaponManager;
 
-    //SETTINGS
     private Preferences prefs;
     private boolean redLineOn;
 
@@ -76,6 +76,13 @@ public class GameWorld {
     public static final int POS_X_PAUSE = 198;
     public static final int POS_Y_PAUSE = 2;
     private boolean paused = false;
+
+    //UNLOCK MESSAGE
+    private boolean displayMessage = true;
+    private String message;
+    private float unlockX;
+    private final float unlockY = 50;
+    private float timer = 0;
 
     public enum GameState {
         RUNNING, GAME_OVER
@@ -120,6 +127,8 @@ public class GameWorld {
         collisionDetector = new CollisionDetector(this);
 
         getSettings();
+
+        skinUnlockDetector = new SkinUnlockDetector(prefs, this);
     }
 
     private void getSettings() {
@@ -155,6 +164,8 @@ public class GameWorld {
 
         //Increment lastFire variable in the input handler
         InputHandlerGame.lastFire += delta;
+
+        skinUnlockDetector.update();
     }
 
     private void updateGameOver(float delta) {
@@ -199,6 +210,17 @@ public class GameWorld {
         }
 
         renderPausePlayButton();
+
+        if (displayMessage && message != null) {
+            AssetLoader.font.draw(batch, message, unlockX, unlockY);
+            timer += delta;
+
+            if (timer > 2.5f) {
+                timer = 0;
+                displayMessage = false;
+                message = null;
+            }
+        }
 
         batch.end(); //END SPRITE BATCH
 
@@ -337,5 +359,13 @@ public class GameWorld {
 
     public boolean isPaused() {
         return paused;
+    }
+
+    public void setDisplayMessage(String message) {
+        displayMessage = true;
+        this.message = message;
+
+        layout.setText(AssetLoader.font, message);
+        unlockX = (GameScreen.GAME_WIDTH - layout.width) / 2;
     }
 }
