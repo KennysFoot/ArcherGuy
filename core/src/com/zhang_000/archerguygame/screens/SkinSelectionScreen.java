@@ -62,7 +62,7 @@ public class SkinSelectionScreen implements Screen {
 
         prefs = Gdx.app.getPreferences(AssetLoader.ARCHER_GUY);
 
-        stage = new Stage(new ScalingViewport(Scaling.fit, MenuScreen.GAME_WIDTH, MenuScreen.GAME_HEIGHT, camera),
+        stage = new Stage(new ScalingViewport(Scaling.fillY, MenuScreen.GAME_WIDTH, MenuScreen.GAME_HEIGHT, camera),
                 batch);
 
         getUnlockedSkins();
