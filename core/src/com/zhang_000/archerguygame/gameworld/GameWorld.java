@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.zhang_000.archerguygame.gameobjects.Ground;
@@ -117,7 +118,8 @@ public class GameWorld {
         player = new Player(new Vector2(10, GROUND_LEVEL - AssetLoader.archerGuyFront1.getRegionHeight()),
                 new Vector2(0, 0), ACCELERATION.cpy(), shapeRenderer);
         player.setGroundLevel(GROUND_LEVEL);
-        ground = new Ground(new Vector2(0, GROUND_LEVEL), LATERAL_MOVE_SPEED.cpy(), new Vector2(0, 0), player);
+        ground = new Ground(new Vector2(0, GROUND_LEVEL), LATERAL_MOVE_SPEED.cpy(), new Vector2(0, 0), player,
+                shapeRenderer);
         powerUpManager = new PowerUpManager(this);
         weaponManager = new WeaponManager(this);
 
@@ -233,7 +235,7 @@ public class GameWorld {
             shapeRenderer.line(50, 0, 50, GameScreen.GAME_HEIGHT);
         }
 
-        /*
+        shapeRenderer.polygon(player.getHitBox().getTransformedVertices());
         for (int i = 0; i < weaponManager.getExplosions().size; i++) {
             Circle c = weaponManager.getExplosions().get(i).getBoundingCircle();
             shapeRenderer.circle(c.x, c.y, c.radius);
@@ -241,7 +243,7 @@ public class GameWorld {
         for (Enemy e : getEnemies()) {
             shapeRenderer.polygon(e.getHitPolygon().getTransformedVertices());
         }
-        */
+
 
         shapeRenderer.end(); //END SHAPE RENDERER
     }
