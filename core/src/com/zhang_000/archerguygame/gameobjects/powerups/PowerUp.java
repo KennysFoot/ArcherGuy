@@ -85,4 +85,8 @@ public abstract class PowerUp extends GameObject {
         return hitPolygon;
     }
 
+    public void finish() {
+
+    }
+
 }

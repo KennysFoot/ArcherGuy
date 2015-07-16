@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.zhang_000.archerguygame.gameobjects.Ground;
@@ -74,7 +73,7 @@ public class GameWorld {
     private boolean redLineOn;
 
     //PLAY AND PAUSE
-    public static final int POS_X_PAUSE = 198;
+    public static final int POS_X_PAUSE = 2;
     public static final int POS_Y_PAUSE = 2;
     private boolean paused = false;
 
@@ -235,6 +234,7 @@ public class GameWorld {
             shapeRenderer.line(50, 0, 50, GameScreen.GAME_HEIGHT);
         }
 
+        /*
         shapeRenderer.polygon(player.getHitBox().getTransformedVertices());
         for (int i = 0; i < weaponManager.getExplosions().size; i++) {
             Circle c = weaponManager.getExplosions().get(i).getBoundingCircle();
@@ -243,7 +243,7 @@ public class GameWorld {
         for (Enemy e : getEnemies()) {
             shapeRenderer.polygon(e.getHitPolygon().getTransformedVertices());
         }
-
+        */
 
         shapeRenderer.end(); //END SHAPE RENDERER
     }
@@ -270,11 +270,12 @@ public class GameWorld {
     private void renderPausePlayButton() {
         if (paused) {
             //Render play button
-            batch.draw(AssetLoader.play, POS_X_PAUSE, POS_Y_PAUSE);
+            batch.draw(AssetLoader.play, POS_X_PAUSE - 1, POS_Y_PAUSE);
 
             //Render options on pause screen
             layout.setText(AssetLoader.font, MAIN_MENU);
             AssetLoader.font.draw(batch, MAIN_MENU, POS_X_MAIN_MENU, (GameScreen.GAME_HEIGHT + layout.height) / 2);
+
 
         } else if (gameState != GameState.GAME_OVER){
             //Render pause button if the game is NOT currently paused and the game is not over

@@ -15,6 +15,7 @@ import com.zhang_000.archerguygame.gameobjects.enemies.bosses.Boss;
 import com.zhang_000.archerguygame.gameobjects.enemies.bosses.QueenWiggler;
 import com.zhang_000.archerguygame.gameobjects.powerups.PowerUp;
 import com.zhang_000.archerguygame.gameobjects.powerups.PowerUpManager;
+import com.zhang_000.archerguygame.gameobjects.powerups.PowerUpShield;
 import com.zhang_000.archerguygame.gameobjects.weapons.Arrow;
 import com.zhang_000.archerguygame.gameobjects.weapons.ExplodingArrow;
 import com.zhang_000.archerguygame.gameobjects.weapons.Explosion;
@@ -174,6 +175,12 @@ public class CollisionDetector {
                 enemies.removeValue(e, false);
                 player.incrementKillScore(Wiggler.SCORE);
                 playShieldHitSound();
+
+                for (PowerUp p : powerUpManager.getPowerUps()) {
+                    if (p instanceof PowerUpShield) {
+                        p.finish();
+                    }
+                }
             }
         }
 

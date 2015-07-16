@@ -15,14 +15,12 @@ public class PowerUpShield extends PowerUp {
     private static final Vector2 VELOCITY_DOWN = new Vector2(-40, 25);
 
     private Player player;
-    private boolean flickering;
 
     public PowerUpShield(GameWorld world) {
         super();
         player = world.getPlayer();
         width = height = PowerUp.LENGTH;
-        POWER_UP_LENGTH = 10;
-        flickering = false;
+        POWER_UP_LENGTH = 1;
 
         position = new Vector2(GameScreen.GAME_WIDTH, MathUtils.random(0, GameWorld.GROUND_LEVEL - height));
         //0 = up and 1 = down
@@ -62,15 +60,7 @@ public class PowerUpShield extends PowerUp {
                     if (timeActive == 0) {
                         activate();
                         playActivationSound();
-                    }
-
-                    timeActive += delta;
-
-                    //Start flickering once every 0.1 seconds after 7 seconds
-                    if (timeActive > 7 && ((int) (timeActive * 10)) % 2 == 0) {
-                        player.setShieldFlicker(true);
-                    } else {
-                        player.setShieldFlicker(false);
+                        timeActive += 0.00001f;
                     }
                     break;
             }
@@ -100,6 +90,12 @@ public class PowerUpShield extends PowerUp {
     @Override
     public void playActivationSound() {
         AssetLoader.playSound(AssetLoader.soundShieldActivated, 1);
+    }
+
+    @Override
+    public void finish() {
+        //hack - power up length is 2 so set time active to 2
+        timeActive = 2;
     }
 
 }

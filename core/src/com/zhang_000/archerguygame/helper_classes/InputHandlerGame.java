@@ -61,7 +61,6 @@ public class InputHandlerGame implements InputProcessor {
         }
         //PAUSED
         else {
-            //todo paused touch input handling
             if (touchingMainMenuRegion(screenX, screenY)) {
                 world.backToMainMenu();
             }
@@ -77,7 +76,8 @@ public class InputHandlerGame implements InputProcessor {
         return screenX < 50;
     }
     private boolean touchingPauseRegion(int screenX, int screenY) {
-        return GameWorld.POS_X_PAUSE < screenX && screenY < GameWorld.POS_Y_PAUSE + AssetLoader.pause.getRegionHeight();
+        return screenX < GameWorld.POS_X_PAUSE + AssetLoader.pause.getRegionHeight()
+                && screenY < GameWorld.POS_Y_PAUSE + AssetLoader.pause.getRegionHeight();
     }
    private boolean touchingMainMenuRegion(int screenX, int screenY) {
         return GameWorld.POS_X_MAIN_MENU < screenX && screenX < GameWorld.POS_X_MAIN_MENU + GameWorld.WIDTH_MAIN_MENU &&

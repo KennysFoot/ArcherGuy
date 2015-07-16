@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.zhang_000.archerguygame.helper_classes.AssetLoader;
+import com.zhang_000.archerguygame.screens.GameScreen;
 import com.zhang_000.archerguygame.screens.SkinSelectionScreen;
 
 public class Player extends GameObject {
@@ -34,9 +35,8 @@ public class Player extends GameObject {
     private boolean paused = false;
 
     //POWER UPS
-    private boolean shieldActivated; //Shield lasts 10 seconds
-    private Circle shield;           //Start flickering at 7 seconds
-    private boolean shieldFlicker = false; //Shield won't be rendered when shieldFlicker is set to true
+    private boolean shieldActivated;
+    private Circle shield;
     private boolean explodingArrowsActivated, infiniteArrowsActivated;
     private boolean explodingArrowsFlicker = false;
     private boolean infArrowsFlicker = false;
@@ -189,7 +189,7 @@ public class Player extends GameObject {
 
         //Draw the lives remaining onto the screen
         for (int i = 0; i < lives; i++) {
-            batch.draw(AssetLoader.archerGuyFront2, 2 + i * 7.5f, 2, 0, 0,
+            batch.draw(AssetLoader.archerGuyFront2, GameScreen.GAME_WIDTH - i * 7.5f - 8f, 2, 0, 0,
                     width * SCALE_LIVES, height * SCALE_LIVES, SCALE_LIVES, SCALE_LIVES, 0);
         }
 
@@ -198,7 +198,7 @@ public class Player extends GameObject {
 
     private void renderPowerUpEffects(SpriteBatch batch) {
         //Render the shield if it is activated and shieldFlicker is set to false
-        if (shieldActivated && !shieldFlicker) {
+        if (shieldActivated) {
             //TO ENABLE BLENDING SPRITE BATCH MUST BE STOPPED
             batch.end();
 
@@ -315,10 +315,6 @@ public class Player extends GameObject {
 
     public boolean isShieldActivated() {
         return shieldActivated;
-    }
-
-    public void setShieldFlicker(boolean b) {
-        shieldFlicker = b;
     }
 
     public void setExplodingArrowsActivated(boolean explodingArrowsActivated) {
