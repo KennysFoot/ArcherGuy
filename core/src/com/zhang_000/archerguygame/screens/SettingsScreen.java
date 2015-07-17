@@ -60,7 +60,7 @@ public class SettingsScreen implements Screen {
             }
         });
         buttonMainMenu.setBounds((MenuScreen.GAME_WIDTH - buttonMainMenu.getWidth()) / 2,
-                100, 100, 30);
+                MenuScreen.GAME_HEIGHT * 0.73333f, 100, MenuScreen.GAME_HEIGHT * 0.2167f);
 
         setUpCheckBoxes();
 

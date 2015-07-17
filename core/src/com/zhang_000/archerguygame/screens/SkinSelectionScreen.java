@@ -51,6 +51,9 @@ public class SkinSelectionScreen implements Screen {
     private Label label;
     Label.LabelStyle style = new Label.LabelStyle(AssetLoader.font, Color.WHITE);
 
+    private float yMainMenu, yLabel, yImage;
+    private float heightMain, heightLabel, heightImage;
+
     public SkinSelectionScreen(Game game) {
         this.game = game;
 
@@ -65,6 +68,8 @@ public class SkinSelectionScreen implements Screen {
         stage = new Stage(new ScalingViewport(Scaling.stretch, MenuScreen.GAME_WIDTH, MenuScreen.GAME_HEIGHT, camera),
                 batch);
 
+        scaleY();
+
         getUnlockedSkins();
         setUpMainMenuButton(game);
         getIndexFromPrefs();
@@ -73,6 +78,18 @@ public class SkinSelectionScreen implements Screen {
         setUpNextAndPrevButtons();
 
         Gdx.input.setInputProcessor(stage);
+    }
+
+    private void scaleY() {
+        //Calculate height and y position for everything (ensure everything fits on the screen)
+        heightMain = MenuScreen.GAME_HEIGHT * 0.2167f;
+        yMainMenu = MenuScreen.GAME_HEIGHT * 0.73333f;
+
+        yLabel = MenuScreen.GAME_HEIGHT * 0.06f;
+        heightLabel = MenuScreen.GAME_HEIGHT * 0.1f;
+
+        yImage = MenuScreen.GAME_HEIGHT * 0.21f;
+        heightImage = MenuScreen.GAME_HEIGHT * 0.467f;
     }
 
     private void getUnlockedSkins() {
@@ -106,7 +123,7 @@ public class SkinSelectionScreen implements Screen {
             }
         });
         buttonMainMenu.setBounds((MenuScreen.GAME_WIDTH - buttonMainMenu.getWidth()) / 2,
-                100, 100, 30);
+                yMainMenu, 100, heightMain);
 
         stage.addActor(buttonMainMenu);
     }
@@ -118,7 +135,7 @@ public class SkinSelectionScreen implements Screen {
     private void setUpSkinViewer() {
         selectedSkin = new Image(getImage());
         selectedSkin.setBounds(buttonMainMenu.getX() + (buttonMainMenu.getWidth() - selectedSkin.getWidth()) / 2,
-                25, selectedSkin.getWidth(), selectedSkin.getHeight());
+                yImage, selectedSkin.getWidth(), heightImage);
 
         stage.addActor(selectedSkin);
     }
@@ -126,7 +143,7 @@ public class SkinSelectionScreen implements Screen {
     private void setUpLabel() {
         label = new Label(unlockedSkins.get(i), style);
         label.setBounds(buttonMainMenu.getX() + (buttonMainMenu.getWidth() - label.getWidth()) / 2,
-                25, label.getWidth(), label.getHeight());
+                yLabel, label.getWidth(), heightLabel);
 
         stage.addActor(label);
     }
@@ -192,10 +209,10 @@ public class SkinSelectionScreen implements Screen {
 
         //Set position on screen
         buttonPrev.setBounds(buttonMainMenu.getX() - buttonPrev.getWidth(),
-                (MenuScreen.GAME_HEIGHT - buttonPrev.getHeight()) / 2.5f, buttonPrev.getWidth(),
+                (MenuScreen.GAME_HEIGHT - buttonPrev.getHeight()) / 2.4f, buttonPrev.getWidth(),
                 buttonPrev.getHeight());
         buttonNext.setBounds(buttonMainMenu.getX() + buttonMainMenu.getWidth(),
-                (MenuScreen.GAME_HEIGHT - buttonNext.getHeight()) / 2.5f,
+                (MenuScreen.GAME_HEIGHT - buttonNext.getHeight()) / 2.4f,
                 buttonNext.getWidth(), buttonNext.getHeight());
 
         //Add to stage
@@ -210,7 +227,7 @@ public class SkinSelectionScreen implements Screen {
         //Create new label
         label = new Label(unlockedSkins.get(i), style);
         label.setBounds(buttonMainMenu.getX() + (buttonMainMenu.getWidth() - label.getWidth()) / 2,
-                25, label.getWidth(), label.getHeight());
+                yLabel, label.getWidth(),  heightLabel);
         stage.addActor(label);
 
         //Update image
