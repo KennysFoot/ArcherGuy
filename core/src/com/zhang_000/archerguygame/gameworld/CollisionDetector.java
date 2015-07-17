@@ -168,32 +168,36 @@ public class CollisionDetector {
     }
 
     private void checkCollisionsShieldAndEnemies() {
-        //WIGGLERS AND SHIELD
-        for (Enemy e : enemies) {
-            if (overlaps(e.getHitPolygon(), player.getShield())) {
-                //Enemies dies if it touches the shield
-                enemies.removeValue(e, false);
-                player.incrementKillScore(Wiggler.SCORE);
-                playShieldHitSound();
 
-                for (PowerUp p : powerUpManager.getPowerUps()) {
-                    if (p instanceof PowerUpShield) {
+        for (PowerUp p : powerUpManager.getPowerUps()) {
+            if (p instanceof PowerUpShield && p.getState() == PowerUp.PowerUpState.ACTIVE) {
+                //WIGGLERS AND SHIELD
+                for (Enemy e : enemies) {
+                    if (overlaps(e.getHitPolygon(), player.getShield())) {
+                        //Enemies dies if it touches the shield
+                        enemies.removeValue(e, false);
+                        player.incrementKillScore(Wiggler.SCORE);
+                        playShieldHitSound();
                         p.finish();
+                    }
+                }
+
+                //SHIELD AND BOSS WEAPON
+                for (Boss b : bosses) {
+                    if (b.getWeapon() != null) {
+                        //Check if the weapon hits the shield
+                        if (overlaps(b.getWeapon().getHitPolygon(), player.getShield())) {
+                            //Remove the weapon if it hits the shield
+                            b.removeWeapon();
+                            playShieldHitSound();
+                            p.finish();
+                        }
                     }
                 }
             }
         }
 
-        //SHIELD AND BOSS WEAPON
-        for (Boss b : bosses) {
-            if (b.getWeapon() != null) {
-                //Check if the weapon hits the shield
-                if (overlaps(b.getWeapon().getHitPolygon(), player.getShield())) {
-                    //Remove the weapon if it hits the shield
-                    b.removeWeapon();
-                }
-            }
-        }
+
     }
     private void checkCollisionsPlayerAndEnemies() {
         //ENEMIES AND PLAYER

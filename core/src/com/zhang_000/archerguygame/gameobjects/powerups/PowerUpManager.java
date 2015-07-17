@@ -24,6 +24,7 @@ public class PowerUpManager {
         runTime = 0;
 
         createNewPowerUp();
+        powerUps.add(new PowerUpShield(world));
     }
 
     public void update(float delta) {
